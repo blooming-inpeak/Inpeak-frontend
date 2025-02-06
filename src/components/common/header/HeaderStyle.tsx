@@ -25,6 +25,7 @@ export const HeaderContainer = styled.div`
 
 export const NavBar = styled.div`
   max-width: 1128px;
+  min-width: 600px;
   max-height: 50px;
   width: 59%;
   height: 83%;

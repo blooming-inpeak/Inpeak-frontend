@@ -19,7 +19,7 @@ export const LoginButton = styled.button`
   letter-spacing: -0.35px;
 
   cursor: pointer;
-  transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in-out;
 
   &:hover {
     background-color: #3277ed;
