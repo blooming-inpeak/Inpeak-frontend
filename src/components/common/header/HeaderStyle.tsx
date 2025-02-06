@@ -83,6 +83,9 @@ export const MenuItem = styled.div`
 `;
 
 export const HeaderLeft = styled.div`
+  width: 13%;
+  height: 72%;
+
   display: flex;
   align-items: center;
   justify-content: center;
