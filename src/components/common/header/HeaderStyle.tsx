@@ -44,7 +44,8 @@ export const HeaderRight = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: 30%;
+  width: 22%;
+  min-width: 100px;
   cursor: pointer;
 `;
 
@@ -75,7 +76,7 @@ export const MenuItem = styled.div`
   align-items: center;
   justify-content: center;
 
-  font-size: clamp(13px, 1vw, 16px);
+  font-size: clamp(12px, 1vw, 16px);
   font-weight: 500;
   line-height: 130%;
   letter-spacing: -0.4px;
