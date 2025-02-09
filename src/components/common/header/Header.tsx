@@ -1,5 +1,5 @@
 import { Login } from '../../login/Login';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, MenuItems, NavBar } from './HeaderStyle';
 
 export const Header = () => {
@@ -7,36 +7,39 @@ export const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <HeaderContainer>
-      <NavBar>
-        <HeaderRight>
-          <Logo src="/images/Logo.svg" alt="logo" onClick={() => navigate('/')} />
-          <MenuItems>
-            <MenuItem
-              style={{
-                color: pathname === '/interview' ? '#0050D8' : 'black',
-                borderBottom: pathname === '/interview' ? '2px solid #0050D8' : 'none',
-              }}
-              onClick={() => navigate('/interview')}
-            >
-              모의면접
-            </MenuItem>
-            <Divider />
-            <MenuItem
-              style={{
-                color: pathname === '/history' ? '#0050D8' : 'black',
-                borderBottom: pathname === '/history' ? '2px solid #0050D8' : 'none',
-              }}
-              onClick={() => navigate('/history')}
-            >
-              히스토리
-            </MenuItem>
-          </MenuItems>
-        </HeaderRight>
-        <HeaderLeft>
-          <Login />
-        </HeaderLeft>
-      </NavBar>
-    </HeaderContainer>
+    <>
+      <HeaderContainer>
+        <NavBar>
+          <HeaderRight>
+            <Logo src="/images/Logo.svg" alt="logo" onClick={() => navigate('/')} />
+            <MenuItems>
+              <MenuItem
+                style={{
+                  color: pathname === '/interview' ? '#0050D8' : 'black',
+                  borderBottom: pathname === '/interview' ? '2px solid #0050D8' : 'none',
+                }}
+                onClick={() => navigate('/interview')}
+              >
+                모의면접
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                style={{
+                  color: pathname === '/history' ? '#0050D8' : 'black',
+                  borderBottom: pathname === '/history' ? '2px solid #0050D8' : 'none',
+                }}
+                onClick={() => navigate('/history')}
+              >
+                히스토리
+              </MenuItem>
+            </MenuItems>
+          </HeaderRight>
+          <HeaderLeft>
+            <Login />
+          </HeaderLeft>
+        </NavBar>
+      </HeaderContainer>
+      <Outlet />
+    </>
   );
 };

@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { MainPage, InterviewPage, HistoryPage, IntroPage, SessionPage, ResultPage, MyPage, ContactPage } from './pages';
-import { Header } from './components/common/header/Header';
+import Layout from './pages/LayoutPage';
 
 function App() {
   return (
     <Routes>
-      <Route element={<Header />}>
+      <Route element={<Layout />}>
         <Route path="/" element={<MainPage />} />
         <Route path="/interview" element={<InterviewPage />} />
         <Route path="/history" element={<HistoryPage />} />
