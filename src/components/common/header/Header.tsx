@@ -1,5 +1,5 @@
 import { Login } from '../../login/Login';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, MenuItems, NavBar } from './HeaderStyle';
 
 export const Header = () => {
@@ -39,7 +39,6 @@ export const Header = () => {
           </HeaderLeft>
         </NavBar>
       </HeaderContainer>
-      <Outlet />
     </>
   );
 };

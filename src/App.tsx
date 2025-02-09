@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { MainPage, InterviewPage, HistoryPage, IntroPage, SessionPage, ResultPage, MyPage, ContactPage } from './pages';
-import Layout from './pages/LayoutPage';
+import Layout from './pages/Layout';
 
 function App() {
   return (
