@@ -13,7 +13,7 @@ export const LoginButton = styled.button`
   background-color: #0050d8;
 
   color: white;
-  font-size: clamp(10px, 0.8vw, 14px);
+  font-size: clamp(9px, 0.8vw, 14px);
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.35px;
