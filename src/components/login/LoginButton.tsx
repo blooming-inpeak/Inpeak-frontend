@@ -21,7 +21,7 @@ export const Login = () => {
 export const LoginButton = styled.button`
   border-radius: 100px;
   border: none;
-  background-color: #0050d8;
+  background-color: #3277ed;
 
   padding: 6px 18px;
 
@@ -35,6 +35,6 @@ export const LoginButton = styled.button`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    background-color: #3277ed;
+    background-color: #4386f8;
   }
 `;
