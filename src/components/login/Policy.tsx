@@ -25,7 +25,7 @@ export const PrivacyPolicyModal = ({ isPolicy, onClose }: Props) => {
     };
 
     fetchFileContent();
-  }, []);
+  }, [isPolicy]);
 
   return (
     <PrivacyWrapper>
