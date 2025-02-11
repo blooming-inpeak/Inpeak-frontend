@@ -1,0 +1,40 @@
+import { useState } from 'react';
+import styled from 'styled-components';
+import { BlurBackground } from '../common/background/BlurBackground';
+import { LoginModal } from './LoginModal';
+
+export const Login = () => {
+  const [openLogin, setOpenLogin] = useState(false);
+
+  return (
+    <>
+      <LoginButton onClick={() => setOpenLogin(true)}>3초만에 시작하기</LoginButton>
+      {openLogin && (
+        <BlurBackground>
+          <LoginModal setOpenLogin={setOpenLogin} />
+        </BlurBackground>
+      )}
+    </>
+  );
+};
+
+export const LoginButton = styled.button`
+  border-radius: 100px;
+  border: none;
+  background-color: #0050d8;
+
+  padding: 6px 18px;
+
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 150%;
+  letter-spacing: -0.35px;
+
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #3277ed;
+  }
+`;
