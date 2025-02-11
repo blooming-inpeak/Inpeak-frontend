@@ -19,8 +19,8 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
 };
 
 export const LoginModalContainer = styled.div`
-  width: 552px;
-  height: 639px;
+  width: 504px;
+  height: 539px;
   padding: 20px 24px 80px 24px;
   background-color: #ffffff;
 
