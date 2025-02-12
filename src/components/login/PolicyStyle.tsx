@@ -68,8 +68,9 @@ export const PrivacyContent = styled.pre`
   color: #212121;
   font-size: 12px;
   font-weight: 400;
-  line-height: 160%;
-  letter-spacing: -1.5px;
+  line-height: 150%;
+  letter-spacing: -1.1px;
+  word-spacing: -2.5px;
 `;
 
 export const PrivacyFooter = styled.div`
