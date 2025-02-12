@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const HeaderContainer = styled.div`
   width: 100%;
-  height: 62px;
+  height: 60px;
 
   position: fixed;
   top: 0;
@@ -43,7 +43,7 @@ export const Logo = styled.img`
 `;
 
 export const MenuItems = styled.div`
-  height: 40px;
+  height: 100%;
 
   display: flex;
   justify-content: center;
