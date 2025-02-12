@@ -5,7 +5,6 @@ export const HeaderContainer = styled.div`
   height: 62px;
 
   position: fixed;
-  z-index: 10;
   top: 0;
   left: 0;
   right: 0;
@@ -22,11 +21,8 @@ export const HeaderContainer = styled.div`
 `;
 
 export const NavBar = styled.div`
-  max-width: 1128px;
-  min-width: 600px;
-  max-height: 50px;
-  width: 59%;
-  height: 83%;
+  width: 1128px;
+  height: 50px;
 
   display: flex;
   justify-content: space-between;
@@ -35,20 +31,19 @@ export const NavBar = styled.div`
 
 export const HeaderRight = styled.div`
   height: 100%;
-  width: 63%;
-  gap: 14%;
+  width: 714px;
+  gap: 90px;
 
   display: flex;
 `;
 
 export const Logo = styled.img`
-  width: 22%;
-  min-width: 100px;
+  width: 152.245px;
   cursor: pointer;
 `;
 
 export const MenuItems = styled.div`
-  width: 34%;
+  height: 40px;
 
   display: flex;
   justify-content: center;
@@ -67,14 +62,16 @@ export const Divider = styled.div`
 `;
 
 export const MenuItem = styled.div`
-  width: 44%;
   height: 100%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: clamp(12px, 1vw, 16px);
+  padding: 0 25px;
+  margin: 0 10px;
+
+  font-size: 16px;
   font-weight: 500;
   line-height: 130%;
   letter-spacing: -0.4px;
@@ -83,9 +80,6 @@ export const MenuItem = styled.div`
 `;
 
 export const HeaderLeft = styled.div`
-  width: 13%;
-  height: 72%;
-
   display: flex;
   align-items: center;
   justify-content: center;
