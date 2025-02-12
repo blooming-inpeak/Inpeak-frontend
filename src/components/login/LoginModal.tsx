@@ -1,4 +1,14 @@
-import styled from 'styled-components';
+import {
+  CloseButton,
+  KaKaoTalkTitle,
+  LoginBanner,
+  LoginFooter,
+  LoginHeader,
+  LoginKakaotalk,
+  LoginModalContainer,
+  LoginTerms,
+  LoginTitle,
+} from './LoginModalStyle';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
@@ -14,34 +24,22 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
       <CloseButton>
         <img src="/images/Close.svg" alt="close" onClick={onClickClose} />
       </CloseButton>
+      <LoginHeader>
+        <LoginTitle>INPEAK</LoginTitle>
+        <LoginBanner>사진</LoginBanner>
+      </LoginHeader>
+
+      <LoginFooter>
+        <LoginKakaotalk>
+          <img src="/images/KakaoTalk.svg" alt="kakaotalk" style={{ width: '17px', fill: '#212121' }} />
+          <KaKaoTalkTitle>카카오로 로그인/회원가입</KaKaoTalkTitle>
+        </LoginKakaotalk>
+        <LoginTerms>
+          로그인 시 <span style={{ color: '#0050d8', cursor: 'pointer' }}>개인정보처리방침</span> 및{' '}
+          <span style={{ color: '#0050d8', cursor: 'pointer' }}>서비스 약관</span>을 준수하고 동의하는 것으로
+          간주합니다.
+        </LoginTerms>
+      </LoginFooter>
     </LoginModalContainer>
   );
 };
-
-export const LoginModalContainer = styled.div`
-  width: 504px;
-  height: 539px;
-  padding: 20px 24px 80px 24px;
-  background-color: #ffffff;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  border-radius: 24px;
-
-  box-shadow: 0px 0px 24px 0px rgba(50, 59, 84, 0.24);
-`;
-
-export const CloseButton = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-
-  img {
-    width: 24px;
-    height: 24px;
-
-    cursor: pointer;
-  }
-`;
