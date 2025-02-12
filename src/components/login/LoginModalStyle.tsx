@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const LoginModalContainer = styled.div`
-  width: 504px;
-  height: 539px;
-  padding: 20px 24px 80px 24px;
+  width: 352px;
+  height: 399px;
+  padding: 20px 24px 40px 24px;
   background-color: #ffffff;
 
   display: flex;
@@ -39,12 +39,9 @@ export const LoginHeader = styled.div`
   gap: 20px;
 `;
 
-export const LoginTitle = styled.div`
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 150%;
-  letter-spacing: -0.16px;
-  color: #3277ed;
+export const LoginTitle = styled.img`
+  width: 100px;
+  aspect-ratio: 100/22.99;
 `;
 
 export const LoginBanner = styled.div`
@@ -67,12 +64,12 @@ export const LoginFooter = styled.div`
   justify-content: center;
 
   cursor: pointer;
-  gap: 40px;
+  gap: 20px;
 `;
 
 export const LoginKakaotalk = styled.div`
   width: 330px;
-  height: 50px;
+  height: 40px;
 
   border-radius: 8px;
   background-color: #ffe812;
@@ -85,7 +82,7 @@ export const LoginKakaotalk = styled.div`
 
 export const KaKaoTalkTitle = styled.span`
   color: '#212121';
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 150%;
 `;
@@ -94,10 +91,10 @@ export const LoginTerms = styled.div`
   width: 250px;
   color: #212121;
 
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   line-height: 150%;
-  letter-spacing: -0.35px;
+  letter-spacing: -0.3px;
 
   text-align: center;
 `;

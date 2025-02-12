@@ -38,7 +38,7 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
           <img src="/images/Close.svg" alt="close" onClick={onClickClose} />
         </CloseButton>
         <LoginHeader>
-          <LoginTitle>INPEAK</LoginTitle>
+          <LoginTitle src="/images/Logo.svg" />
           <LoginBanner>사진</LoginBanner>
         </LoginHeader>
 
