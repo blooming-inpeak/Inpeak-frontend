@@ -39,7 +39,7 @@ export const Space = styled.div`
 `;
 
 export const PrivacyContent = styled.pre`
-  width: 352px;
+  width: 320px;
   height: 100%;
 
   display: flex;
