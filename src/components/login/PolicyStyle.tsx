@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const PrivacyWrapper = styled.div`
-  width: 504px;
-  height: 575px;
-  padding: 24px 24px 40px 24px;
+  width: 352px;
+  height: 415px;
+  padding: 24px;
   background-color: #ffffff;
 
   display: flex;
@@ -25,7 +25,7 @@ export const PrivacyTop = styled.div`
 
   cursor: pointer;
 
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 `;
 export const PrivacyTitle = styled.div`
   font-size: 16px;
@@ -39,7 +39,7 @@ export const Space = styled.div`
 `;
 
 export const PrivacyContent = styled.pre`
-  width: 460px;
+  width: 352px;
   height: 100%;
 
   display: flex;
@@ -69,8 +69,11 @@ export const PrivacyContent = styled.pre`
   font-size: 12px;
   font-weight: 400;
   line-height: 150%;
-  letter-spacing: -1.1px;
-  word-spacing: -2.5px;
+  letter-spacing: -0.3px;
+  word-spacing: -3px;
+
+  white-space: pre-wrap;
+  word-wrap: break-word;
 `;
 
 export const PrivacyFooter = styled.div`
@@ -82,10 +85,10 @@ export const PrivacyFooter = styled.div`
 `;
 
 export const PrivactFooterButton = styled.div`
-  width: 40px;
+  width: 37px;
   height: 24px;
 
-  padding: 6px 18px;
+  padding: 2px 10px;
   border-radius: 100px;
 
   display: flex;
@@ -94,10 +97,10 @@ export const PrivactFooterButton = styled.div`
 
   background-color: #3277ed;
 
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   line-height: 150%;
-  letter-spacing: -0.35px;
+  letter-spacing: -0.3px;
   color: #ffffff;
 
   cursor: pointer;
