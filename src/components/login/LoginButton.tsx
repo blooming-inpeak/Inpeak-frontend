@@ -18,7 +18,14 @@ export const Login = () => {
   );
 };
 
-export const LoginButton = styled.button`
+export const LoginButton = styled.div`
+  width: 111px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border-radius: 100px;
   border: none;
   background-color: #3277ed;
