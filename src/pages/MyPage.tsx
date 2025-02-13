@@ -17,7 +17,7 @@ export const MyPageWrapper = styled.div`
   width: 100%;
   height: 100%;
 
-  padding: 100px 0;
+  padding-top: 100px;
 
   display: flex;
   align-items: flex-start;
