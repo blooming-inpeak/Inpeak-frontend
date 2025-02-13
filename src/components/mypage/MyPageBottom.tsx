@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import {
   FieldChange,
   FieldChangeTitle,
@@ -12,6 +11,7 @@ import {
   MyPageTermsContent,
   MyPageTermsContents,
   MyPageTermsTitle,
+  Withdrawal,
 } from './MyPageBottomStyle';
 
 export const MyPageBottom = () => {
@@ -46,18 +46,3 @@ export const MyPageBottom = () => {
     </MyPageBottomWrapper>
   );
 };
-
-export const Withdrawal = styled.div`
-  padding: 40px;
-
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 12px;
-
-  cursor: pointer;
-
-  color: #4386f8;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 150%;
-`;

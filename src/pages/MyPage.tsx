@@ -26,7 +26,7 @@ export const MyPageWrapper = styled.div`
 
 export const MyPageContent = styled.div`
   width: 400px;
-  height: 663px;
+  height: 603px;
 
   gap: 100px;
 

@@ -115,3 +115,19 @@ export const MyPageTermsContent = styled.div`
   line-height: 150%;
   letter-spacing: -0.35px;
 `;
+
+// 회원탈퇴
+export const Withdrawal = styled.div`
+  padding-top: 40px;
+
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 12px;
+
+  cursor: pointer;
+
+  color: #4386f8;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 150%;
+`;
