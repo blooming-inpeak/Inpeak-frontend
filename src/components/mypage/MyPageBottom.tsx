@@ -16,9 +16,11 @@ import {
 } from './MyPageBottomStyle';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { WithdrawalModal } from './WithdrawalModal';
+import { SelectStack } from '../selectStack/selectStack';
 
 export const MyPageBottom = () => {
   const [isWithdrawal, setIsWithdrawal] = useState(false);
+  const [isSelectStack, setIsSelectStack] = useState(false);
 
   return (
     <MyPageBottomWrapper>
@@ -27,7 +29,7 @@ export const MyPageBottom = () => {
         <MyPageInterestContent>
           <MyPageField>React, Spring</MyPageField>
           <FieldChange>
-            <FieldChangeTitle>변경하기</FieldChangeTitle>
+            <FieldChangeTitle onClick={() => setIsSelectStack(true)}>변경하기</FieldChangeTitle>
             <FiledChangeIcon src="/images/Chevron_right.svg" alt="chevron_right" />
           </FieldChange>
         </MyPageInterestContent>
@@ -52,6 +54,11 @@ export const MyPageBottom = () => {
       {isWithdrawal && (
         <BlurBackground>
           <WithdrawalModal onClose={() => setIsWithdrawal(false)} />
+        </BlurBackground>
+      )}
+      {isSelectStack && (
+        <BlurBackground>
+          <SelectStack onClose={() => setIsSelectStack(false)} />
         </BlurBackground>
       )}
     </MyPageBottomWrapper>
