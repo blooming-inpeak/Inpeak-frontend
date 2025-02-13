@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   FieldChange,
   FieldChangeTitle,
@@ -13,8 +14,12 @@ import {
   MyPageTermsTitle,
   Withdrawal,
 } from './MyPageBottomStyle';
+import { BlurBackground } from '../common/background/BlurBackground';
+import { WithdrawalModal } from './WithdrawalModal';
 
 export const MyPageBottom = () => {
+  const [isWithdrawal, setIsWithdrawal] = useState(false);
+
   return (
     <MyPageBottomWrapper>
       <MyPageInterest>
@@ -42,7 +47,13 @@ export const MyPageBottom = () => {
         </MyPageTermsContents>
       </MyPageTerms>
 
-      <Withdrawal>회원탈퇴하기</Withdrawal>
+      <Withdrawal onClick={() => setIsWithdrawal(true)}>회원탈퇴하기</Withdrawal>
+
+      {isWithdrawal && (
+        <BlurBackground>
+          <WithdrawalModal onClose={() => setIsWithdrawal(false)} />
+        </BlurBackground>
+      )}
     </MyPageBottomWrapper>
   );
 };
