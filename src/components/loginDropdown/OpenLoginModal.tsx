@@ -17,7 +17,7 @@ export const OpenLoginModal = ({ onCloseModal }: { onCloseModal: () => void }) =
           <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
           <OpenLoginModalName>김인픽</OpenLoginModalName>
         </OpenLoginModalProfile>
-        <OpenLoginModalButton src="/images/Chevron_top.svg" alt="chevron top" onClick={onCloseModal} />
+        <OpenLoginModalButton src="/images/chevron/Chevron_top.svg" alt="chevron top" onClick={onCloseModal} />
       </OpenLoginModalTop>
 
       <OpenLoginModalBottom>

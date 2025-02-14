@@ -1,11 +1,20 @@
 import styled from 'styled-components';
 import { CorrectAnswer } from '../components/interview/CorrectAnswer';
+import { InterviewChance } from '../components/interview/InterviewChance';
 
 export const InterviewPage = () => {
   return (
     <InterviewWrapper>
       <InterviewTop>
         <CorrectAnswer />
+        <InterviewTopContent>
+          <InterviewChance />
+          <InterviewButton>
+            <div></div>
+            <InterviewButtonTitle>모의면접 연습하기</InterviewButtonTitle>
+            <img src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
+          </InterviewButton>
+        </InterviewTopContent>
       </InterviewTop>
     </InterviewWrapper>
   );
@@ -29,6 +38,7 @@ export const InterviewWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 544px;
+    z-index: -1;
 
     background-image: url('/images/Background.png');
     background-size: cover;
@@ -44,4 +54,35 @@ export const InterviewTop = styled.div`
 
   gap: 48px;
   margin-top: 102px;
+`;
+
+export const InterviewTopContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 12px;
+`;
+
+export const InterviewButton = styled.div`
+  width: 200px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  border-radius: 100px;
+  background-color: #327eed;
+  cursor: pointer;
+`;
+
+export const InterviewButtonTitle = styled.div`
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 150%;
+  letter-spacing: -0.4px;
 `;

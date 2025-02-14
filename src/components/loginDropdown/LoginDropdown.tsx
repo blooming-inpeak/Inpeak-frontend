@@ -10,7 +10,11 @@ export const LoginDropdown = () => {
         <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
         <LoginDropdownName>김인픽</LoginDropdownName>
       </LoginDropdownProfile>
-      <LoginDropdownButton src="/images/Chevron_bottom.svg" alt="chevron bottom" onClick={() => setOpenModal(true)} />
+      <LoginDropdownButton
+        src="/images/chevron/Chevron_bottom.svg"
+        alt="chevron bottom"
+        onClick={() => setOpenModal(true)}
+      />
       {openModal && <OpenLoginModal onCloseModal={() => setOpenModal(false)} />}
     </LoginDropdownWrapper>
   );
