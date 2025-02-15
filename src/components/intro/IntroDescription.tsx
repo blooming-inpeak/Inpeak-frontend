@@ -1,9 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const IntroDescription = () => {
+  const navigate = useNavigate();
+
+  const onClickClose = () => {
+    navigate('/interview');
+  };
   return (
     <IntroDescriptionWrapper>
-      <img src="/images/Close_white.svg" alt="close" style={{ width: '24px', cursor: 'pointer' }} />
+      <img
+        src="/images/Close_white.svg"
+        alt="close"
+        style={{ width: '24px', cursor: 'pointer' }}
+        onClick={onClickClose}
+      />
 
       <IntroContent>
         <IntroTitle>한 질문에 5분씩 주어집니다</IntroTitle>

@@ -5,7 +5,7 @@ export const IntroPage = () => {
   return (
     <IntroWrapper>
       <IntroBody>
-        <IntroDescription></IntroDescription>
+        <IntroDescription />
       </IntroBody>
     </IntroWrapper>
   );
