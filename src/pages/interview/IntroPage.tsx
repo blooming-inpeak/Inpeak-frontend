@@ -1,11 +1,26 @@
 import styled from 'styled-components';
 import { IntroDescription } from '../../components/intro/IntroDescription';
+import { RecordTest } from '../../components/intro/RecordTest';
+import { MyStack } from '../../components/intro/MyStack';
+import { RecordCheck } from '../../components/intro/RecordCheck';
 
 export const IntroPage = () => {
   return (
     <IntroWrapper>
       <IntroBody>
         <IntroDescription />
+
+        <IntroTest>
+          <IntroTestTop>
+            <RecordTest />
+            <MyStack />
+            <RecordCheck />
+          </IntroTestTop>
+
+          <IntroTestBottom>
+            <IntroStartButton>시작하기</IntroStartButton>
+          </IntroTestBottom>
+        </IntroTest>
       </IntroBody>
     </IntroWrapper>
   );
@@ -30,4 +45,42 @@ export const IntroBody = styled.div`
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 
   display: flex;
+`;
+
+export const IntroTest = styled.div`
+  width: 100%;
+  height: 484px;
+  padding: 40px 45px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+export const IntroTestTop = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+
+export const IntroTestBottom = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const IntroStartButton = styled.div`
+  width: 71px;
+  height: 24px;
+  cursor: pointer;
+
+  padding: 10px 26px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #202a43;
+
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
 `;
