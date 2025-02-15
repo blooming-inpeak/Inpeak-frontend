@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
+import { Strict } from '../components/interview/Strict';
 
 export const InterviewPage = () => {
   return (
@@ -16,6 +17,10 @@ export const InterviewPage = () => {
           </InterviewButton>
         </InterviewTopContent>
       </InterviewTop>
+
+      <InterviewBottom>
+        <Strict />
+      </InterviewBottom>
     </InterviewWrapper>
   );
 };
@@ -30,6 +35,7 @@ export const InterviewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 60px;
 
   &::before {
     content: '';
@@ -85,4 +91,12 @@ export const InterviewButtonTitle = styled.div`
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.4px;
+`;
+
+export const InterviewBottom = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 23px;
 `;
