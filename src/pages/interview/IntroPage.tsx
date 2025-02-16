@@ -3,6 +3,7 @@ import { IntroDescription } from '../../components/intro/IntroDescription';
 import { RecordTest } from '../../components/intro/RecordTest';
 import { MyStack } from '../../components/intro/MyStack';
 import { RecordCheck } from '../../components/intro/RecordCheck';
+import { MicCheck } from '../../components/intro/MicCheck';
 
 export const IntroPage = () => {
   return (
@@ -15,6 +16,7 @@ export const IntroPage = () => {
             <RecordTest />
             <MyStack />
             <RecordCheck />
+            <MicCheck />
           </IntroTestTop>
 
           <IntroTestBottom>
