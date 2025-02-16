@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
+import { Strict } from '../components/interview/Strict';
+import { AskHistory } from '../components/interview/AskHistory';
 
 export const InterviewPage = () => {
   return (
@@ -16,6 +18,15 @@ export const InterviewPage = () => {
           </InterviewButton>
         </InterviewTopContent>
       </InterviewTop>
+
+      <InterviewBottom>
+        <InterviewBottomLeft>
+          <Strict />
+          <InterviewBottomAd></InterviewBottomAd>
+        </InterviewBottomLeft>
+
+        <AskHistory />
+      </InterviewBottom>
     </InterviewWrapper>
   );
 };
@@ -23,17 +34,16 @@ export const InterviewPage = () => {
 export const InterviewWrapper = styled.div`
   width: 100%;
   height: 100%;
-
-  position: fixed;
-  top: 0;
+  min-height: 1178px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 60px;
 
   &::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -53,7 +63,7 @@ export const InterviewTop = styled.div`
   flex-direction: column;
 
   gap: 48px;
-  margin-top: 102px;
+  margin-top: 40px;
 `;
 
 export const InterviewTopContent = styled.div`
@@ -85,4 +95,31 @@ export const InterviewButtonTitle = styled.div`
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.4px;
+`;
+
+export const InterviewBottom = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 23px;
+`;
+
+export const InterviewBottomLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+`;
+
+export const InterviewBottomAd = styled.div`
+  width: 456px;
+  height: 258px;
+
+  border-radius: 24px;
+  border: 1px solid #ffffff;
+  box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
+  backdrop-filter: blur(10px);
+
+  background-color: yellow;
 `;
