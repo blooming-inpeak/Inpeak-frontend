@@ -14,7 +14,7 @@ export const SelectStack = ({ onClose }: { onClose: () => void }) => {
   return (
     <SelectStackWrapper>
       <img
-        src="/images/Chevron_left.svg"
+        src="/images/chevron/Chevron_left.svg"
         alt="chevron left"
         onClick={onClose}
         style={{ width: '24px', cursor: 'pointer' }}

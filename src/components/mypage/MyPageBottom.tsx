@@ -16,7 +16,7 @@ import {
 } from './MyPageBottomStyle';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { WithdrawalModal } from './WithdrawalModal';
-import { SelectStack } from '../selectStack/selectStack';
+import { SelectStack } from '../selectStack/SelectStack';
 
 export const MyPageBottom = () => {
   const [isWithdrawal, setIsWithdrawal] = useState(false);
@@ -30,7 +30,7 @@ export const MyPageBottom = () => {
           <MyPageField>React, Spring</MyPageField>
           <FieldChange>
             <FieldChangeTitle onClick={() => setIsSelectStack(true)}>변경하기</FieldChangeTitle>
-            <FiledChangeIcon src="/images/Chevron_right.svg" alt="chevron_right" />
+            <FiledChangeIcon src="/images/chevron/Chevron_right.svg" alt="chevron_right" />
           </FieldChange>
         </MyPageInterestContent>
       </MyPageInterest>
@@ -40,11 +40,11 @@ export const MyPageBottom = () => {
         <MyPageTermsContents>
           <MyPageTermsContent>
             개인정보처리방침
-            <img src="/images/Chevron_right.svg" style={{ width: '16px' }} />
+            <img src="/images/chevron/Chevron_right.svg" style={{ width: '16px' }} />
           </MyPageTermsContent>
           <MyPageTermsContent>
             서비스약관
-            <img src="/images/Chevron_right.svg" style={{ width: '16px' }} />
+            <img src="/images/chevron/Chevron_right.svg" style={{ width: '16px' }} />
           </MyPageTermsContent>
         </MyPageTermsContents>
       </MyPageTerms>
