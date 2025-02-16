@@ -1,26 +1,15 @@
 import styled from 'styled-components';
 import { IntroDescription } from '../../components/intro/IntroDescription';
-import { RecordTest } from '../../components/intro/RecordTest';
-import { MyStack } from '../../components/intro/MyStack';
-import { RecordCheck } from '../../components/intro/RecordCheck';
-import { MicCheck } from '../../components/intro/MicCheck';
-import { useState } from 'react';
+import { IntroTestTop } from '../../components/intro/IntroTestTop';
 
 export const IntroPage = () => {
-  const [isRecord, setIsRecord] = useState<boolean>(true);
   return (
     <IntroWrapper>
       <IntroBody>
         <IntroDescription />
 
         <IntroTest>
-          <IntroTestTop>
-            <RecordTest isRecord={isRecord} />
-            <MyStack />
-            <RecordCheck Record={isRecord} setIsRecord={setIsRecord} />
-            <MicCheck />
-          </IntroTestTop>
-
+          <IntroTestTop />
           <IntroTestBottom>
             <IntroStartButton>시작하기</IntroStartButton>
           </IntroTestBottom>
@@ -31,7 +20,7 @@ export const IntroPage = () => {
 };
 
 export const IntroWrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 
   display: flex;
@@ -59,11 +48,6 @@ export const IntroTest = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
-
-export const IntroTestTop = styled.div`
-  width: 100%;
-  height: 100%;
 `;
 
 export const IntroTestBottom = styled.div`
