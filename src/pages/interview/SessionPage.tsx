@@ -1,9 +1,14 @@
 import styled from 'styled-components';
+import { SessionTop } from '../../components/session/SessionTop';
+import { SessionContent } from '../../components/session/SessionContent';
 
 export const SessionPage = () => {
   return (
     <SessionWrapper>
-      <SessionBody></SessionBody>
+      <SessionBody>
+        <SessionTop />
+        <SessionContent />
+      </SessionBody>
     </SessionWrapper>
   );
 };
