@@ -4,8 +4,10 @@ import { RecordTest } from '../../components/intro/RecordTest';
 import { MyStack } from '../../components/intro/MyStack';
 import { RecordCheck } from '../../components/intro/RecordCheck';
 import { MicCheck } from '../../components/intro/MicCheck';
+import { useState } from 'react';
 
 export const IntroPage = () => {
+  const [isRecord, setIsRecord] = useState<boolean>(true);
   return (
     <IntroWrapper>
       <IntroBody>
@@ -13,9 +15,9 @@ export const IntroPage = () => {
 
         <IntroTest>
           <IntroTestTop>
-            <RecordTest />
+            <RecordTest isRecord={isRecord} />
             <MyStack />
-            <RecordCheck />
+            <RecordCheck Record={isRecord} setIsRecord={setIsRecord} />
             <MicCheck />
           </IntroTestTop>
 

@@ -1,16 +1,19 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
 interface RecordCheckToggleProps {
   isRecord: boolean;
 }
 
-export const RecordCheck = () => {
-  const [isRecord, setIsRecord] = useState<boolean>(false);
+interface Props {
+  Record: boolean;
+  setIsRecord: (check: boolean) => void;
+}
+
+export const RecordCheck = ({ Record, setIsRecord }: Props) => {
   return (
     <RecordCheckWrapper>
       <RecordCheckTitle>모의면접 영상 녹화</RecordCheckTitle>
-      <RecordCheckToggle isRecord={isRecord} onClick={() => setIsRecord(!isRecord)}>
+      <RecordCheckToggle isRecord={Record} onClick={() => setIsRecord(!Record)}>
         <img src="/images/ToggleButton.svg" alt="toggle Button" />
       </RecordCheckToggle>
     </RecordCheckWrapper>
