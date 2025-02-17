@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MicCheck } from './MicCheck';
 import { MyStack } from './MyStack';
 import { RecordCheck } from './RecordCheck';
@@ -9,11 +9,17 @@ export const IntroTestTop = () => {
   const [isRecord, setIsRecord] = useState<boolean>(true);
   const [currentMic, setCurrentMic] = useState<string>('');
   const [micList, setMicList] = useState<MediaDeviceInfo[]>([]);
+  const [volume, setVolume] = useState(1); //볼륨 상태 (0~1)
+  const [audioLevel, setAudioLevel] = useState(0); // 마이크 입력 볼륨 표시용
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null); // 스트림 상태 추가
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    // 웹캠과 마이크 권한 요청
+    console.log(audioLevel);
+    // 연결된 마이크 장치 리스트
     const getDivices = async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
       console.log(devices);
@@ -21,6 +27,7 @@ export const IntroTestTop = () => {
       setMicList(audioDevices);
     };
 
+    // 웹캠과 마이크 권한 요청
     const getMedia = async () => {
       try {
         let constraints: MediaStreamConstraints;
@@ -44,24 +51,40 @@ export const IntroTestTop = () => {
         }
 
         const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = newStream;
+
         const audioTracks = newStream.getAudioTracks();
-        console.log(audioTracks);
 
         if (audioTracks.length > 0) {
           // 사용중인 마이크의 lable 가져오기
           setCurrentMic(audioTracks[0].label);
         }
 
-        // 기존 스트림이 있으면 중지하고 새로운 스트림 설정
-        if (stream) {
-          const tracks = stream.getTracks();
-          tracks.forEach(track => track.stop());
-        }
-
-        setStream(newStream);
         if (videoRef.current) {
           videoRef.current.srcObject = newStream;
         }
+
+        // 기존 오디오 컨텍스트 종료 후 새로 설정
+        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+          audioContextRef.current.close();
+        }
+        const audioContext = new AudioContext();
+        audioContextRef.current = audioContext;
+
+        const source = audioContext.createMediaStreamSource(newStream);
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = volume;
+        gainNodeRef.current = gainNode;
+
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        analyserRef.current = analyser;
+
+        source.connect(gainNode);
+        gainNode.connect(analyser);
+
+        // 마이크 볼륨 감지 함수 실행
+        detectVolume(analyser);
       } catch (error) {
         console.log(error);
       }
@@ -72,19 +95,52 @@ export const IntroTestTop = () => {
 
     // 컴포넌트가 언마운트될 때 스트림을 종료
     return () => {
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
       }
     };
-  }, [isRecord]);
+  }, [isRecord, currentMic]);
+
+  // 볼륨 조절 핸들러
+  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(event.target.value);
+    setVolume(newVolume);
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = newVolume;
+    }
+  };
+
+  // 마이크 볼륨 감지
+  const detectVolume = (analyser: AnalyserNode) => {
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const checkVolume = () => {
+      analyser.getByteFrequencyData(dataArray);
+      const avgVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
+      setAudioLevel(avgVolume);
+      requestAnimationFrame(checkVolume);
+    };
+
+    checkVolume();
+  };
 
   return (
     <IntroTestTopWrapper>
       <RecordTest isRecord={isRecord} videoRef={videoRef} />
       <MyStack />
       <RecordCheck Record={isRecord} setIsRecord={setIsRecord} />
-      <MicCheck currentMic={currentMic} micList={micList} setCurrentMic={setCurrentMic} />
+      <MicCheck
+        currentMic={currentMic}
+        micList={micList}
+        setCurrentMic={setCurrentMic}
+        volume={volume}
+        handleVolumeChange={handleVolumeChange}
+        audioLevel={audioLevel}
+      />
     </IntroTestTopWrapper>
   );
 };

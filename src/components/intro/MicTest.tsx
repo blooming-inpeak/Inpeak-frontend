@@ -2,17 +2,23 @@ import styled from 'styled-components';
 import { MicLevel } from './MicLevel';
 import { MicVolumeSlide } from './MicVolumeSlide';
 
-export const MicTest = () => {
+interface Props {
+  volume: number;
+  handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  audioLevel: number;
+}
+
+export const MicTest = ({ volume, handleVolumeChange, audioLevel }: Props) => {
   return (
     <MicTestWrapper>
       <MicTestTitle>적정한 입력 레벨이 나올때까지 입력 볼륨을 조절해주세요</MicTestTitle>
 
       <MicTestLevel>
-        입력 레벨 <MicLevel />
+        입력 레벨 <MicLevel audioLevel={audioLevel} />
       </MicTestLevel>
 
       <MicTestVolume>
-        입력 볼륨 <MicVolumeSlide />
+        입력 볼륨 <MicVolumeSlide volume={volume} handleVolumeChange={handleVolumeChange} />
       </MicTestVolume>
 
       <MicTestComplete>완료</MicTestComplete>

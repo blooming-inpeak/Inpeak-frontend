@@ -8,9 +8,12 @@ interface Props {
   currentMic: string | null;
   setCurrentMic: (mic: string) => void;
   micList: MediaDeviceInfo[];
+  volume: number;
+  handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  audioLevel: number;
 }
 
-export const MicCheck = ({ currentMic, micList, setCurrentMic }: Props) => {
+export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVolumeChange, audioLevel }: Props) => {
   const [isClick, setIsClick] = useState(false);
   const [micTest, setMicTest] = useState(false);
   return (
@@ -45,7 +48,7 @@ export const MicCheck = ({ currentMic, micList, setCurrentMic }: Props) => {
         <MicSelectButton onClick={() => setMicTest(true)}>마이크 테스트</MicSelectButton>
         {micTest && (
           <BlurBackground>
-            <MicTest />
+            <MicTest volume={volume} handleVolumeChange={handleVolumeChange} audioLevel={audioLevel} />
           </BlurBackground>
         )}
       </MicSelectContent>
