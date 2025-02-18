@@ -25,4 +25,6 @@ const MainContent = styled.main`
   flex: 1;
   padding-top: 62px;
   overflow-x: hidden;
+
+  position: relative;
 `;
