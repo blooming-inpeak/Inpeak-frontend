@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { BeforeVideo } from './BeforeVideo';
+import { Buttons } from './Buttons';
 
 export const SessionContent = () => {
   return (
@@ -6,9 +8,13 @@ export const SessionContent = () => {
       <SessionContentNumber>1/3</SessionContentNumber>
       <SessionContentBody>
         <SessionContentAsk>
-          <img src="/images/Comment.svg" alt="comment" style={{ display: 'block', width: '100%', height: 'auto' }} />
+          <BackgroundImage src="/images/Comment.svg" alt="comment" />
           <SessionQuestion>사용자 중심 디자인에 대한 김인픽님의 접근 방식을 설명해 주시겠어요?</SessionQuestion>
         </SessionContentAsk>
+
+        <BeforeVideo />
+
+        <Buttons />
       </SessionContentBody>
     </SessionContentWrapper>
   );
@@ -55,27 +61,24 @@ export const SessionContentBody = styled.div`
 `;
 
 export const SessionContentAsk = styled.div`
-  position: relative;
-  display: inline-block;
-
-  height: fit-content;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* 내부 요소 배치용 */
 `;
 
-export const SessionQuestion = styled.div`
-  padding: 24px;
-  color: #212121;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: -0.4px;
-  text-align: center;
-
-  position: absolute;
-  top: 10%;
-  left: 0;
+export const BackgroundImage = styled.img`
   width: 100%;
-  max-width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1; /* 배경처럼 뒤로 보내기 */
+`;
 
-  display: flex;
-  box-sizing: border-box;
+export const SessionQuestion = styled.p`
+  padding: 24px;
+  text-align: center;
+  position: relative; /* 텍스트가 이미지 위에 오도록 설정 */
 `;
