@@ -48,7 +48,12 @@ export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVol
         <MicSelectButton onClick={() => setMicTest(true)}>마이크 테스트</MicSelectButton>
         {micTest && (
           <BlurBackground>
-            <MicTest volume={volume} handleVolumeChange={handleVolumeChange} audioLevel={audioLevel} />
+            <MicTest
+              volume={volume}
+              handleVolumeChange={handleVolumeChange}
+              audioLevel={audioLevel}
+              closeMicTest={() => setMicTest(false)}
+            />
           </BlurBackground>
         )}
       </MicSelectContent>

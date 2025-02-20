@@ -6,9 +6,10 @@ interface Props {
   volume: number;
   handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   audioLevel: number;
+  closeMicTest: () => void;
 }
 
-export const MicTest = ({ volume, handleVolumeChange, audioLevel }: Props) => {
+export const MicTest = ({ volume, handleVolumeChange, audioLevel, closeMicTest }: Props) => {
   return (
     <MicTestWrapper>
       <MicTestTitle>적정한 입력 레벨이 나올때까지 입력 볼륨을 조절해주세요</MicTestTitle>
@@ -21,7 +22,7 @@ export const MicTest = ({ volume, handleVolumeChange, audioLevel }: Props) => {
         입력 볼륨 <MicVolumeSlide volume={volume} handleVolumeChange={handleVolumeChange} />
       </MicTestVolume>
 
-      <MicTestComplete>완료</MicTestComplete>
+      <MicTestComplete onClick={closeMicTest}>완료</MicTestComplete>
     </MicTestWrapper>
   );
 };

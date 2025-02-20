@@ -1,11 +1,12 @@
 import { Ref } from 'react';
 import styled from 'styled-components';
+import { NoRecord } from './NoRecord';
 
 export const RecordTest = ({ isRecord, videoRef }: { isRecord: boolean; videoRef: Ref<HTMLVideoElement | null> }) => {
   return (
     <RecordTestWrapper>
       <RecordTestScreen>
-        {isRecord && (
+        {isRecord ? (
           <video
             ref={videoRef}
             autoPlay
@@ -14,6 +15,8 @@ export const RecordTest = ({ isRecord, videoRef }: { isRecord: boolean; videoRef
             height={'100%'}
             style={{ objectFit: 'cover', transform: 'scaleX(-1)' }}
           />
+        ) : (
+          <NoRecord />
         )}
       </RecordTestScreen>
       <RecordTestDescription>녹화화면 미리보기</RecordTestDescription>
