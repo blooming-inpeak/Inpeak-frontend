@@ -1,11 +1,25 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+import { BlurBackground } from '../common/background/BlurBackground';
+import { ExitInterview } from './ExitInterview';
 
 export const SessionTop = () => {
+  const [isClick, setIsClick] = useState(false);
   return (
     <SessionTopWrapper>
-      <img src="/images/Close_white.svg" alt="Close white" style={{ cursor: 'pointer' }} />
+      <img
+        src="/images/Close_white.svg"
+        alt="Close white"
+        style={{ cursor: 'pointer' }}
+        onClick={() => setIsClick(true)}
+      />
       <SessionTimer />
       <SessionTime>5m 00s</SessionTime>
+      {isClick && (
+        <BlurBackground>
+          <ExitInterview close={() => setIsClick(false)} />
+        </BlurBackground>
+      )}
     </SessionTopWrapper>
   );
 };
