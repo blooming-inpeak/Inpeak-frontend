@@ -3,6 +3,8 @@ import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
 import { Strict } from '../components/interview/Strict';
 import { AskHistory } from '../components/interview/AskHistory';
+import BackgroundImage from '../assets/img/background.svg';
+
 
 export const InterviewPage = () => {
   return (
@@ -12,13 +14,12 @@ export const InterviewPage = () => {
         <InterviewTopContent>
           <InterviewChance />
           <InterviewButton>
-            <div></div>
             <InterviewButtonTitle>모의면접 연습하기</InterviewButtonTitle>
             <img src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
           </InterviewButton>
         </InterviewTopContent>
       </InterviewTop>
-
+      
       <InterviewBottom>
         <InterviewBottomLeft>
           <Strict />
@@ -49,8 +50,7 @@ export const InterviewWrapper = styled.div`
     width: 100%;
     height: 544px;
     z-index: -1;
-
-    background-image: url('/images/Background.png');
+    background-image: url(${BackgroundImage});
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
