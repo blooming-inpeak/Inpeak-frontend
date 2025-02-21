@@ -1,17 +1,16 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
-interface RecordCheckToggleProps {
-  isRecord: boolean;
+interface Props {
+  Record: boolean;
+  setIsRecord: (check: boolean) => void;
 }
 
-export const RecordCheck = () => {
-  const [isRecord, setIsRecord] = useState<boolean>(false);
+export const RecordCheck = ({ Record, setIsRecord }: Props) => {
   return (
     <RecordCheckWrapper>
       <RecordCheckTitle>모의면접 영상 녹화</RecordCheckTitle>
-      <RecordCheckToggle isRecord={isRecord} onClick={() => setIsRecord(!isRecord)}>
-        <img src="/images/ToggleButton.svg" alt="toggle Button" />
+      <RecordCheckToggle $isRecord={Record} onClick={() => setIsRecord(!Record)}>
+        <RecordToggleIcon src="/images/ToggleButton.svg" alt="toggle Button" $isRecord={Record} />
       </RecordCheckToggle>
     </RecordCheckWrapper>
   );
@@ -32,22 +31,23 @@ export const RecordCheckTitle = styled.div`
   letter-spacing: -0.35px;
 `;
 
-export const RecordCheckToggle = styled.div<RecordCheckToggleProps>`
+export const RecordCheckToggle = styled.div.attrs<{ $isRecord: boolean }>(({ $isRecord }) => ({
+  style: { backgroundColor: $isRecord ? '#72a6ff' : '#e6efff' },
+}))`
   width: 32px;
   height: 18px;
   padding: 2px;
   border-radius: 100px;
   box-shadow: 0px 2px 4px 0px rgba(0, 80, 216, 0.08) inset;
 
-  background-color: ${props => (props.isRecord ? '#72A6FF' : '#e6efff')};
   position: relative;
   transition: all 0.3s ease-out;
+`;
 
-  img {
-    position: absolute;
-    bottom: -4px;
-
-    cursor: pointer;
-    ${props => (props.isRecord ? 'right : -1px' : 'left: -1px')}
-  }
+export const RecordToggleIcon = styled.img.attrs<{ $isRecord: boolean }>(({ $isRecord }) => ({
+  style: { [$isRecord ? 'right' : 'left']: '-1px' },
+}))`
+  position: absolute;
+  bottom: -4px;
+  cursor: pointer;
 `;
