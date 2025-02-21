@@ -4,10 +4,12 @@ import { MyStack } from './MyStack';
 import { RecordCheck } from './RecordCheck';
 import { RecordTest } from './RecordTest';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { currentMicState, isRecordingState } from '../../store/Record/Record';
 
 export const IntroTestTop = () => {
-  const [isRecord, setIsRecord] = useState<boolean>(true);
-  const [currentMic, setCurrentMic] = useState<string>('');
+  const [isRecord, setIsRecord] = useRecoilState(isRecordingState);
+  const [currentMic, setCurrentMic] = useRecoilState(currentMicState);
   const [micList, setMicList] = useState<MediaDeviceInfo[]>([]);
   const [volume, setVolume] = useState(1); //볼륨 상태 (0~1)
   const [audioLevel, setAudioLevel] = useState(0); // 마이크 입력 볼륨 표시용
