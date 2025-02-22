@@ -16,7 +16,6 @@ export const InterviewChanceWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   text-align: right;
-
   padding-right: 30px;
   border-radius: 12px;
   border: 1px solid #ffffff;
