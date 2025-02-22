@@ -4,6 +4,7 @@ import { InterviewChance } from '../components/interview/InterviewChance';
 import { Level } from '../components/interview/Level';
 import { AskHistory } from '../components/interview/AskHistory';
 import BackgroundImage from '../assets/img/background.svg';
+import AdImage from '../assets/img/LevelCharacter.svg';
 import { Link } from 'react-router-dom';
 
 export const InterviewPage = () => {
@@ -29,9 +30,10 @@ export const InterviewPage = () => {
       <InterviewBottom>
         <InterviewBottomLeft>
           <Level level={1} progress={60} remainingCount={13} />
-          <InterviewBottomAd></InterviewBottomAd>
+          <InterviewBottomAd>
+            <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
+          </InterviewBottomAd>
         </InterviewBottomLeft>
-
         <AskHistory />
       </InterviewBottom>
     </InterviewWrapper>
@@ -45,6 +47,7 @@ export const InterviewWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 16px;
+  position: relative;
 
   &::before {
     content: '';
@@ -56,6 +59,7 @@ export const InterviewWrapper = styled.div`
     z-index: -1;
     background-image: url(${BackgroundImage});
     background-position: center;
+    background-size: cover;
   }
 `;
 
@@ -151,5 +155,20 @@ export const InterviewBottomAd = styled.div`
   border: 1px solid #ffffff;
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
   backdrop-filter: blur(10px);
-  background-color: yellow;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+`;
+
+export const InterviewBottomAdImage = styled.img`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 24px;
+  display: block;
+  z-index: -1;
 `;

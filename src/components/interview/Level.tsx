@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import Level1Image from '../../assets/img/LevelCharacter.svg';
+import Level1Image from '../../assets/img/LevelCharacter.svg'; // 각 레벨에 맞는 이미지 넣기
 import Level2Image from '../../assets/img/LevelCharacter.svg';
 import LevelDefaultImage from '../../assets/img/LevelCharacter.svg';
 
 interface LevelProps {
   level: number;
-  progress: number; // 진행률 퍼센트 (예: 60)
-  remainingCount: number; // 다음 레벨까지 남은 문항 수
+  progress: number;
+  remainingCount: number;
 }
 
 interface ProgressBarFillProps {
@@ -15,7 +15,6 @@ interface ProgressBarFillProps {
 }
 
 export const Level: React.FC<LevelProps> = ({ level, progress, remainingCount }) => {
-  // level 값에 따라 다른 이미지를 선택합니다.
   let levelImageSrc: string;
   switch (level) {
     case 1:
