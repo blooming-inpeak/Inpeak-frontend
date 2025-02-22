@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
-import { Strict } from '../components/interview/Strict';
+import { Level } from '../components/interview/Level';
 import { AskHistory } from '../components/interview/AskHistory';
 import BackgroundImage from '../assets/img/background.svg';
 import { Link } from 'react-router-dom';
@@ -28,7 +28,7 @@ export const InterviewPage = () => {
 
       <InterviewBottom>
         <InterviewBottomLeft>
-          <Strict />
+          <Level level={1} progress={60} remainingCount={13} />
           <InterviewBottomAd></InterviewBottomAd>
         </InterviewBottomLeft>
 

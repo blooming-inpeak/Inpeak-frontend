@@ -24,18 +24,13 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
       <CorrectAnswerWrapper onlyAverage>
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
-          <OtherCorrectAnswerPercent
-            adjusted="small"
-            strokeGray
-            data-content={`${average}%`} // data-content를 stroke 및 fill 모두에서 사용
-          >
+          <OtherCorrectAnswerPercent adjusted="small" strokeGray data-content={`${average}%`}>
             {average}%
           </OtherCorrectAnswerPercent>
         </OtherCorrectAnswer>
       </CorrectAnswerWrapper>
     );
   } else if (cumulative < average) {
-    // 평균 정답률이 누적 정답률보다 클 때 -> heading prop을 전달하여 stroke 효과와 32px 크기 적용
     return (
       <CorrectAnswerWrapper>
         <MyCorrectAnswer>
@@ -49,12 +44,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
-          <OtherCorrectAnswerPercent
-            adjusted="small" // adjusted prop는 전달되지만 heading prop 오버라이드됨
-            heading // heading prop을 전달하여 stroke 효과 및 크기 강제 적용
-            isBlue
-            data-content={`${average}%`} // 가상 요소와 fill 모두에 동일 텍스트 전달
-          >
+          <OtherCorrectAnswerPercent adjusted="small" heading isBlue data-content={`${average}%`}>
             {average}%
           </OtherCorrectAnswerPercent>
         </OtherCorrectAnswer>
