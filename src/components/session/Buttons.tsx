@@ -1,13 +1,45 @@
 import styled from 'styled-components';
 
-export const Buttons = () => {
+interface Props {
+  start: boolean;
+  startRecording: () => void;
+  stopRecording: () => void;
+}
+
+export const Buttons = ({ start, startRecording, stopRecording }: Props) => {
   return (
-    <ButtonsWrapper>
-      <SkipButton>잘 모르겠어요</SkipButton>
-      <AnswerButton>답변시작</AnswerButton>
-    </ButtonsWrapper>
+    <>
+      {start ? (
+        <>
+          <StopButton onClick={stopRecording}>답변 끝내기</StopButton>
+        </>
+      ) : (
+        <ButtonsWrapper>
+          <SkipButton>잘 모르겠어요</SkipButton>
+          <AnswerButton onClick={startRecording}>답변시작</AnswerButton>
+        </ButtonsWrapper>
+      )}
+    </>
   );
 };
+
+export const StopButton = styled.div`
+  width: 291px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+
+  background-color: #202a43;
+  border-radius: 100px;
+  margin-top: 45px;
+  cursor: pointer;
+`;
 
 export const ButtonsWrapper = styled.div`
   width: 432px;

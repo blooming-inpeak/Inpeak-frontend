@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 
-export const BeforeVideo = () => {
+interface Props {
+  start: boolean;
+}
+
+export const BeforeVideo = ({ start }: Props) => {
   return (
     <BeforeVideoWrapper>
-      <video muted autoPlay loop style={{ width: '100%', height: '100%' }}>
-        <source src="/images/inpeak.mp4" type="video/mp4" />
+      <video key={start ? 'answerInpeak' : 'inpeak'} muted autoPlay loop style={{ width: '100%', height: '100%' }}>
+        <source src={`/images/${start ? 'answerInpeak' : 'inpeak'}.mp4`} type="video/mp4" />
       </video>
     </BeforeVideoWrapper>
   );
