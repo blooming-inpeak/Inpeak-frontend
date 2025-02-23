@@ -12,19 +12,18 @@ export const IntroTestTop = () => {
   const [currentMic, setCurrentMic] = useRecoilState(currentMicState);
   const [micList, setMicList] = useState<MediaDeviceInfo[]>([]);
   const [volume, setVolume] = useState(1); //볼륨 상태 (0~1)
-  const [audioLevel, setAudioLevel] = useState(0); // 마이크 입력 볼륨 표시용
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  console.log(currentMic);
+
   useEffect(() => {
-    console.log(audioLevel);
     // 연결된 마이크 장치 리스트
     const getDivices = async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      console.log(devices);
       const audioDevices = devices.filter((device, index) => index !== 0 && device.kind === 'audioinput');
       setMicList(audioDevices);
     };
@@ -84,9 +83,6 @@ export const IntroTestTop = () => {
 
         source.connect(gainNode);
         gainNode.connect(analyser);
-
-        // 마이크 볼륨 감지 함수 실행
-        detectVolume(analyser);
       } catch (error) {
         console.log(error);
       }
@@ -115,21 +111,6 @@ export const IntroTestTop = () => {
     }
   };
 
-  // 마이크 볼륨 감지
-  const detectVolume = (analyser: AnalyserNode) => {
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    const checkVolume = () => {
-      analyser.getByteFrequencyData(dataArray);
-      const avgVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
-      setAudioLevel(avgVolume);
-      requestAnimationFrame(checkVolume);
-    };
-
-    checkVolume();
-  };
-
   return (
     <IntroTestTopWrapper>
       <RecordTest isRecord={isRecord} videoRef={videoRef} />
@@ -141,7 +122,7 @@ export const IntroTestTop = () => {
         setCurrentMic={setCurrentMic}
         volume={volume}
         handleVolumeChange={handleVolumeChange}
-        audioLevel={audioLevel}
+        analyser={analyserRef.current}
       />
     </IntroTestTopWrapper>
   );

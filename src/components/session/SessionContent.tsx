@@ -1,8 +1,30 @@
 import styled from 'styled-components';
 import { BeforeVideo } from './BeforeVideo';
 import { Buttons } from './Buttons';
+import { currentMicState, isRecordingState } from '../../store/Record/Record';
+import { useRecoilState } from 'recoil';
+import { useRef } from 'react';
 
 export const SessionContent = () => {
+  const [isRecording, setIsRecording] = useRecoilState(isRecordingState);
+  const [currentMic, setCurrentMic] = useRecoilState(currentMicState);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // 녹화 시작
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: isRecording,
+        audio: {
+          deviceId: currentMic,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SessionContentWrapper>
       <SessionContentNumber>1/3</SessionContentNumber>
