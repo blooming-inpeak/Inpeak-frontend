@@ -46,16 +46,17 @@ export const InterviewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 16px;
+  padding: 80px 16px 0 16px;
+  margin-top: -80px;
   position: relative;
 
   &::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -80px;
     left: 0;
     width: 100%;
-    height: 544px;
+    height: calc(544px + 80px);
     z-index: -1;
     background-image: url(${BackgroundImage});
     background-position: center;
