@@ -2,14 +2,18 @@ import styled from 'styled-components';
 import { BeforeVideo } from './BeforeVideo';
 import { Buttons } from './Buttons';
 import { currentMicState, isRecordingState } from '../../store/Record/Record';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { useRef, useState } from 'react';
 import { AnswerVideo } from './AnswerVideo';
 
-export const SessionContent = () => {
-  const [isRecording, setIsRecording] = useRecoilState(isRecordingState);
-  const [start, setStart] = useState(false);
-  const [currentMic, setCurrentMic] = useRecoilState(currentMicState);
+interface Props {
+  start: boolean;
+  setStart: (check: boolean) => void;
+}
+
+export const SessionContent = ({ start, setStart }: Props) => {
+  const isRecording = useRecoilValue(isRecordingState);
+  const currentMic = useRecoilValue(currentMicState);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>(''); //녹화된 영상 URL 저장

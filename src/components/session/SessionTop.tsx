@@ -1,10 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ExitInterview } from './ExitInterview';
 
-export const SessionTop = () => {
+interface Props {
+  start: boolean;
+  setStart: (check: boolean) => void;
+}
+
+export const SessionTop = ({ start, setStart }: Props) => {
+  const [time, setTime] = useState(300);
   const [isClick, setIsClick] = useState(false);
+
+  useEffect(() => {
+    let interval: number | undefined = undefined;
+
+    if (start) {
+      interval = setInterval(() => {
+        setTime(prevTime => {
+          if (prevTime <= 0) {
+            clearInterval(interval); // 타이머 종료
+            setStart(false);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    } else {
+      setTime(300);
+    }
+
+    // 클린업 함수로 interval 해제
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [start]);
+
+  // 시간 포맷팅 함수
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}m ${secs < 10 ? '0' : ''}${secs}s`;
+  };
+
   return (
     <SessionTopWrapper>
       <img
@@ -13,8 +51,10 @@ export const SessionTop = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => setIsClick(true)}
       />
-      <SessionTimer />
-      <SessionTime>5m 00s</SessionTime>
+      <SessionTimer>
+        <PassingTime style={{ width: `${((300 - time) / 300) * 100}%` }} />
+      </SessionTimer>
+      <SessionTime>{formatTime(time)}</SessionTime>
       {isClick && (
         <BlurBackground>
           <ExitInterview close={() => setIsClick(false)} />
@@ -42,6 +82,13 @@ export const SessionTimer = styled.div`
   height: 10px;
   border-radius: 100px;
   background-color: #202a43;
+
+  overflow: hidden;
+`;
+
+export const PassingTime = styled.div`
+  height: 100%;
+  background-color: #85b2ff;
 `;
 
 export const SessionTime = styled.div`

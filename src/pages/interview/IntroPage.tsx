@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 import { IntroDescription } from '../../components/intro/IntroDescription';
 import { IntroTestTop } from '../../components/intro/IntroTestTop';
+import { useNavigate } from 'react-router-dom';
 
 export const IntroPage = () => {
+  const navigate = useNavigate();
+  const onClickStart = () => {
+    navigate('/interview/session');
+  };
   return (
     <IntroWrapper>
       <IntroBody>
@@ -11,7 +16,7 @@ export const IntroPage = () => {
         <IntroTest>
           <IntroTestTop />
           <IntroTestBottom>
-            <IntroStartButton>시작하기</IntroStartButton>
+            <IntroStartButton onClick={onClickStart}>시작하기</IntroStartButton>
           </IntroTestBottom>
         </IntroTest>
       </IntroBody>
