@@ -4,6 +4,7 @@ import { Buttons } from './Buttons';
 import { currentMicState, isRecordingState } from '../../store/Record/Record';
 import { useRecoilState } from 'recoil';
 import { useRef, useState } from 'react';
+import { AnswerVideo } from './AnswerVideo';
 
 export const SessionContent = () => {
   const [isRecording, setIsRecording] = useRecoilState(isRecordingState);
@@ -71,7 +72,7 @@ export const SessionContent = () => {
           <SessionQuestion>사용자 중심 디자인에 대한 김인픽님의 접근 방식을 설명해 주시겠어요?</SessionQuestion>
         </SessionContentAsk>
 
-        <BeforeVideo start={start} />
+        {start ? <AnswerVideo /> : <BeforeVideo />}
 
         <Buttons start={start} startRecording={startRecording} stopRecording={stopRecording} />
       </SessionContentBody>

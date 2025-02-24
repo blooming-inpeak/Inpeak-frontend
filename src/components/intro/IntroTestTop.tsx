@@ -56,7 +56,7 @@ export const IntroTestTop = () => {
 
         const audioTracks = newStream.getAudioTracks();
 
-        if (audioTracks.length > 0) {
+        if (audioTracks.length > 0 && !currentMic) {
           // 사용중인 마이크의 lable 가져오기
           setCurrentMic(audioTracks[0].label);
         }
