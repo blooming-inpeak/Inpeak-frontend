@@ -3,8 +3,13 @@ import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
 import { Strict } from '../components/interview/Strict';
 import { AskHistory } from '../components/interview/AskHistory';
+import { useNavigate } from 'react-router-dom';
 
 export const InterviewPage = () => {
+  const naviagte = useNavigate();
+  const onClickInterview = () => {
+    naviagte('/interview/intro');
+  };
   return (
     <InterviewWrapper>
       <InterviewTop>
@@ -13,7 +18,7 @@ export const InterviewPage = () => {
           <InterviewChance />
           <InterviewButton>
             <div></div>
-            <InterviewButtonTitle>모의면접 연습하기</InterviewButtonTitle>
+            <InterviewButtonTitle onClick={onClickInterview}>모의면접 연습하기</InterviewButtonTitle>
             <img src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
           </InterviewButton>
         </InterviewTopContent>

@@ -16,7 +16,7 @@ import {
 } from './MyPageBottomStyle';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { WithdrawalModal } from './WithdrawalModal';
-import { SelectStack } from '../selectStack/SelectStack';
+import { SelectStack } from '../common/selectStack/SelectStack';
 
 export const MyPageBottom = () => {
   const [isWithdrawal, setIsWithdrawal] = useState(false);
