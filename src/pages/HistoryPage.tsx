@@ -1,16 +1,18 @@
 import styled from 'styled-components';
 import { HistoryStatistics } from '../components/History/HistoryStatistics';
+import HistoryCalender from '../components/History/HistoryCalender';
+import AnswerList from '../components/History/HistoryInterviewList';
 
 export const HistoryPage = () => {
   return (
     <HistoryWrapper>
       <HistoryTop>
         <HistoryStatistics />
-        <HistoryCalander></HistoryCalander>
+        <HistoryCalender />
       </HistoryTop>
       <HistoryBackground>
         <HistoryBody>
-          <HistoryResponse></HistoryResponse>
+          <AnswerList />
           <HistoryIncorrect></HistoryIncorrect>
         </HistoryBody>
       </HistoryBackground>
@@ -38,18 +40,6 @@ const HistoryTop = styled.div`
   margin-top: 58px;
 `;
 
-const HistoryCalander = styled.div`
-  width: 553px;
-  height: 321px;
-  border-radius: 24px;
-  background: #fff;
-  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
-    0px 0px 100px 0px rgba(0, 80, 216, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const HistoryBackground = styled.div`
   background: #e6efff;
   width: 100%;
@@ -69,16 +59,6 @@ const HistoryBody = styled.div`
   display: flex;
   gap: 23px;
   margin-top: 32px;
-`;
-
-const HistoryResponse = styled.div`
-  display: flex;
-  width: 348px;
-  height: 800px;
-  flex-direction: column;
-  border-radius: 24px;
-  border: 1px solid #fff;
-  background: #f5f9ff;
 `;
 
 const HistoryIncorrect = styled.div`

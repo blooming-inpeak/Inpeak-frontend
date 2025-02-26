@@ -179,7 +179,7 @@ const Arc = styled.circle.attrs((props: Partial<ArcProps>) => ({
 }))<ArcProps>``;
 
 const LabelCircle = styled.circle`
-  fill: var(--text-1700, #fff);
+  fill: #fff;
   filter: url(#dropShadow);
 `;
 
