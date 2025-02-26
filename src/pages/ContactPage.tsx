@@ -49,24 +49,35 @@ const Divider = styled.div`
 
 const EmailSection = styled.div`
   margin-top: 110px;
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 
-const EmailTitle = styled.p`
-  font-size: 16px;
+const EmailTitle = styled.div`
+  font-size: 14px;
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.4px;
   margin: 0 0 8px 0;
-  text-align: right;
+  color: #4386f8;
 `;
 
-const EmailAddress = styled.p`
-  font-size: 16px;
+const EmailAddress = styled.div`
+  font-size: 14px;
   font-weight: 400;
   line-height: 150%;
   margin: 0;
-  text-align: right;
+  display: flex;
+  padding: 6px 18px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 100px;
+  background: var(--brand-main, #3277ed);
+  color: white;
+  width: 94px;
+  height: 24px;
 `;
 
 export const ContactPage = () => {
@@ -93,8 +104,8 @@ export const ContactPage = () => {
       </QuestionSection>
 
       <EmailSection>
-        <EmailTitle>이메일로 문의하기</EmailTitle>
-        <EmailAddress>(inpeak@email.com)</EmailAddress>
+        <EmailTitle>구글폼으로 이동합니다</EmailTitle>
+        <EmailAddress>직접 문의하기</EmailAddress>
       </EmailSection>
     </Container>
   );
