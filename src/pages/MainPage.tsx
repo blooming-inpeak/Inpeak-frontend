@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 import { MainIntro } from '../components/mainpage/intro/MainIntro';
 import { MainInterest } from '../components/mainpage/interest/MainInterest';
+import { MainInterview } from '../components/mainpage/interview/MainInterview';
 
 export const MainPage = () => {
   return (
     <MainPageWrapper>
       <MainIntro />
       <MainInterest />
+      <MainInterview />
       <MainPageDottedLine src="/images/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );
