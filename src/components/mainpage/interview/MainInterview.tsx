@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const MainInterview = () => {
   return (
     <MainInterviewWrapper>
-      <MainInterviewImage src="/images/MainInterviewImg.svg" alt="Main Interview Image" />
+      <MainInterviewImage src="/images/mainpage/MainInterviewImg.svg" alt="Main Interview Image" />
 
       <MainInterviewContent>
         <MainInterviewTitle>모의면접 연습하기</MainInterviewTitle>

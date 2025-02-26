@@ -11,7 +11,7 @@ export const MainPage = () => {
       <MainInterest />
       <MainInterview />
       <MainFeedback />
-      <MainPageDottedLine src="/images/Dotted_line.svg" alt="dotted line" />
+      <MainPageDottedLine src="/images/mainpage/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );
 };

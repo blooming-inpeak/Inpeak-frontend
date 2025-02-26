@@ -10,8 +10,8 @@ export const MainFeedback = () => {
         </FeedbackSubTitle>
       </FeedbackContent>
 
-      <FeedbackImg src="/images/MainFeedbackImg.svg" alt="feedback Img" />
-      <FeedbackInpeak src="/images/MainInpeak.svg" alt="main inpeak" />
+      <FeedbackImg src="/images/mainpage/MainFeedbackImg.svg" alt="feedback Img" />
+      <FeedbackInpeak src="/images/mainpage/MainInpeak.svg" alt="main inpeak" />
     </FeedbackWrapper>
   );
 };

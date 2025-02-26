@@ -11,7 +11,7 @@ export const MainInterest = () => {
           맞춤형 질문으로 효율적이게
         </MainInterestSubTitle>
 
-        <MainInterestImage src="/images/MainInterest.svg" />
+        <MainInterestImage src="/images/mainpage/MainInterest.svg" />
       </MainInterestCard>
     </MainInterestWrapper>
   );
