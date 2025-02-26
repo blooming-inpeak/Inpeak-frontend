@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { MainIntro } from '../components/mainpage/intro/MainIntro';
 import { MainInterest } from '../components/mainpage/interest/MainInterest';
 import { MainInterview } from '../components/mainpage/interview/MainInterview';
+import { MainFeedback } from '../components/mainpage/feedback/MainFeedback';
 
 export const MainPage = () => {
   return (
@@ -9,6 +10,7 @@ export const MainPage = () => {
       <MainIntro />
       <MainInterest />
       <MainInterview />
+      <MainFeedback />
       <MainPageDottedLine src="/images/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );

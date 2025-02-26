@@ -25,6 +25,8 @@ export const MainInterviewWrapper = styled.div`
   justify-content: center;
   gap: 80px;
 
+  margin-bottom: 24px;
+
   background-color: #202a43;
   z-index: 1;
 `;

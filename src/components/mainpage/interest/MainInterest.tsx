@@ -35,9 +35,10 @@ export const MainInterestCard = styled.div`
   padding: 24px 40px;
 
   border-radius: 24px;
-  background-color: #ffffff;
+  background: rgba(255, 255, 255, 0.5);
 
-  box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
+  box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04), 0px 0px 32px 0px rgba(0, 80, 216, 0.04),
+    0px 16px 8px 0px rgba(50, 59, 84, 0.08);
   backdrop-filter: blur(10px);
 
   overflow: hidden;
