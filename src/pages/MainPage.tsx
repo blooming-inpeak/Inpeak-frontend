@@ -13,7 +13,10 @@ export const MainPageWrapper = styled.div`
   height: auto;
   width: 100vw;
   overflow: scroll;
+  position: absolute;
+  top: 0;
 
   display: flex;
   flex-direction: column;
+  background-color: #fafafa;
 `;

@@ -28,6 +28,8 @@ export const MainIntroTopWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  margin-top: 65px;
 `;
 
 export const MainIntroTopBox = styled.div`
@@ -75,6 +77,8 @@ export const MainIntroTopButton = styled.div`
 
   border-radius: 100px;
   background-color: #202a43;
+
+  cursor: pointer;
 `;
 
 export const MainIntroTopButtonText = styled.div`

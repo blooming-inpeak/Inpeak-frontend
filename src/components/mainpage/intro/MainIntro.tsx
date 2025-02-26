@@ -1,19 +1,22 @@
 import styled from 'styled-components';
 import { MainIntroTop } from './MainIntroTop';
+import { MainIntroBody } from './MainIntroBody';
 
 export const MainIntro = () => {
   return (
     <MainIntroWrapper>
       <MainIntroTop />
+      <MainIntroBody />
     </MainIntroWrapper>
   );
 };
 
 export const MainIntroWrapper = styled.div`
   width: 100%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   background: radial-gradient(
     47.07% 29.79% at 50% 50%,
