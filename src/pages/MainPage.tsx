@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import { MainIntro } from '../components/mainpage/intro/MainIntro';
+import { MainInterest } from '../components/mainpage/interest/MainInterest';
 
 export const MainPage = () => {
   return (
     <MainPageWrapper>
       <MainIntro />
+      <MainInterest />
+      <MainPageDottedLine src="/images/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );
 };
@@ -19,4 +22,13 @@ export const MainPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #fafafa;
+`;
+
+export const MainPageDottedLine = styled.img`
+  width: 123px;
+  height: 3526px;
+
+  position: absolute;
+  left: 898.5px;
+  top: 1224px;
 `;

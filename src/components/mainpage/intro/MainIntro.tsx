@@ -18,6 +18,10 @@ export const MainIntroWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
+  padding-bottom: 40px;
+
+  z-index: 1;
+
   background: radial-gradient(
     47.07% 29.79% at 50% 50%,
     rgba(133, 178, 255, 0.8) 0%,
