@@ -3,6 +3,8 @@ import { MainIntro } from '../components/mainpage/intro/MainIntro';
 import { MainInterest } from '../components/mainpage/interest/MainInterest';
 import { MainInterview } from '../components/mainpage/interview/MainInterview';
 import { MainFeedback } from '../components/mainpage/feedback/MainFeedback';
+import { MainHistory } from '../components/mainpage/history/MainHistory';
+import { MainInterviewStart } from '../components/mainpage/interviewStart/MainInterviewStart';
 
 export const MainPage = () => {
   return (
@@ -11,6 +13,8 @@ export const MainPage = () => {
       <MainInterest />
       <MainInterview />
       <MainFeedback />
+      <MainHistory />
+      <MainInterviewStart />
       <MainPageDottedLine src="/images/mainpage/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );
