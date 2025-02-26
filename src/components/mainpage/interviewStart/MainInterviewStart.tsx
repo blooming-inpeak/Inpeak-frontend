@@ -50,6 +50,7 @@ export const StartButton = styled.div`
   border-radius: 100px;
 
   gap: 4px;
+  cursor: pointer;
 `;
 
 export const StartButtonText = styled.div`

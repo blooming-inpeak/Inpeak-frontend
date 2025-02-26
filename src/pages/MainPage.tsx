@@ -5,6 +5,7 @@ import { MainInterview } from '../components/mainpage/interview/MainInterview';
 import { MainFeedback } from '../components/mainpage/feedback/MainFeedback';
 import { MainHistory } from '../components/mainpage/history/MainHistory';
 import { MainInterviewStart } from '../components/mainpage/interviewStart/MainInterviewStart';
+import { MainHelp } from '../components/mainpage/help/MainHelp';
 
 export const MainPage = () => {
   return (
@@ -15,6 +16,7 @@ export const MainPage = () => {
       <MainFeedback />
       <MainHistory />
       <MainInterviewStart />
+      <MainHelp />
       <MainPageDottedLine src="/images/mainpage/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );
