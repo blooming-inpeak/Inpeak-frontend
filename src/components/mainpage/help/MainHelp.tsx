@@ -3,6 +3,8 @@ import styled from 'styled-components';
 export const MainHelp = () => {
   return (
     <MainHelpWrapper>
+      <MainHelpImg src="/images/mainpage/HelpImg.svg" alt="help image" />
+
       <MainHelpContent>
         <MainHelpTitle>사용중 불편함을 느끼셨나요?</MainHelpTitle>
         <MainHelpSubTitle>
@@ -10,8 +12,6 @@ export const MainHelp = () => {
         </MainHelpSubTitle>
         <MainHelpButton>접수하기</MainHelpButton>
       </MainHelpContent>
-
-      <MainHelpImg></MainHelpImg>
     </MainHelpWrapper>
   );
 };
@@ -28,7 +28,7 @@ export const MainHelpWrapper = styled.div`
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
   backdrop-filter: blur(10px);
 
-  gap: 24px;
+  gap: 40px;
 `;
 
 export const MainHelpContent = styled.div`
@@ -73,7 +73,7 @@ export const MainHelpButton = styled.div`
   cursor: pointer;
 `;
 
-export const MainHelpImg = styled.div`
+export const MainHelpImg = styled.img`
   width: 300px;
   height: 300px;
 `;

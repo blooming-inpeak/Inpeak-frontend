@@ -3,16 +3,18 @@ import styled from 'styled-components';
 export const MainInterviewStart = () => {
   return (
     <MainInterviewStartWrapper>
-      <MainInterviewStartContent>
-        기술면접 AI통해 피드백 받고
-        <br />
-        취업까지 10발자국 다가가자
-      </MainInterviewStartContent>
+      <MainInterviewStartContainer>
+        <MainInterviewStartContent>
+          기술면접 AI통해 피드백 받고
+          <br />
+          취업까지 10발자국 다가가자
+        </MainInterviewStartContent>
 
-      <StartButton>
-        <StartButtonText>모의면접 바로시작</StartButtonText>
-        <StartButtonImg src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
-      </StartButton>
+        <StartButton>
+          <StartButtonText>모의면접 바로시작</StartButtonText>
+          <StartButtonImg src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
+        </StartButton>
+      </MainInterviewStartContainer>
     </MainInterviewStartWrapper>
   );
 };
@@ -25,7 +27,18 @@ export const MainInterviewStartWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
+  background-color: #ffffff;
+
   gap: 67.5px;
+`;
+
+export const MainInterviewStartContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 1080px;
+  padding: 0 24px;
 `;
 
 export const MainInterviewStartContent = styled.div`

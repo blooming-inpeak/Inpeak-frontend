@@ -36,9 +36,9 @@ export const MainPageWrapper = styled.div`
 
 export const MainPageDottedLine = styled.img`
   width: 123px;
-  height: 3526px;
+  height: 3000px;
 
   position: absolute;
   left: 898.5px;
-  top: 1224px;
+  top: 1700px;
 `;
