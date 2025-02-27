@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { HistoryStatistics } from '../components/History/HistoryStatistics';
 import HistoryCalender from '../components/History/HistoryCalender';
 import AnswerList from '../components/History/HistoryInterviewList';
+import HistoryIncorrect from '../components/History/HistoryIncorrect';
 
 export const HistoryPage = () => {
   return (
@@ -13,7 +14,7 @@ export const HistoryPage = () => {
       <HistoryBackground>
         <HistoryBody>
           <AnswerList />
-          <HistoryIncorrect></HistoryIncorrect>
+          <HistoryIncorrect />
         </HistoryBody>
       </HistoryBackground>
     </HistoryWrapper>
@@ -59,14 +60,4 @@ const HistoryBody = styled.div`
   display: flex;
   gap: 23px;
   margin-top: 32px;
-`;
-
-const HistoryIncorrect = styled.div`
-  display: flex;
-  width: 636px;
-  height: 800px;
-  flex-direction: column;
-  border-radius: 24px;
-  border: 1px solid #fff;
-  background: #f5f9ff;
 `;

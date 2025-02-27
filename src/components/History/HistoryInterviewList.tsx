@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { SortDropdown } from '../common/dropdownlist/DropdownList';
-import { MultiCaption } from '../common/caption/Caption';
+import HistoryCard from './HistoryCard';
 
 interface AnswerData {
   id: number;
@@ -60,17 +60,7 @@ const AnswerList: React.FC = () => {
       </Header>
       <ScrollContainer>
         {answers.map(answer => (
-          <Card key={answer.id}>
-            <DateText>{answer.date}</DateText>
-            <ContentText>{answer.content}</ContentText>
-            <BottomBox>
-              <TimeText>{answer.time}</TimeText>
-              <ButtonGroup>
-                <MultiCaption type={'오답-top'} />
-                <MultiCaption type={'이해완료'} />
-              </ButtonGroup>
-            </BottomBox>
-          </Card>
+          <HistoryCard key={answer.id} answer={answer} />
         ))}
       </ScrollContainer>
     </Container>
@@ -122,52 +112,4 @@ const ScrollContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-
-const Card = styled.div`
-  width: 264px;
-  height: 154px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-  padding: 20px 30px 20px 30px;
-  background-color: #ffffff;
-  border-radius: 16px;
-`;
-
-const DateText = styled.div`
-  color: #747474;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-  margin-bottom: 12px;
-`;
-
-const ContentText = styled.div`
-  overflow: hidden;
-  color: #000;
-  text-overflow: ellipsis;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-  margin-bottom: 8px;
-`;
-
-const BottomBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const TimeText = styled.div`
-  color: #afafaf;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 4px;
 `;
