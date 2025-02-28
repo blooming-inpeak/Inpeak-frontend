@@ -50,7 +50,7 @@ export const SessionWrapper = styled.div`
 
 export const SessionBody = styled.div`
   width: 600px;
-  height: 600px;
+  min-height: 600px;
   border-radius: 24px;
 
   display: flex;
