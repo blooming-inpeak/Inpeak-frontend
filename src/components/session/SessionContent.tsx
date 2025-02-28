@@ -5,6 +5,7 @@ import { currentMicState, isRecordingState } from '../../store/Record/Record';
 import { useRecoilValue } from 'recoil';
 import { useRef, useState } from 'react';
 import { AnswerVideo } from './AnswerVideo';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   start: boolean;
@@ -18,6 +19,11 @@ export const SessionContent = ({ start, setStart }: Props) => {
   const streamRef = useRef<MediaStream | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>(''); //녹화된 영상 URL 저장
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null); //녹화된 Blob 저장
+  const [currentPage, setCurrentPage] = useState(1);
+  const [page, setPage] = useState(3);
+  const lastQuestion = page === currentPage;
+
+  const navigate = useNavigate();
 
   // 녹화 시작
   const startRecording = async () => {
@@ -64,12 +70,20 @@ export const SessionContent = ({ start, setStart }: Props) => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
     }
-    setStart(false);
+
+    if (lastQuestion) {
+      navigate('/interview/result');
+    } else {
+      setCurrentPage(currentPage + 1);
+      setStart(false);
+    }
   };
 
   return (
     <SessionContentWrapper>
-      <SessionContentNumber>1/3</SessionContentNumber>
+      <SessionContentNumber>
+        {currentPage}/{page}
+      </SessionContentNumber>
       <SessionContentBody>
         <SessionContentAsk>
           <BackgroundImage src="/images/Comment.svg" alt="comment" />
@@ -78,7 +92,13 @@ export const SessionContent = ({ start, setStart }: Props) => {
 
         {start ? <AnswerVideo /> : <BeforeVideo />}
 
-        <Buttons start={start} startRecording={startRecording} stopRecording={stopRecording} />
+        <Buttons
+          start={start}
+          startRecording={startRecording}
+          stopRecording={stopRecording}
+          nextPage={() => setCurrentPage(currentPage + 1)}
+          lastQuestion={lastQuestion}
+        />
       </SessionContentBody>
     </SessionContentWrapper>
   );
