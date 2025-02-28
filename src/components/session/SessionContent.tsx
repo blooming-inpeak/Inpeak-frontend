@@ -81,9 +81,18 @@ export const SessionContent = ({ start, setStart }: Props) => {
 
   return (
     <SessionContentWrapper>
-      <SessionContentNumber>
-        {currentPage}/{page}
-      </SessionContentNumber>
+      <SessionContentTop>
+        <SessionContentNumber>
+          {currentPage}/{page}
+        </SessionContentNumber>
+
+        {start && (
+          <Record $isRecord={isRecording}>
+            <RecordContent $isRecord={isRecording}>{isRecording ? 'ON' : 'OFF'}</RecordContent>
+          </Record>
+        )}
+      </SessionContentTop>
+
       <SessionContentBody>
         <SessionContentAsk>
           <BackgroundImage src="/images/Comment.svg" alt="comment" />
@@ -113,6 +122,15 @@ export const SessionContentWrapper = styled.div`
   flex-direction: column;
 `;
 
+export const SessionContentTop = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin-top: 19.74px;
+  padding: 0 16.13px;
+`;
+
 export const SessionContentNumber = styled.div`
   width: 32.3px;
   height: 32.3px;
@@ -132,6 +150,30 @@ export const SessionContentNumber = styled.div`
 
   margin-top: 19.74px;
   margin-left: 16.13px;
+`;
+
+export const Record = styled.div<{ $isRecord: boolean }>`
+  width: 22px;
+  height: 18px;
+  padding: 5px 3px;
+  border-radius: 5px;
+  background-color: ${({ $isRecord }) => ($isRecord ? '#f84883' : '#888')};
+`;
+
+export const RecordContent = styled.div<{ $isRecord: boolean }>`
+  width: 22px;
+  height: 18px;
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: center;
+
+  color: #ffffff;
+  font-size: ${({ $isRecord }) => ($isRecord ? '11px' : '9px')};
+  font-weight: 700;
+  letter-spacing: ${({ $isRecord }) => ($isRecord ? '-0.275px' : '-0.225px')};
 `;
 
 export const SessionContentBody = styled.div`
