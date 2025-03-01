@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
+import ResultPostImg from '../../assets/img/ResultPost.svg';
 
 type ResultDataType = {
   question: string;
@@ -17,6 +19,8 @@ type ResultItemProps = {
 export const ResultPage: React.FC = () => {
   const [resultData, setResultData] = useState<ResultDataType[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,6 +64,13 @@ export const ResultPage: React.FC = () => {
     setTotalTime(calculateTotalTime());
   }, [resultData]);
 
+  const handleFeedbackClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate('/interview');
+    }, 5000);
+  };
+
   return (
     <>
       <ResultPageWrapper>
@@ -85,11 +96,19 @@ export const ResultPage: React.FC = () => {
                   </React.Fragment>
                 ))}
               </ResultList>
-              <ResultFeedbackButton>AI 피드백 받기</ResultFeedbackButton>
+              <ResultFeedbackButton onClick={handleFeedbackClick}>AI 피드백 받기</ResultFeedbackButton>
             </ResultmainBottom>
           </ResultMain>
         </ResultPageContainer>
       </ResultPageWrapper>
+      {isLoading && (
+        <Overlay>
+          <img src={ResultPostImg} alt="결과 전송 이미지" />
+          <ProgressBarContainer>
+            <ProgressBar />
+          </ProgressBarContainer>
+        </Overlay>
+      )}
     </>
   );
 };
@@ -269,5 +288,44 @@ const ResultFeedbackButton = styled.button`
 
   &:hover {
     background: rgb(13, 17, 27);
+  }
+`;
+
+const Overlay = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  gap: 42.5px;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 470px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+const ProgressBar = styled.div`
+  background: #85b2ff;
+  height: 100%;
+  animation: progressAnimation 5s linear forwards;
+
+  @keyframes progressAnimation {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
   }
 `;
