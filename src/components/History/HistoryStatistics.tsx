@@ -13,13 +13,13 @@ export const HistoryStatistics = () => {
   const totalQuestions = 30;
   const totalPracticeCount = '10번';
 
-  const correctCount = 21;
-  const wrongCount = 3;
-  const giveUpCount = 6;
+  const correctCount = 6;
+  const wrongCount = 21;
+  const giveUpCount = 3;
 
-  const correctPercentage = (correctCount / totalQuestions) * 100;
-  const giveUpPercentage = (giveUpCount / totalQuestions) * 100;
-  const wrongPercentage = (wrongCount / totalQuestions) * 100;
+  const correctPercentage = Math.round((correctCount / totalQuestions) * 100);
+  const giveUpPercentage = Math.round((giveUpCount / totalQuestions) * 100);
+  const wrongPercentage = Math.round((wrongCount / totalQuestions) * 100);
 
   return (
     <HistoryStatisticsBox>
