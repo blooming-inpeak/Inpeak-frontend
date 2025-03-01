@@ -16,7 +16,7 @@ type ResultItemProps = {
   item: ResultDataType;
 };
 
-export const ResultPage: React.FC = () => {
+export const ProgessResultPage: React.FC = () => {
   const [resultData, setResultData] = useState<ResultDataType[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -63,7 +63,7 @@ export const ResultPage: React.FC = () => {
 
     setTotalTime(calculateTotalTime());
   }, [resultData]);
-
+  // 페이지 이동 임의 설정
   const handleFeedbackClick = () => {
     setIsLoading(true);
     setTimeout(() => {
