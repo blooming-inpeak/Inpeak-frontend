@@ -68,6 +68,24 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
         </OtherCorrectAnswer>
       </CorrectAnswerWrapper>
     );
+  } else if (cumulative === average) {
+    return (
+      <CorrectAnswerWrapper>
+        <MyCorrectAnswer>
+          <MyCorrectAnswerTitle>누적 정답률</MyCorrectAnswerTitle>
+          <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
+        </MyCorrectAnswer>
+
+        <img src="/src/assets/img/AnswersignEqual.svg" alt="Sign" />
+
+        <OtherCorrectAnswer>
+          <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
+          <OtherCorrectAnswerPercent adjusted="small" strokeGray data-content={`${average}%`}>
+            {average}%
+          </OtherCorrectAnswerPercent>
+        </OtherCorrectAnswer>
+      </CorrectAnswerWrapper>
+    );
   } else {
     return (
       <CorrectAnswerWrapper>

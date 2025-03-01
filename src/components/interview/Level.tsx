@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Level1Image from '../../assets/img/LevelCharacter.svg'; // 각 레벨에 맞는 이미지 넣기
-import Level2Image from '../../assets/img/LevelCharacter.svg';
-import LevelDefaultImage from '../../assets/img/LevelCharacter.svg';
+import InterviewStatistics from './InterviewStatistics';
 
 interface LevelProps {
   level: number;
@@ -14,24 +12,27 @@ interface ProgressBarFillProps {
   width: string;
 }
 
+const totalPracticeTime = '01시간 35분';
+const totalQuestions = 30;
+const totalPracticeCount = '10번';
+const correctCount = 21;
+const wrongCount = 3;
+const giveUpCount = 6;
+
 export const Level: React.FC<LevelProps> = ({ level, progress, remainingCount }) => {
-  let levelImageSrc: string;
-  switch (level) {
-    case 1:
-      levelImageSrc = Level1Image;
-      break;
-    case 2:
-      levelImageSrc = Level2Image;
-      break;
-    default:
-      levelImageSrc = LevelDefaultImage;
-  }
   return (
     <LevelWrapper>
       <LevelLeft>
-        <LevelImageBox>
-          <img src={levelImageSrc} alt={`Level ${level}`} />
-        </LevelImageBox>
+        <LevelStatisticsBox>
+          <InterviewStatistics
+            totalPracticeTime={totalPracticeTime}
+            totalQuestions={totalQuestions}
+            totalPracticeCount={totalPracticeCount}
+            correctCount={correctCount}
+            wrongCount={wrongCount}
+            giveUpCount={giveUpCount}
+          />
+        </LevelStatisticsBox>
       </LevelLeft>
       <LevelRight>
         <LevelContent>
@@ -66,17 +67,10 @@ export const LevelLeft = styled.div`
   align-items: center;
 `;
 
-export const LevelImageBox = styled.div`
+export const LevelStatisticsBox = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-
-  img {
-    max-width: 100%;
-    max-height: 100%;
-  }
 `;
 
 export const LevelRight = styled.div`
@@ -88,7 +82,8 @@ export const LevelRight = styled.div`
   box-sizing: border-box;
   padding-left: 30px;
   border-radius: 24px;
-  background: var(--brand-lighter, #85b2ff);
+  background: rgba(133, 178, 255, 0.4);
+  backdrop-filter: blur(40px);
 `;
 
 export const LevelContent = styled.div`

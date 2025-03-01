@@ -12,7 +12,7 @@ export const InterviewPage = () => {
     <InterviewWrapper>
       <InterviewTop>
         <div id="bannerTop">
-          <CorrectAnswer cumulative={70} average={65} />
+          <CorrectAnswer cumulative={80} average={70} />
           <InterviewChance />
         </div>
         <div id="bannerBottom">
