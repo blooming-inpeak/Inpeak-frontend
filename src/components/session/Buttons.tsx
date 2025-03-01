@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { PassQuestion } from '../../api/question/question';
 
 interface Props {
   start: boolean;
@@ -11,7 +12,10 @@ interface Props {
 
 export const Buttons = ({ start, startRecording, stopRecording, nextPage, lastQuestion }: Props) => {
   const navigate = useNavigate();
-  const onPassQuestion = () => {
+
+  const onPassQuestion = async () => {
+    const data = await PassQuestion();
+    console.log(data);
     if (lastQuestion) {
       navigate('/interview/result');
     } else {
