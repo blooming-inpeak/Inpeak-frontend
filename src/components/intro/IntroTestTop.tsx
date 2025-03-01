@@ -18,8 +18,6 @@ export const IntroTestTop = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  console.log(currentMic);
-
   useEffect(() => {
     // 연결된 마이크 장치 리스트
     const getDivices = async () => {
@@ -31,25 +29,12 @@ export const IntroTestTop = () => {
     // 웹캠과 마이크 권한 요청
     const getMedia = async () => {
       try {
-        let constraints: MediaStreamConstraints;
-
-        if (isRecord) {
-          // isRecord가 true일 때 비디오와 오디오 모두 활성화
-          constraints = {
-            video: true,
-            audio: {
-              deviceId: currentMic,
-            },
-          };
-        } else {
-          // isRecord가 false일 때 비디오를 비활성화하고 오디오만 활성화
-          constraints = {
-            video: false,
-            audio: {
-              deviceId: currentMic,
-            },
-          };
-        }
+        const constraints: MediaStreamConstraints = {
+          video: isRecord,
+          audio: {
+            deviceId: currentMic || undefined,
+          },
+        };
 
         const newStream = await navigator.mediaDevices.getUserMedia(constraints);
         streamRef.current = newStream;
