@@ -1,9 +1,44 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { FilterDropdown } from '../common/Filter/FilterDropdown';
 
 interface HistoryListProps {
   type: 'wrong' | 'answered';
 }
+
+const Filters = ({
+  filter,
+  setFilter,
+  sortOrder,
+  setSortOrder,
+}: {
+  filter: 'ALL' | 'INCORRECT' | 'SKIPPED';
+  setFilter: (value: 'ALL' | 'INCORRECT' | 'SKIPPED') => void;
+  sortOrder: 'DESC' | 'ASC';
+  setSortOrder: (value: 'DESC' | 'ASC') => void;
+}) => {
+  return (
+    <FiltersContainer>
+      <FilterDropdown
+        options={['최신순', '오래된 순']}
+        value={sortOrder === 'DESC' ? '최신순' : '오래된 순'}
+        onChange={value => setSortOrder(value === '최신순' ? 'DESC' : 'ASC')}
+        label="최신순"
+      />
+      <FilterDropdown
+        options={['전체보기', '오답', '포기']}
+        value={filter === 'ALL' ? '전체보기' : filter === 'INCORRECT' ? '오답' : '포기'}
+        onChange={value => setFilter(value === '전체보기' ? 'ALL' : value === '오답' ? 'INCORRECT' : 'SKIPPED')}
+        label="전체보기"
+      />
+    </FiltersContainer>
+  );
+};
+
+const FiltersContainer = styled.div`
+  display: flex;
+  gap: 8px;
+`;
 
 export const HistoryList = ({ type }: HistoryListProps) => {
   const [sortOrder, setSortOrder] = useState<'DESC' | 'ASC'>('DESC');
@@ -38,25 +73,7 @@ export const HistoryList = ({ type }: HistoryListProps) => {
     <Container type={type}>
       <Header>
         <TitleBox type={type}>{type === 'wrong' ? '오답노트' : '답변완료'}</TitleBox>
-        <Filters>
-          <Dropdown value={sortOrder} onChange={e => setSortOrder(e.target.value as 'DESC' | 'ASC')}>
-            <option value="DESC">최신순</option>
-            <option value="ASC">오래된 순</option>
-          </Dropdown>
-          {type === 'wrong' ? (
-            <Dropdown value={filter} onChange={e => setFilter(e.target.value as 'ALL' | 'INCORRECT' | 'SKIPPED')}>
-              <option value="ALL">전체보기</option>
-              <option value="INCORRECT">오답</option>
-              <option value="SKIPPED">포기</option>
-            </Dropdown>
-          ) : (
-            <Dropdown value={filter} onChange={e => setFilter(e.target.value as 'ALL' | 'INCORRECT' | 'SKIPPED')}>
-              <option value="ALL">전체보기</option>
-              <option value="INCORRECT">오답</option>
-              <option value="SKIPPED">포기</option>
-            </Dropdown>
-          )}
-        </Filters>
+        <Filters filter={filter} setFilter={setFilter} sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </Header>
       <ListContainer type={type}>
         {sortedNotes.map((note, index) => (
@@ -78,20 +95,6 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-const Filters = styled.div`
-  display: flex;
-  gap: 4px;
-`;
-
-const Dropdown = styled.select`
-  width: 80px;
-  height: 26px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  padding: 2px 4px;
-  background: white;
 `;
 
 const Container = styled.div<{ type: 'wrong' | 'answered' }>`
