@@ -7,6 +7,7 @@ import {
   IntroPage,
   SessionPage,
   ProgessResultPage,
+  ResultPage,
   MyPage,
   ContactPage,
 } from './pages';
@@ -26,6 +27,7 @@ function App() {
       <Route path="/interview/intro" element={<IntroPage />} />
       <Route path="/interview/session" element={<SessionPage />} />
       <Route path="/interview/progressresult" element={<ProgessResultPage />} />
+      <Route path="/interview/result" element={<ResultPage />} />
     </Routes>
   );
 }

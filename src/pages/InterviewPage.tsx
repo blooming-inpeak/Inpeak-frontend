@@ -6,8 +6,13 @@ import { AskHistory } from '../components/interview/AskHistory';
 import BackgroundImage from '../assets/img/background.svg';
 import AdImage from '../assets/img/LevelCharacter.svg';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const InterviewPage = () => {
+  const naviagte = useNavigate();
+  const onClickInterview = () => {
+    naviagte('/interview/intro');
+  };
   return (
     <InterviewWrapper>
       <InterviewTop>
