@@ -1,12 +1,27 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { PassQuestion } from '../../api/question/question';
 
 interface Props {
   start: boolean;
   startRecording: () => void;
   stopRecording: () => void;
+  nextPage: () => void;
+  lastQuestion: boolean;
 }
 
-export const Buttons = ({ start, startRecording, stopRecording }: Props) => {
+export const Buttons = ({ start, startRecording, stopRecording, nextPage, lastQuestion }: Props) => {
+  const navigate = useNavigate();
+
+  const onPassQuestion = async () => {
+    const data = await PassQuestion();
+    console.log(data);
+    if (lastQuestion) {
+      navigate('/interview/result');
+    } else {
+      nextPage();
+    }
+  };
   return (
     <>
       {start ? (
@@ -15,7 +30,7 @@ export const Buttons = ({ start, startRecording, stopRecording }: Props) => {
         </>
       ) : (
         <ButtonsWrapper>
-          <SkipButton>잘 모르겠어요</SkipButton>
+          <SkipButton onClick={onPassQuestion}>잘 모르겠어요</SkipButton>
           <AnswerButton onClick={startRecording}>답변시작</AnswerButton>
         </ButtonsWrapper>
       )}

@@ -47,6 +47,7 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
             <img src="/images/KakaoTalk.svg" alt="kakaotalk" style={{ width: '17px', fill: '#212121' }} />
             <KaKaoTalkTitle>카카오로 로그인/회원가입</KaKaoTalkTitle>
           </LoginKakaotalk>
+
           <LoginTerms>
             로그인 시{' '}
             <span style={{ color: '#0050d8', cursor: 'pointer' }} onClick={onClickPrivacy}>
