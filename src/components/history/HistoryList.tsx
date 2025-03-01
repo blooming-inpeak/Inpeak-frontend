@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { FilterDropdown } from '../common/Filter/FilterDropdown';
+import { EmptyState } from './EmptyState';
 
 interface HistoryListProps {
   type: 'wrong' | 'answered';
@@ -65,27 +66,27 @@ export const HistoryList = ({ type }: HistoryListProps) => {
     );
   }
 
-  const sortedNotes = filteredNotes.sort((a, b) => {
-    return sortOrder === 'DESC' ? b.time.localeCompare(a.time) : a.time.localeCompare(b.time);
-  });
-
   return (
     <Container type={type}>
       <Header>
         <TitleBox type={type}>{type === 'wrong' ? '오답노트' : '답변완료'}</TitleBox>
         <Filters filter={filter} setFilter={setFilter} sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </Header>
-      <ListContainer type={type}>
-        {sortedNotes.map((note, index) => (
-          <QuestionCard key={index}>
-            <Date>{note.date}</Date>
-            <Question>{note.question}</Question>
-            <BottomRow>
-              <Time>{note.time}</Time>
-              <StatusBadge status={note.status}>{note.status}</StatusBadge>
-            </BottomRow>
-          </QuestionCard>
-        ))}
+      <ListContainer type={type} isEmpty={filteredNotes.length === 0}>
+        {filteredNotes.length === 0 ? (
+          <EmptyState type={type} />
+        ) : (
+          filteredNotes.map((note, index) => (
+            <QuestionCard key={index}>
+              <Date>{note.date}</Date>
+              <Question>{note.question}</Question>
+              <BottomRow>
+                <Time>{note.time}</Time>
+                <StatusBadge status={note.status}>{note.status}</StatusBadge>
+              </BottomRow>
+            </QuestionCard>
+          ))
+        )}
       </ListContainer>
     </Container>
   );
@@ -121,14 +122,18 @@ const TitleBox = styled.div<{ type: 'wrong' | 'answered' }>`
   color: #212121;
 `;
 
-const ListContainer = styled.div<{ type: 'wrong' | 'answered' }>`
+const ListContainer = styled.div<{ type: 'wrong' | 'answered'; isEmpty: boolean }>`
   flex: 1;
-  display: grid;
-  grid-template-columns: ${({ type }) => (type === 'wrong' ? 'repeat(2, 1fr)' : '1fr')};
-  row-gap: 12px;
-  column-gap: 24px;
+  display: ${({ isEmpty }) => (isEmpty ? 'flex' : 'grid')}; /* 데이터 없으면 flex, 있으면 grid */
+  grid-template-columns: ${({ type, isEmpty }) =>
+    isEmpty ? 'none' : type === 'wrong' ? 'repeat(2, 1fr)' : '1fr'}; /* 데이터 없을 땐 grid 제거 */
+  row-gap: ${({ isEmpty }) => (isEmpty ? '0' : '12px')}; /* 데이터 없을 땐 row-gap 제거 */
+  column-gap: ${({ isEmpty }) => (isEmpty ? '0' : '24px')}; /* 데이터 없을 땐 column-gap 제거 */
   grid-auto-rows: min-content;
+  align-items: ${({ isEmpty }) => (isEmpty ? 'center' : 'unset')}; /* 중앙 정렬 */
+  justify-content: ${({ isEmpty }) => (isEmpty ? 'center' : 'unset')}; /* 중앙 정렬 */
   overflow-y: auto;
+  min-height: 400px; /* 최소 높이 설정 */
 
   &::-webkit-scrollbar {
     display: none;
