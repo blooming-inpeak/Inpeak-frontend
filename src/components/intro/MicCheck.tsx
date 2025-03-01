@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MicList } from './MicList';
 import { BlurBackground } from '../common/background/BlurBackground';
@@ -10,12 +10,31 @@ interface Props {
   micList: MediaDeviceInfo[];
   volume: number;
   handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  audioLevel: number;
+  analyser: AnalyserNode | null;
 }
 
-export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVolumeChange, audioLevel }: Props) => {
+export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVolumeChange, analyser }: Props) => {
   const [isClick, setIsClick] = useState(false);
   const [micTest, setMicTest] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0); // 마이크 입력 볼륨 표시용
+
+  useEffect(() => {
+    console.log(analyser);
+    if (!analyser) return;
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const checkVolume = () => {
+      analyser.getByteFrequencyData(dataArray);
+      const avgVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
+      setAudioLevel(avgVolume);
+      requestAnimationFrame(checkVolume);
+    };
+
+    checkVolume();
+  }, [analyser]);
+
   return (
     <MicCheckWrapper>
       <MicCheckTitle>마이크 설정</MicCheckTitle>
@@ -39,8 +58,8 @@ export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVol
           </div>
           <div>
             {isClick &&
-              micList.map(mic => (
-                <MicList name={mic.label} setCurrentMic={setCurrentMic} isClose={() => setIsClick(false)} />
+              micList.map((mic, index) => (
+                <MicList name={mic.label} setCurrentMic={setCurrentMic} isClose={() => setIsClick(false)} key={index} />
               ))}
           </div>
         </MicSelect>

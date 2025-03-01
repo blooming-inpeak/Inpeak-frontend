@@ -1,8 +1,72 @@
 import styled from 'styled-components';
 import { BeforeVideo } from './BeforeVideo';
 import { Buttons } from './Buttons';
+import { currentMicState, isRecordingState } from '../../store/Record/Record';
+import { useRecoilValue } from 'recoil';
+import { useRef, useState } from 'react';
+import { AnswerVideo } from './AnswerVideo';
 
-export const SessionContent = () => {
+interface Props {
+  start: boolean;
+  setStart: (check: boolean) => void;
+}
+
+export const SessionContent = ({ start, setStart }: Props) => {
+  const isRecording = useRecoilValue(isRecordingState);
+  const currentMic = useRecoilValue(currentMicState);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string>(''); //녹화된 영상 URL 저장
+  const [videoBlob, setVideoBlob] = useState<Blob | null>(null); //녹화된 Blob 저장
+
+  // 녹화 시작
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: isRecording,
+        audio: {
+          deviceId: currentMic,
+        },
+      });
+
+      streamRef.current = stream;
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      setStart(true);
+
+      const chunks: Blob[] = []; // 녹화된 데이터 저장할 배열
+
+      mediaRecorder.ondataavailable = event => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' }); //WebM 형식으로 저장
+        const url = URL.createObjectURL(blob);
+        setVideoUrl(url);
+        setVideoBlob(blob);
+        console.log(url);
+      };
+
+      mediaRecorder.start();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 녹화 중지
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    setStart(false);
+  };
+
   return (
     <SessionContentWrapper>
       <SessionContentNumber>1/3</SessionContentNumber>
@@ -12,9 +76,9 @@ export const SessionContent = () => {
           <SessionQuestion>사용자 중심 디자인에 대한 김인픽님의 접근 방식을 설명해 주시겠어요?</SessionQuestion>
         </SessionContentAsk>
 
-        <BeforeVideo />
+        {start ? <AnswerVideo /> : <BeforeVideo />}
 
-        <Buttons />
+        <Buttons start={start} startRecording={startRecording} stopRecording={stopRecording} />
       </SessionContentBody>
     </SessionContentWrapper>
   );
