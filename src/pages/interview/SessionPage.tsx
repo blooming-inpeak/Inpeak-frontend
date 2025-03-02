@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import { SessionTop } from '../../components/session/SessionTop';
 import { SessionContent } from '../../components/session/SessionContent';
+import { useState } from 'react';
 
 export const SessionPage = () => {
+  const [start, setStart] = useState(false);
   return (
     <SessionWrapper>
       <SessionBody>
-        <SessionTop />
-        <SessionContent />
+        <SessionTop start={start} setStart={setStart} />
+        <SessionContent start={start} setStart={setStart} />
       </SessionBody>
     </SessionWrapper>
   );

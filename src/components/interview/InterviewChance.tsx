@@ -11,15 +11,18 @@ export const InterviewChance = () => {
 
 export const InterviewChanceWrapper = styled.div`
   display: flex;
+  width: 140px;
+  height: 91px;
   flex-direction: column;
-  align-items: flex-end;
-  padding: 12px 20px 10px 20px;
-
+  justify-content: center;
+  text-align: right;
+  padding-right: 30px;
   border-radius: 12px;
   border: 1px solid #ffffff;
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
   backdrop-filter: blur(10px);
+  box-sizing: border-box;
 `;
 
 export const InterviewChanceTitle = styled.div`
