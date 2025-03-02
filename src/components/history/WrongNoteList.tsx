@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { SortDropdown } from '../common/SortDropdown';
+import { EmptyState } from './EmptyState';
 
 export const WrongNoteList = () => {
   const notes = [
@@ -33,31 +34,47 @@ export const WrongNoteList = () => {
           <SortDropdown options={['전체보기', '오답', '포기']} defaultOption="전체보기" />
         </FiltersContainer>
       </Header>
-      <ListContainer>
-        {notes.map((note, index) => (
-          <QuestionCard key={index}>
-            <Date>{note.date}</Date>
-            <Question>{note.question}</Question>
-            <BottomRow>
-              <Time>{note.time}</Time>
-              <StatusBadge status={note.status}>{note.status}</StatusBadge>
-            </BottomRow>
-          </QuestionCard>
-        ))}
-      </ListContainer>
+      {notes.length === 0 ? (
+        <EmptyContainer>
+          {' '}
+          <EmptyState type="wrong" />
+        </EmptyContainer>
+      ) : (
+        <ListContainer>
+          {notes.map((note, index) => (
+            <QuestionCard key={index}>
+              <Date>{note.date}</Date>
+              <Question>{note.question}</Question>
+
+              <BottomRow>
+                <Time>{note.time}</Time>
+                <StatusBadge status={note.status}>{note.status}</StatusBadge>
+              </BottomRow>
+            </QuestionCard>
+          ))}
+        </ListContainer>
+      )}
     </SectionContainer>
   );
 };
+const EmptyContainer = styled.div`
+  box-sizing: border-box;
+  width: 552px;
+  height: 674px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const FiltersContainer = styled.div`
   display: flex;
   gap: 4px;
 `;
 const SectionContainer = styled.div`
   height: 800px;
-  padding: 42px;
+  padding: 42px 42px 30px 42px;
   background-color: #f5f9ff;
   border-radius: 24px;
-
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 18px;

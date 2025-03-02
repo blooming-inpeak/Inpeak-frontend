@@ -10,7 +10,7 @@ export const EmptyState = ({ type }: EmptyStateProps) => {
     naviagte('/interview/intro');
   };
   return (
-    <EmptyContainer>
+    <Container>
       <EmptyImage src="/images/empty.svg" alt="빈 리스트" />
       <EmptyText>
         {type === 'wrong'
@@ -18,16 +18,15 @@ export const EmptyState = ({ type }: EmptyStateProps) => {
           : `현재까지 진행된 모의면접 결과가 없습니다`}
       </EmptyText>
       {type === 'wrong' && <StartButton onClick={onClickInterview}>모의면접 시작하기</StartButton>}
-    </EmptyContainer>
+    </Container>
   );
 };
 
-const EmptyContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
 `;
 
 const EmptyImage = styled.img`
