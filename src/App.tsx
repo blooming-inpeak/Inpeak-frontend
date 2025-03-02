@@ -11,6 +11,7 @@ import {
   ContactPage,
 } from './pages';
 import Layout from './pages/Layout';
+import { ResultPage } from './pages/interview/ResultPage';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
       <Route path="/interview/intro" element={<IntroPage />} />
       <Route path="/interview/session" element={<SessionPage />} />
       <Route path="/interview/progressresult" element={<ProgessResultPage />} />
-      {/* <Route path="/interview/result" element={<ResultPage />} /> */}
+      <Route path="/interview/result" element={<ResultPage />} />
     </Routes>
   );
 }
