@@ -6,42 +6,41 @@ import { AskHistory } from '../components/interview/AskHistory';
 import BackgroundImage from '../assets/img/background.svg';
 import AdImage from '../assets/img/LevelCharacter.svg';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import Footer from '../components/common/Footer/Footer';
 
 export const InterviewPage = () => {
-  const naviagte = useNavigate();
-  const onClickInterview = () => {
-    naviagte('/interview/intro');
-  };
   return (
-    <InterviewWrapper>
-      <InterviewTop>
-        <div id="bannerTop">
-          <CorrectAnswer cumulative={80} average={70} />
-          <InterviewChance />
-        </div>
-        <div id="bannerBottom">
-          <div id="bannerBottomtext">
-            <h2>기술면접 AI통해 피드백 받고</h2>
-            <h1>취업까지 10발자국 다가가자</h1>
+    <>
+      <InterviewWrapper>
+        <InterviewTop>
+          <div id="bannerTop">
+            <CorrectAnswer cumulative={80} average={70} />
+            <InterviewChance />
           </div>
-          <InterviewButton to="/interview/intro">
-            <InterviewButtonTitle>모의면접 연습하기</InterviewButtonTitle>
-            <img src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
-          </InterviewButton>
-        </div>
-      </InterviewTop>
+          <div id="bannerBottom">
+            <div id="bannerBottomtext">
+              <h2>기술면접 AI통해 피드백 받고</h2>
+              <h1>취업까지 10발자국 다가가자</h1>
+            </div>
+            <InterviewButton to="/interview/intro">
+              <InterviewButtonTitle>모의면접 연습하기</InterviewButtonTitle>
+              <img src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
+            </InterviewButton>
+          </div>
+        </InterviewTop>
 
-      <InterviewBottom>
-        <InterviewBottomLeft>
-          <Level level={1} progress={60} remainingCount={13} />
-          <InterviewBottomAd>
-            <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
-          </InterviewBottomAd>
-        </InterviewBottomLeft>
-        <AskHistory />
-      </InterviewBottom>
-    </InterviewWrapper>
+        <InterviewBottom>
+          <InterviewBottomLeft>
+            <Level level={1} progress={60} remainingCount={13} />
+            <InterviewBottomAd>
+              <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
+            </InterviewBottomAd>
+          </InterviewBottomLeft>
+          <AskHistory />
+        </InterviewBottom>
+      </InterviewWrapper>
+      <Footer />
+    </>
   );
 };
 
