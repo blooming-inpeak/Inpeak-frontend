@@ -73,7 +73,7 @@ function getCaptionStyle(type: CaptionType) {
         fontsize: 10,
         background: '#FFF3F4',
         color: '#F84883',
-        border: '1px solid #F84883',
+        border: 'none',
       };
     case '정답-bottom':
       return {

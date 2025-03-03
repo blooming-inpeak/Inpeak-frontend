@@ -1,20 +1,30 @@
+import React from 'react';
 import styled from 'styled-components';
-import { Caption } from './Caption';
+import { CaptionType } from '../common/caption/CaptionType';
+import { MultiCaption } from '../common/caption/Caption';
 
-export const AskHistoryBox = () => {
+interface AskHistoryBoxProps {
+  question: string;
+  answer: string;
+  status: CaptionType;
+  detailUrl?: string;
+}
+
+export const AskHistoryBox: React.FC<AskHistoryBoxProps> = ({ question, answer, status, detailUrl }) => {
+  const handleDetailClick = () => (window.location.href = detailUrl!);
+
   return (
     <AskHistoryBoxWrapper>
       <AskHistoryContent>
         <div style={{ display: 'flex' }}>
-          <AskHistoryQuestion>사용자 중심 디자인에 귀하의 접근 방식을 설명해 주시겠어요?</AskHistoryQuestion>
-          <Caption name="포기" />
+          <AskHistoryQuestion>{question}</AskHistoryQuestion>
+          <MultiCaption type={status} />
         </div>
-        <AskHistoryAnswer>
-          저는 디자인이 단순히 문제 해결을 넘어, 감정적 연결과 긍정적 경험을 제공해야 한다고 믿습니다.
-        </AskHistoryAnswer>
+        <AskHistoryAnswer>{answer}</AskHistoryAnswer>
       </AskHistoryContent>
-
-      <img src="/images/chevron/Chevron_right_black.svg" alt="chevron right" style={{ cursor: 'pointer' }} />
+      <DetailButton onClick={handleDetailClick}>
+        <img src="/images/chevron/Chevron_right_black.svg" alt="chevron right" style={{ cursor: 'pointer' }} />
+      </DetailButton>
     </AskHistoryBoxWrapper>
   );
 };
@@ -24,7 +34,6 @@ export const AskHistoryBoxWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding-bottom: 24px;
 
   & + & {
@@ -50,4 +59,8 @@ export const AskHistoryAnswer = styled.div`
   font-size: 12px;
   font-weight: 400;
   letter-spacing: -0.3px;
+`;
+
+export const DetailButton = styled.div`
+  cursor: pointer;
 `;
