@@ -1,20 +1,20 @@
 import styled from 'styled-components';
-import { HistoryStatistics } from '../components/History/HistoryStatistics';
-import HistoryCalender from '../components/History/HistoryCalender';
-import AnswerList from '../components/History/HistoryInterviewList';
-import HistoryIncorrect from '../components/History/HistoryIncorrect';
 
+import { AnsweredList } from '../components/history/AnsweredList';
+import { WrongNoteList } from '../components/history/WrongNoteList';
+import { HistoryStatistics } from '../components/history/HistoryStatistics';
+import HistoryCalendar from '../components/history/HistoryCalender';
 export const HistoryPage = () => {
   return (
     <HistoryWrapper>
       <HistoryTop>
         <HistoryStatistics />
-        <HistoryCalender />
+        <HistoryCalendar />
       </HistoryTop>
       <HistoryBackground>
         <HistoryBody>
-          <AnswerList />
-          <HistoryIncorrect />
+          <AnsweredList />
+          <WrongNoteList />
         </HistoryBody>
       </HistoryBackground>
     </HistoryWrapper>

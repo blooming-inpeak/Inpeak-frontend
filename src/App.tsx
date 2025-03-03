@@ -7,11 +7,11 @@ import {
   IntroPage,
   SessionPage,
   ProgessResultPage,
-  ResultPage,
   MyPage,
   ContactPage,
 } from './pages';
 import Layout from './pages/Layout';
+import { ResultPage } from './pages/interview/ResultPage';
 
 function App() {
   return (
