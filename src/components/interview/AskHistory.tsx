@@ -21,19 +21,19 @@ export const AskHistory: React.FC = () => {
     {
       question: '사용자 중심 디자인에 귀하의 접근 방식을 설명해 주시겠어요?',
       answer: '저는 디자인이 단순히 문제 해결을 넘어, 감정적 연결과 긍정적 경험을 제공해야 한다고 믿습니다.',
-      status: '정답-bottom',
+      status: '정답-small',
       detailUrl: '/detail/1',
     },
     {
       question: '최근에 어떤 프로젝트를 진행했나요?',
       answer: '저는 최근에 AI 기반 디자인 도구를 개발하는 프로젝트에 참여했습니다.',
-      status: '오답-bottom',
+      status: '오답-small',
       detailUrl: '/detail/2',
     },
     {
       question: '어떤 상황에서 어려움을 겪었나요?',
       answer: '팀원 간의 의견 차이로 프로젝트 진행이 지연된 경험이 있습니다.',
-      status: '포기-bottom',
+      status: '포기-small',
       detailUrl: '/detail/3',
     },
   ];

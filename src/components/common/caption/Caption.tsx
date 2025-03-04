@@ -25,7 +25,7 @@ export const MultiCaption: React.FC<CaptionProps> = ({ type }) => {
 
 function getCaptionStyle(type: CaptionType) {
   switch (type) {
-    case '오답-top':
+    case '오답-large':
       return {
         label: '오답',
         width: 29,
@@ -35,7 +35,7 @@ function getCaptionStyle(type: CaptionType) {
         color: '#F84883',
         border: '1px solid #F84883',
       };
-    case '정답-top':
+    case '정답-large':
       return {
         label: '정답',
         width: 29,
@@ -45,7 +45,7 @@ function getCaptionStyle(type: CaptionType) {
         color: '#0050D8',
         border: '1px solid #0050D8',
       };
-    case '포기-top':
+    case '포기-large':
       return {
         label: '포기',
         width: 29,
@@ -65,7 +65,7 @@ function getCaptionStyle(type: CaptionType) {
         color: '#747474',
         border: '1px solid #747474',
       };
-    case '오답-bottom':
+    case '오답-small':
       return {
         label: '오답',
         width: 26,
@@ -75,7 +75,7 @@ function getCaptionStyle(type: CaptionType) {
         color: '#F84883',
         border: 'none',
       };
-    case '정답-bottom':
+    case '정답-small':
       return {
         label: '정답',
         width: 26,
@@ -85,7 +85,7 @@ function getCaptionStyle(type: CaptionType) {
         color: '#0050D8',
         border: 'none',
       };
-    case '포기-bottom':
+    case '포기-small':
       return {
         label: '포기',
         width: 26,
