@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ModalContainer,
   ModalHeader,
-  QuestionWrapper,
   FeedbackBox,
   MemoToggle,
   Navigation,
@@ -11,6 +10,8 @@ import {
   StatusBadge,
   MemoBox,
   MemoWrapper,
+  ToggleContainer,
+  Wrapper,
 } from '../../components/InterviewResult/ModalStyle';
 import { ToggleSwitch } from '../common/ToggleSwitch';
 
@@ -19,7 +20,7 @@ export const InterviewResult = () => {
   const [isMemoOpen, setIsMemoOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [status] = useState('정답');
+  const [status] = useState('포기');
   const isCorrect = status == '정답';
 
   const handleResizeHeight = () => {
@@ -50,38 +51,40 @@ export const InterviewResult = () => {
         <StatusBadge status={status}>{status}</StatusBadge>
       </ModalHeader>
 
-      {/* 질문 영역 */}
-      <QuestionWrapper>
+      {/* 질문,답변 영역 */}
+      <Wrapper>
         <div className="question-content">
           <span className="question-mark">Q1</span>
           <p className="question">사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?</p>
         </div>
-        <div className="answer-content">
-          <span className="answer-mark">A</span>
-          <p className="answer">
-            사용자 중심 디자인은 사용자의 요구와 목표를 깊이 이해하고 이를 제품에 반영하는 과정입니다. 제 접근 방식은
-            다음과 같습니다. 먼저, 사용자 인터뷰와 데이터 분석으로 문제를 정의하고, 페르소나와 공감 지도를 통해 사용자
-            관점을 구체화합니다. 이후 와이어프레임과 프로토타입을 제작해 사용자 테스트를 거치며, 피드백을 반영해
-            디자인을 개선합니다. 마지막으로 데이터를 지속적으로 모니터링하며 최적화와 반복을 통해 사용자 가치를
-            창출합니다. 저는 디자인이 단순히 문제 해결을 넘어, 감정적 연결과 긍정적 경험을 제공해야 한다고 믿습니다.
-          </p>
-          {hasVideo && (
-            <div className="video-container">
-              <video width="168" height="95" controls>
-                <source src="video.mp4" type="video/mp4" />
-                브라우저가 동영상을 지원하지 않습니다.
-              </video>
-              <span className="video-time">03h 45s</span>
-            </div>
-          )}
-        </div>
-        <div className="toggle-container">
-          <label className="toggle-label" style={{ color: status === '정답' ? '#212121' : '#AFAFAF' }}>
-            이 질문은 완벽히 이해함
-          </label>
-          <ToggleSwitch isChecked={isChecked} onClick={handleToggle} />
-        </div>
-      </QuestionWrapper>
+        {status !== '포기' && (
+          <div className="answer-content">
+            <span className="answer-mark">A</span>
+            <p className="answer">
+              사용자 중심 디자인은 사용자의 요구와 목표를 깊이 이해하고 이를 제품에 반영하는 과정입니다. 제 접근 방식은
+              다음과 같습니다. 먼저, 사용자 인터뷰와 데이터 분석으로 문제를 정의하고, 페르소나와 공감 지도를 통해 사용자
+              관점을 구체화합니다. 이후 와이어프레임과 프로토타입을 제작해 사용자 테스트를 거치며, 피드백을 반영해
+              디자인을 개선합니다. 마지막으로 데이터를 지속적으로 모니터링하며 최적화와 반복을 통해 사용자 가치를
+              창출합니다. 저는 디자인이 단순히 문제 해결을 넘어, 감정적 연결과 긍정적 경험을 제공해야 한다고 믿습니다.
+            </p>
+            {hasVideo && (
+              <div className="video-container">
+                <video width="168" height="95" controls>
+                  <source src="video.mp4" type="video/mp4" />
+                  브라우저가 동영상을 지원하지 않습니다.
+                </video>
+                <span className="video-time">03h 45s</span>
+              </div>
+            )}
+          </div>
+        )}
+      </Wrapper>
+      <ToggleContainer>
+        <label className="toggle-label" style={{ color: status === '정답' ? '#212121' : '#AFAFAF' }}>
+          이 질문은 완벽히 이해함
+        </label>
+        <ToggleSwitch isChecked={isChecked} onClick={handleToggle} />
+      </ToggleContainer>
 
       {/* 피드백 박스 */}
       <FeedbackBox>

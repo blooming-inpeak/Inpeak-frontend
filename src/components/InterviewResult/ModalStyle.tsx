@@ -79,7 +79,7 @@ export const StatusBadge = styled.span<{ status: string }>`
       : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
 `;
 
-export const QuestionWrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -170,7 +170,11 @@ export const QuestionWrapper = styled.div`
     letter-spacing: -0.3px;
   }
 `;
-
+export const ToggleContainer = styled.div`
+  display: flex;
+  gap: 7px;
+  justify-content: flex-end;
+`;
 export const FeedbackBox = styled.div`
   padding: 30px 20px;
   border: 1px solid #e6efff;
