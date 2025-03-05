@@ -58,12 +58,12 @@ export const StatusBadge = styled.span<{ status: string }>`
 export const QuestionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
 
   .question-content {
     display: flex;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
   }
 
   .question-mark {
@@ -80,6 +80,56 @@ export const QuestionWrapper = styled.div`
     font-size: 20px;
     font-weight: 600;
     line-height: 150%;
+    margin: 0;
+  }
+  .answer-content {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .answer-mark {
+    width: 42px;
+    font-weight: bold;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.14px;
+  }
+
+  .answer {
+    flex: 1;
+    margin: 0;
+    color: var(--text-000, #000);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    letter-spacing: -0.4px;
+  }
+  .video-container {
+    width: 168px;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 8px;
+  }
+  .video-container video {
+    border-radius: 4px;
+  }
+  .video-time {
+    width: 100%;
+    text-align: right; /* 맨 오른쪽 정렬 */
+    color: var(--text-500, #747474);
+    font-family: 'Pretendard Variable';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 18px */
+    letter-spacing: -0.3px;
   }
 
   .toggle-container {
@@ -137,6 +187,7 @@ export const FeedbackBox = styled.div`
   border-radius: 12px;
   margin-bottom: 20px;
   margin-left: 41px;
+  margin-top: 16px;
   .feedback-title {
     color: #0050d8;
     font-weight: bold;
