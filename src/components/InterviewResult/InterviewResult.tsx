@@ -47,7 +47,7 @@ export const InterviewResult = () => {
       <ModalHeader>
         <span className="date">2025년 2월 13일</span>
         {isCorrect && isChecked && <span className="understood-badge">이해 완료</span>}
-        <StatusBadge status="포기">포기</StatusBadge>
+        <StatusBadge status={status}>{status}</StatusBadge>
       </ModalHeader>
 
       {/* 질문 영역 */}
