@@ -29,6 +29,30 @@ export const ModalHeader = styled.div`
     width: 40px;
     height: 40px;
   }
+  .understood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 18px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: solid;
+    margin-left: 6px;
+    padding: 0 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.3px;
+    border: 1px solid var(--text-500, #747474);
+    background: var(--sementic-light-400, #fafafa);
+    color: var(--text-500, #747474);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.3px;
+  }
 `;
 
 export const StatusBadge = styled.span<{ status: string }>`
@@ -141,43 +165,9 @@ export const QuestionWrapper = styled.div`
 
   .toggle-label {
     font-size: 12px;
-    color: #afafaf;
     font-weight: 500;
     line-height: 150%;
     letter-spacing: -0.3px;
-  }
-
-  .toggle-switch {
-    width: 36px;
-    height: 23px;
-    background-color: #fafafa;
-    box-shadow: 0px 2px 4px 0px rgba(0, 80, 216, 0.08) inset;
-    border-radius: 30px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-  }
-
-  .toggle-switch .slider {
-    position: absolute;
-    top: 50%;
-
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: white;
-    transition: transform 0.3s ease-in-out;
-    transform: translate(2px, -50%);
-    filter: drop-shadow(0px 2px 4px rgba(0, 80, 216, 0.08));
-  }
-
-  /* 활성화(ON) 상태 */
-  .toggle-switch.toggle--checked {
-    background-color: #72a6ff;
-  }
-
-  .toggle-switch.toggle--checked .slider {
-    transform: translate(16px, -50%);
   }
 `;
 

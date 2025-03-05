@@ -12,11 +12,15 @@ import {
   MemoBox,
   MemoWrapper,
 } from '../../components/InterviewResult/ModalStyle';
+import { ToggleSwitch } from '../common/ToggleSwitch';
 
 export const InterviewResult = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [isMemoOpen, setIsMemoOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [status] = useState('정답');
+  const isCorrect = status == '정답';
 
   const handleResizeHeight = () => {
     if (textareaRef.current) {
@@ -31,12 +35,18 @@ export const InterviewResult = () => {
     }
   }, [isMemoOpen]);
 
+  const handleToggle = () => {
+    if (!isCorrect) return;
+    setIsChecked(prev => !prev);
+  };
+
   const hasVideo = true;
   return (
     <ModalContainer>
       {/* 헤더: 날짜 및 이미지 */}
       <ModalHeader>
         <span className="date">2025년 2월 13일</span>
+        {isCorrect && isChecked && <span className="understood-badge">이해 완료</span>}
         <StatusBadge status="포기">포기</StatusBadge>
       </ModalHeader>
 
@@ -66,13 +76,10 @@ export const InterviewResult = () => {
           )}
         </div>
         <div className="toggle-container">
-          <label className="toggle-label">이 질문은 완벽히 이해함</label>
-          <div
-            className={`toggle-switch ${isChecked ? 'toggle--checked' : ''}`}
-            onClick={() => setIsChecked(!isChecked)}
-          >
-            <div className="slider"></div>
-          </div>
+          <label className="toggle-label" style={{ color: status === '정답' ? '#212121' : '#AFAFAF' }}>
+            이 질문은 완벽히 이해함
+          </label>
+          <ToggleSwitch isChecked={isChecked} onClick={handleToggle} />
         </div>
       </QuestionWrapper>
 
