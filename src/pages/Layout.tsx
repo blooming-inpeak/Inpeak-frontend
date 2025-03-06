@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/common/header/Header';
 import styled from 'styled-components';
+import { FloatingContactButton } from '../components/common/FloatingContactButton';
 
 const Layout = () => {
   return (
@@ -8,6 +9,7 @@ const Layout = () => {
       <Header />
       <MainContent>
         <Outlet />
+        <FloatingContactButton />
       </MainContent>
     </LayoutContainer>
   );
