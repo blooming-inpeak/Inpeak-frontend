@@ -5,29 +5,39 @@ import { OpenLoginModal } from './OpenLoginModal';
 export const LoginDropdown = () => {
   const [openModal, setOpenModal] = useState(false);
   return (
-    <LoginDropdownWrapper>
-      <LoginDropdownProfile>
-        <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
-        <LoginDropdownName>김인픽</LoginDropdownName>
-      </LoginDropdownProfile>
-      <LoginDropdownButton
-        src="/images/chevron/Chevron_bottom.svg"
-        alt="chevron bottom"
-        onClick={() => setOpenModal(true)}
-      />
-      {openModal && <OpenLoginModal onCloseModal={() => setOpenModal(false)} />}
+    <LoginDropdownWrapper $isOpen={openModal}>
+      <LoginDropdownTop>
+        <LoginDropdownProfile>
+          <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
+          <LoginDropdownName>김인픽</LoginDropdownName>
+        </LoginDropdownProfile>
+
+        <LoginDropdownButton
+          src={`/images/chevron/Chevron_${openModal ? 'top' : 'bottom'}.svg`}
+          alt="chevron bottom"
+          onClick={() => setOpenModal(!openModal)}
+        />
+      </LoginDropdownTop>
+
+      {openModal && <OpenLoginModal />}
     </LoginDropdownWrapper>
   );
 };
 
-export const LoginDropdownWrapper = styled.div`
+export const LoginDropdownWrapper = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px 12px 0 0;
+  background-color: ${({ $isOpen }) => ($isOpen ? '#ffffff' : '')};
+`;
+
+export const LoginDropdownTop = styled.div`
   width: 150px;
   height: 30px;
+  padding: 10px 20px;
 
   display: flex;
   justify-content: space-between;
-
-  gap: 30px;
 `;
 
 export const LoginDropdownProfile = styled.div`
