@@ -10,7 +10,7 @@ import {
   LoginTerms,
   LoginTitle,
 } from './LoginModalStyle';
-import { PrivacyPolicyModal } from './Policy';
+import { PrivacyPolicyModal } from '../common/policy/Policy';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
