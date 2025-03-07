@@ -29,6 +29,30 @@ export const ModalHeader = styled.div`
     width: 40px;
     height: 40px;
   }
+  .understood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 18px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: solid;
+    margin-left: 6px;
+    padding: 0 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.3px;
+    border: 1px solid var(--text-500, #747474);
+    background: var(--sementic-light-400, #fafafa);
+    color: var(--text-500, #747474);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.3px;
+  }
 `;
 
 export const StatusBadge = styled.span<{ status: string }>`
@@ -55,15 +79,15 @@ export const StatusBadge = styled.span<{ status: string }>`
       : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
 `;
 
-export const QuestionWrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
 
   .question-content {
     display: flex;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
   }
 
   .question-mark {
@@ -80,6 +104,56 @@ export const QuestionWrapper = styled.div`
     font-size: 20px;
     font-weight: 600;
     line-height: 150%;
+    margin: 0;
+  }
+  .answer-content {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .answer-mark {
+    width: 42px;
+    font-weight: bold;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.14px;
+  }
+
+  .answer {
+    flex: 1;
+    margin: 0;
+    color: var(--text-000, #000);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    letter-spacing: -0.4px;
+  }
+  .video-container {
+    width: 168px;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 8px;
+  }
+  .video-container video {
+    border-radius: 4px;
+  }
+  .video-time {
+    width: 100%;
+    text-align: right; /* 맨 오른쪽 정렬 */
+    color: var(--text-500, #747474);
+    font-family: 'Pretendard Variable';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 18px */
+    letter-spacing: -0.3px;
   }
 
   .toggle-container {
@@ -91,52 +165,23 @@ export const QuestionWrapper = styled.div`
 
   .toggle-label {
     font-size: 12px;
-    color: #afafaf;
     font-weight: 500;
     line-height: 150%;
     letter-spacing: -0.3px;
   }
-
-  .toggle-switch {
-    width: 36px;
-    height: 23px;
-    background-color: #fafafa;
-    box-shadow: 0px 2px 4px 0px rgba(0, 80, 216, 0.08) inset;
-    border-radius: 30px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-  }
-
-  .toggle-switch .slider {
-    position: absolute;
-    top: 50%;
-
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: white;
-    transition: transform 0.3s ease-in-out;
-    transform: translate(2px, -50%);
-    filter: drop-shadow(0px 2px 4px rgba(0, 80, 216, 0.08));
-  }
-
-  /* 활성화(ON) 상태 */
-  .toggle-switch.toggle--checked {
-    background-color: #72a6ff;
-  }
-
-  .toggle-switch.toggle--checked .slider {
-    transform: translate(16px, -50%);
-  }
 `;
-
+export const ToggleContainer = styled.div`
+  display: flex;
+  gap: 7px;
+  justify-content: flex-end;
+`;
 export const FeedbackBox = styled.div`
   padding: 30px 20px;
   border: 1px solid #e6efff;
   border-radius: 12px;
   margin-bottom: 20px;
   margin-left: 41px;
+  margin-top: 16px;
   .feedback-title {
     color: #0050d8;
     font-weight: bold;
