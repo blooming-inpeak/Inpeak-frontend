@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, MenuItems, NavBar } from './HeaderStyle';
-// import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
-import { Login } from '../../login/LoginButton';
+import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
+// import { Login } from '../../login/LoginButton';
 
 export const Header = () => {
   const pathname = useLocation().pathname;
@@ -37,9 +37,9 @@ export const Header = () => {
           </HeaderRight>
           <HeaderLeft>
             {/* 로그인 */}
-            <Login />
+            {/* <Login /> */}
             {/* 로그인 드롭다운 */}
-            {/* <LoginDropdown /> */}
+            <LoginDropdown />
           </HeaderLeft>
         </NavBar>
       </HeaderContainer>
