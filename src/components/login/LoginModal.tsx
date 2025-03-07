@@ -39,7 +39,9 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
         </CloseButton>
         <LoginHeader>
           <LoginTitle src="/images/Logo.svg" />
-          <LoginBanner>사진</LoginBanner>
+          <LoginBanner>
+            <img src="/images/Login_IMG.svg" alt="로그인 이미지" />
+          </LoginBanner>
         </LoginHeader>
 
         <LoginFooter>

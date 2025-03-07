@@ -47,11 +47,9 @@ export const LoginTitle = styled.img`
 export const LoginBanner = styled.div`
   width: 100%;
   height: 100%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px;
 `;
 
 export const LoginFooter = styled.div`

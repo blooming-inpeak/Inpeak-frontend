@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  PrivactFooterButton,
+  PrivacytFooterButton,
   PrivacyContent,
   PrivacyFooter,
   PrivacyTitle,
@@ -38,7 +38,7 @@ export const PrivacyPolicyModal = ({ isPolicy, onClose }: Props) => {
       <PrivacyContent>{privacyContent}</PrivacyContent>
 
       <PrivacyFooter>
-        <PrivactFooterButton onClick={onClose}>확인</PrivactFooterButton>
+        <PrivacytFooterButton onClick={onClose}>확인</PrivacytFooterButton>
       </PrivacyFooter>
     </PrivacyWrapper>
   );

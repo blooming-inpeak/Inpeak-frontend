@@ -159,12 +159,13 @@ export const Record = styled.div<{ $isRecord: boolean }>`
 export const RecordContent = styled.div<{ $isRecord: boolean }>`
   width: 22px;
   height: 18px;
-  border: 2px solid #ffffff;
+  border: 1.7px solid #ffffff;
   box-sizing: border-box;
   border-radius: 5px;
 
   display: flex;
   justify-content: center;
+  align-items: center;
 
   color: #ffffff;
   font-size: ${({ $isRecord }) => ($isRecord ? '11px' : '9px')};

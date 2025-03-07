@@ -84,7 +84,7 @@ export const PrivacyFooter = styled.div`
   justify-content: flex-end;
 `;
 
-export const PrivactFooterButton = styled.div`
+export const PrivacytFooterButton = styled.div`
   width: 37px;
   height: 24px;
 
@@ -103,5 +103,8 @@ export const PrivactFooterButton = styled.div`
   letter-spacing: -0.3px;
   color: #ffffff;
 
+  &:hover {
+    background-color: #72a6ff;
+  }
   cursor: pointer;
 `;
