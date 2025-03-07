@@ -1,15 +1,19 @@
 import styled from 'styled-components';
 
-export const InterviewChance = () => {
+interface InterviewChanceProps {
+  chance: number;
+}
+
+export const InterviewChance: React.FC<InterviewChanceProps> = ({ chance }) => {
   return (
     <InterviewChanceWrapper>
       <InterviewChanceTitle>남은 면접 기회</InterviewChanceTitle>
-      <InterviewChanceNumber>1회</InterviewChanceNumber>
+      <InterviewChanceNumber>{chance}회</InterviewChanceNumber>
     </InterviewChanceWrapper>
   );
 };
 
-export const InterviewChanceWrapper = styled.div`
+const InterviewChanceWrapper = styled.div`
   display: flex;
   width: 140px;
   height: 91px;
@@ -25,14 +29,14 @@ export const InterviewChanceWrapper = styled.div`
   box-sizing: border-box;
 `;
 
-export const InterviewChanceTitle = styled.div`
+const InterviewChanceTitle = styled.div`
   color: #212121;
   font-size: 14px;
   font-weight: 600;
   line-height: 150%;
 `;
 
-export const InterviewChanceNumber = styled.div`
+const InterviewChanceNumber = styled.div`
   color: #0050db;
   font-size: 20px;
   font-weight: 600;

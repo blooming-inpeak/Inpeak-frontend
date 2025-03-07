@@ -14,26 +14,128 @@ import {
 } from 'date-fns';
 import LeftArrow from '../../assets/img/LeftArrow.svg';
 import RightArrow from '../../assets/img/RightArrow.svg';
+import { MultiCaption } from '../common/caption/Caption';
 
 interface Question {
   id: number;
   question: string;
   time: string;
-  status: '정답' | '오답';
+  status: '정답' | '오답' | '포기';
 }
 
-const sampleQuestions: Question[] = [
-  { id: 1, question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?', time: '01:25', status: '정답' },
-  { id: 2, question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?', time: '01:25', status: '정답' },
-  { id: 3, question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?', time: '01:25', status: '오답' },
+interface InterviewData {
+  date: string;
+  interviewId: number;
+  questions: Question[];
+}
+
+// 예시 모의면접 데이터
+const sampleInterviewData: InterviewData[] = [
+  {
+    date: '2025-02-05',
+    interviewId: 101,
+    questions: [
+      {
+        id: 1,
+        question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?',
+        time: '01:25',
+        status: '정답',
+      },
+      {
+        id: 2,
+        question: '이전 프로젝트에서 팀워크 경험을 공유해 주세요.',
+        time: '00:45',
+        status: '오답',
+      },
+    ],
+  },
+  {
+    date: '2025-02-10',
+    interviewId: 102,
+    questions: [
+      {
+        id: 3,
+        question: '본인의 강점과 약점에 대해 설명해 주세요.',
+        time: '00:50',
+        status: '포기',
+      },
+      {
+        id: 4,
+        question: '최근에 해결한 문제에 대해 말씀해 주세요.',
+        time: '01:05',
+        status: '정답',
+      },
+    ],
+  },
+  {
+    date: '2025-02-15',
+    interviewId: 103,
+    questions: [
+      {
+        id: 5,
+        question: '프로젝트 관리 경험에 대해 설명해 주세요.',
+        time: '01:15',
+        status: '오답',
+      },
+      {
+        id: 6,
+        question: '문제 해결 과정을 설명해 주세요.',
+        time: '00:40',
+        status: '정답',
+      },
+    ],
+  },
+  {
+    date: '2025-02-20',
+    interviewId: 104,
+    questions: [
+      {
+        id: 7,
+        question: '협업 경험에 대해 구체적으로 설명해 주세요.',
+        time: '01:10',
+        status: '포기',
+      },
+    ],
+  },
+  {
+    date: '2025-02-25',
+    interviewId: 105,
+    questions: [
+      {
+        id: 8,
+        question: '업무 중 발생한 갈등을 어떻게 해결했는지 설명해 주세요.',
+        time: '00:55',
+        status: '오답',
+      },
+      {
+        id: 9,
+        question: '자신의 경력 목표에 대해 말씀해 주세요.',
+        time: '01:20',
+        status: '정답',
+      },
+      {
+        id: 10,
+        question: '최근 읽은 책에 대해 공유해 주세요.',
+        time: '00:35',
+        status: '포기',
+      },
+    ],
+  },
 ];
 
 export const HistoryCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const getTotalTime = () => {
-    const totalMinutes = sampleQuestions.reduce((acc, q) => {
+  // 선택된 날짜에 해당하는 인터뷰 데이터 조회 (날짜 형식: yyyy-MM-dd)
+  const getInterviewByDate = (date: Date) => {
+    const formatted = format(date, 'yyyy-MM-dd');
+    return sampleInterviewData.find(item => item.date === formatted);
+  };
+
+  // 선택된 인터뷰의 질문들을 기준으로 총 소요시간 계산
+  const getTotalTime = (questions: Question[]) => {
+    const totalMinutes = questions.reduce((acc, q) => {
       const [hours, minutes] = q.time.split(':').map(Number);
       return acc + hours * 60 + minutes;
     }, 0);
@@ -66,7 +168,6 @@ export const HistoryCalendar = () => {
   );
 
   const renderDays = () => {
-    // 요일 배열: 인덱스 0: 일요일, 인덱스 6: 토요일
     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     return (
       <DaysRow>
@@ -98,15 +199,20 @@ export const HistoryCalendar = () => {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, 'd');
         const cloneDay = day;
+        const interviewForDate = getInterviewByDate(cloneDay);
+
         days.push(
           <DateCell
             key={day.toString()}
             isToday={isSameDay(day, new Date())}
-            isSelected={isSameDay(day, selectedDate)}
+            isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
             isSameMonth={isSameMonth(day, monthStart)}
             onClick={() => setSelectedDate(cloneDay)}
           >
-            <span>{formattedDate}</span>
+            <DateContent>
+              <span>{formattedDate}</span>
+            </DateContent>
+            {interviewForDate && <InterviewDot />}
           </DateCell>,
         );
         day = addDays(day, 1);
@@ -117,27 +223,36 @@ export const HistoryCalendar = () => {
     return <Body>{rows}</Body>;
   };
 
+  const interviewForSelectedDate = getInterviewByDate(selectedDate);
+
   return (
     <Container>
       <LeftSection>
         <DateInfo>
           <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
-          <TimeText>{getTotalTime()}</TimeText>
+          <TimeText>{interviewForSelectedDate ? getTotalTime(interviewForSelectedDate.questions) : '00:00'}</TimeText>
         </DateInfo>
-        <QuestionList>
-          {sampleQuestions.map(q => (
-            <QuestionItem key={q.id}>
-              <QuestionTitle>
-                <div>Q{q.id}.</div>
-                <QuestionText>{q.question}</QuestionText>
-              </QuestionTitle>
-              <QuestionFooter>
-                <QuestionTime>{q.time}</QuestionTime>
-                <QuestionStatus status={q.status}>{q.status}</QuestionStatus>
-              </QuestionFooter>
-            </QuestionItem>
-          ))}
-        </QuestionList>
+        {interviewForSelectedDate ? (
+          <QuestionList>
+            {interviewForSelectedDate.questions.map((q, index) => (
+              <QuestionItem key={q.id}>
+                <QuestionTitle>
+                  <div>Q{index + 1}.</div>
+                  <QuestionText>{q.question}</QuestionText>
+                </QuestionTitle>
+                <QuestionFooter>
+                  <QuestionTime>{q.time}</QuestionTime>
+                  <MultiCaption type={`${q.status}-small`} />
+                </QuestionFooter>
+              </QuestionItem>
+            ))}
+          </QuestionList>
+        ) : (
+          <NoResultMessage>
+            해당 날짜에 진행된
+            <br /> 모의면접 결과가 없습니다
+          </NoResultMessage>
+        )}
       </LeftSection>
       <RightSection>
         {renderHeader()}
@@ -247,20 +362,16 @@ const QuestionTime = styled.div`
   letter-spacing: -0.3px;
 `;
 
-const QuestionStatus = styled.div<{ status: string }>`
-  color: ${({ status }) => (status === '정답' ? '#0050d8' : '#FF6B6B')};
-  width: 26px;
-  height: 17px;
-  display: flex;
-  padding: 1px 4px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  background: ${({ status }) => (status === '정답' ? '#F5F9FF' : '#FFF3F4')};
-  font-size: 10px;
+const NoResultMessage = styled.div`
+  padding-top: 90.5px;
+  font-size: 14px;
+  text-align: center;
+  color: #747474;
+  font-size: 14px;
+  font-style: normal;
   font-weight: 500;
   line-height: 150%;
-  letter-spacing: -0.25px;
+  letter-spacing: -0.35px;
 `;
 
 const RightSection = styled.div`
@@ -329,22 +440,51 @@ const DateCell = styled.div<{
   isSelected?: boolean;
   isSameMonth?: boolean;
 }>`
+  position: relative;
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  font-style: normal;
   border-radius: 50%;
-  background: ${({ isSelected }) => (isSelected ? '#3277ED' : 'none')};
-  color: ${({ isSelected }) => (isSelected ? '#fff' : '#747474')};
-  font-weight: ${({ isSelected }) => (isSelected ? '500' : '400')};
+  background: ${({ isToday, isSelected }) => {
+    if (isToday) return '#3277ED';
+    if (isSelected) return '#C3DAFF';
+    return 'none';
+  }};
+  color: ${({ isToday, isSelected }) => {
+    if (isToday) return '#fff';
+    if (isSelected) return '#0050d8';
+    return '#747474';
+  }};
+  font-weight: ${({ isToday, isSelected }) => (isToday || isSelected ? '500' : '400')};
   cursor: pointer;
   &:hover {
     background: #e6efff;
-    color: #0050d8;
+    color: ${({ isToday, isSelected }) => {
+      if (isToday) return '#fff';
+      if (isSelected) return '#fff';
+      return '#0050d8';
+    }};
   }
+`;
+
+const DateContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const InterviewDot = styled.div`
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #0050d8;
 `;
 
 export default HistoryCalendar;
