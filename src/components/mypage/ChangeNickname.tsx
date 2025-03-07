@@ -20,6 +20,12 @@ export const ChangeNickname = ({ close }: Props) => {
     }
   };
 
+  const SaveNickname = async () => {
+    if (!error) {
+      // api 호출
+    }
+  };
+
   return (
     <ChangeNicknameWrapper>
       <CloseContainer>
@@ -36,7 +42,7 @@ export const ChangeNickname = ({ close }: Props) => {
             onChange={handleChange}
             $isError={error}
           />
-          <SaveButton $isError={error} $isNickname={nickname}>
+          <SaveButton $isError={error} $isNickname={nickname} onClick={SaveNickname}>
             저장
           </SaveButton>
         </Content>

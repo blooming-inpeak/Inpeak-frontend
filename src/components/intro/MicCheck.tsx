@@ -138,4 +138,8 @@ export const MicSelectButton = styled.div`
   letter-spacing: -0.3px;
 
   cursor: pointer;
+
+  &:hover {
+    background-color: #72a6ff;
+  }
 `;

@@ -91,4 +91,8 @@ export const IntroStartButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+
+  &:hover {
+    background-color: #464f69;
+  }
 `;
