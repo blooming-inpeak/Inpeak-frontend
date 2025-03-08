@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { BeforeVideo } from './BeforeVideo';
 import { Buttons } from './Buttons';
 import { currentMicState, isRecordingState } from '../../store/Record/Record';
@@ -6,6 +5,16 @@ import { useRecoilValue } from 'recoil';
 import { useRef, useState } from 'react';
 import { AnswerVideo } from './AnswerVideo';
 import { useNavigate } from 'react-router-dom';
+import {
+  QuestionBox,
+  QuestionTail,
+  Record,
+  RecordContent,
+  SessionContentBody,
+  SessionContentNumber,
+  SessionContentTop,
+  SessionContentWrapper,
+} from './SessionContentStyle';
 
 interface Props {
   start: boolean;
@@ -17,11 +26,14 @@ export const SessionContent = ({ start, setStart }: Props) => {
   const currentMic = useRecoilValue(currentMicState);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [videoUrl, setVideoUrl] = useState<string>(''); //녹화된 영상 URL 저장
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null); //녹화된 Blob 저장
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null); // 녹음된 Blob 저장
   const [currentPage, setCurrentPage] = useState(1);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(10);
   const lastQuestion = page === currentPage;
+
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -40,19 +52,36 @@ export const SessionContent = ({ start, setStart }: Props) => {
       mediaRecorderRef.current = mediaRecorder;
       setStart(true);
 
-      const chunks: Blob[] = []; // 녹화된 데이터 저장할 배열
+      const videoChunks: Blob[] = []; // 녹화된 데이터 저장할 배열
+      const audioChunks: Blob[] = []; // 녹음 데이터 저장할 배열
 
       mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
-          chunks.push(event.data);
+          videoChunks.push(event.data); // 영상 데이터
+          if (event.data.type.startsWith('audio')) {
+            audioChunks.push(event.data); // 오디오 데이터
+          }
         }
       };
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/webm' }); //WebM 형식으로 저장
-        const url = URL.createObjectURL(blob);
+      mediaRecorder.onstop = async () => {
+        // Blob 형식으로 백엔드로 전송
+        const webmBlob = new Blob(videoChunks, { type: 'video/webm' }); //WebM 형식으로 저장
+        setVideoBlob(webmBlob);
+        // 녹화 확인 코드
+        const url = URL.createObjectURL(webmBlob);
         setVideoUrl(url);
-        setVideoBlob(blob);
+
+        const wavBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        setAudioBlob(wavBlob);
+        // 녹음 확인 코드
+        const audioUrl = URL.createObjectURL(wavBlob);
+        setAudioUrl(audioUrl);
+
+        if (wavBlob) {
+          const audioBase64 = await ConvertBlobToBase64(wavBlob);
+          console.log(audioBase64);
+        }
       };
 
       mediaRecorder.start();
@@ -76,6 +105,18 @@ export const SessionContent = ({ start, setStart }: Props) => {
       setCurrentPage(currentPage + 1);
       setStart(false);
     }
+  };
+
+  // Blob을 Base64 문자열로 변환
+  const ConvertBlobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        if (reader.result) resolve(reader.result.toString().split(',')[1]);
+        else reject('Failed to convert Blob to Base64');
+      };
+    });
   };
 
   return (
@@ -111,102 +152,3 @@ export const SessionContent = ({ start, setStart }: Props) => {
     </SessionContentWrapper>
   );
 };
-
-export const SessionContentWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-
-  border-radius: 0 0 24px 24px;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const SessionContentTop = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  box-sizing: border-box;
-  margin-top: 19.74px;
-  padding: 0 16.13px;
-`;
-
-export const SessionContentNumber = styled.div`
-  width: 32.3px;
-  height: 32.3px;
-
-  border-radius: 8px;
-  border: 1px solid #e6e6e6;
-  background-color: #ffffff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #707991;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.35px;
-`;
-
-export const Record = styled.div<{ $isRecord: boolean }>`
-  width: 22px;
-  height: 18px;
-  padding: 5px 3px;
-  border-radius: 5px;
-  background-color: ${({ $isRecord }) => ($isRecord ? '#f84883' : '#888')};
-`;
-
-export const RecordContent = styled.div<{ $isRecord: boolean }>`
-  width: 22px;
-  height: 18px;
-  border: 1.7px solid #ffffff;
-  box-sizing: border-box;
-  border-radius: 5px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  color: #ffffff;
-  font-size: ${({ $isRecord }) => ($isRecord ? '11px' : '9px')};
-  font-weight: 700;
-  letter-spacing: ${({ $isRecord }) => ($isRecord ? '-0.275px' : '-0.225px')};
-`;
-
-export const SessionContentBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  margin-top: 31px;
-  width: 100%;
-`;
-
-export const QuestionBox = styled.div`
-  width: 445px;
-  min-height: 119px;
-  padding: 24px 24px;
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: #ededed;
-  border-radius: 20px;
-
-  color: #212121;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: -0.4px;
-  text-align: center;
-
-  position: relative;
-`;
-
-export const QuestionTail = styled.img`
-  position: absolute;
-  bottom: -35px;
-  right: 100px;
-`;

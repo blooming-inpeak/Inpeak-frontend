@@ -4,23 +4,26 @@ import { SessionContent } from '../../components/session/SessionContent';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { isRecordingState } from '../../store/Record/Record';
+import { Toast } from '../../components/session/Toast';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
-  const [toast, setToast] = useState(false);
+  // const [toast, setToast] = useState(false);
+  const [toasts, setToasts] = useState<string[]>([]);
   const isRecording = useRecoilValue(isRecordingState);
 
   useEffect(() => {
     if (start) {
-      setToast(true);
-      const timer = setTimeout(() => {
-        setToast(false);
-      }, 2000);
-
-      // 컴포넌트가 언마운트될 떄 타이머를 클리어하여 메모리 누수 방지
-      return () => clearTimeout(timer);
+      if (isRecording) {
+        setToasts(['화면 녹화가 진행중입니다.', 'AI가 당신의 대답을 듣고 있습니다.']);
+      } else {
+        setToasts(['AI가 당신의 대답을 듣고 있습니다.']);
+      }
     }
-  }, [start]);
+    return () => {
+      setToasts([]);
+    };
+  }, [isRecording, start]);
 
   return (
     <SessionWrapper>
@@ -29,10 +32,11 @@ export const SessionPage = () => {
         <SessionContent start={start} setStart={setStart} />
       </SessionBody>
 
-      {toast && (
+      {toasts && (
         <InterviewToastWrapper>
-          {isRecording && <InterviewToast>화면 녹화가 진행중입니다.</InterviewToast>}
-          <InterviewToast>AI가 당신의 대답을 듣고 있습니다.</InterviewToast>
+          {toasts.map((message, index) => (
+            <Toast key={index} index={index} message={message} moveUp={index === 0 && toasts.length === 2} />
+          ))}
         </InterviewToastWrapper>
       )}
     </SessionWrapper>
@@ -59,26 +63,4 @@ export const SessionBody = styled.div`
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 `;
 
-export const InterviewToastWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-
-  position: absolute;
-  left: 24px;
-  bottom: 24px;
-`;
-
-export const InterviewToast = styled.div`
-  padding: 12px 20px;
-
-  border-radius: 12px;
-  background-color: #323b54;
-  box-shadow: 0px 24px 24px 0px rgba(0, 0, 0, 0.04), 0px 0px 100px 0px rgba(0, 80, 216, 0.16);
-
-  color: #fafafa;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: -0.3px;
-`;
+export const InterviewToastWrapper = styled.div``;

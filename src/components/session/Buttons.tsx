@@ -39,8 +39,10 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, lastQu
 };
 
 export const StopButton = styled.div`
-  width: 291px;
-  height: 44px;
+  width: 380px;
+  height: 24px;
+  padding: 10px 26px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,6 +56,10 @@ export const StopButton = styled.div`
   border-radius: 100px;
   margin-top: 45px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #464f69;
+  }
 `;
 
 export const ButtonsWrapper = styled.div`
@@ -82,6 +88,10 @@ export const SkipButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
 `;
 
 export const AnswerButton = styled.div`
@@ -99,4 +109,8 @@ export const AnswerButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+
+  &:hover {
+    background-color: #464f69;
+  }
 `;
