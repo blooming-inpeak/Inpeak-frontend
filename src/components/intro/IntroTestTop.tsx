@@ -63,7 +63,7 @@ export const IntroTestTop = () => {
         gainNodeRef.current = gainNode;
 
         const analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
+        analyser.fftSize = 128;
         analyserRef.current = analyser;
 
         source.connect(gainNode);
@@ -87,6 +87,13 @@ export const IntroTestTop = () => {
     };
   }, [isRecord, currentMic]);
 
+  // 볼륨이 바뀔 때 gainNode에 반영
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = volume;
+    }
+  }, [volume]);
+
   // 볼륨 조절 핸들러
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(event.target.value);
@@ -108,6 +115,7 @@ export const IntroTestTop = () => {
         volume={volume}
         handleVolumeChange={handleVolumeChange}
         analyser={analyserRef.current}
+        setVolume={setVolume}
       />
     </IntroTestTopWrapper>
   );

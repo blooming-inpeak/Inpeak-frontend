@@ -32,9 +32,6 @@ export const SessionContent = ({ start, setStart }: Props) => {
   const [page, setPage] = useState(10);
   const lastQuestion = page === currentPage;
 
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-
   const navigate = useNavigate();
 
   // 녹화 시작
@@ -68,15 +65,10 @@ export const SessionContent = ({ start, setStart }: Props) => {
         // Blob 형식으로 백엔드로 전송
         const webmBlob = new Blob(videoChunks, { type: 'video/webm' }); //WebM 형식으로 저장
         setVideoBlob(webmBlob);
-        // 녹화 확인 코드
-        const url = URL.createObjectURL(webmBlob);
-        setVideoUrl(url);
 
+        // Blob을 Base64로 변환
         const wavBlob = new Blob(audioChunks, { type: 'audio/wav' });
         setAudioBlob(wavBlob);
-        // 녹음 확인 코드
-        const audioUrl = URL.createObjectURL(wavBlob);
-        setAudioUrl(audioUrl);
 
         if (wavBlob) {
           const audioBase64 = await ConvertBlobToBase64(wavBlob);
