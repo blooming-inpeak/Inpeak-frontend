@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
-import ResultPostImg from '../../assets/img/ResultPost.svg';
+import ResultPostVideo from '../../assets/video/ResultPostVideo.mp4'; // mp4 파일 변경 예정
 
 type ResultDataType = {
   question: string;
@@ -63,6 +63,7 @@ export const ProgessResultPage: React.FC = () => {
 
     setTotalTime(calculateTotalTime());
   }, [resultData]);
+
   // 페이지 이동 임의 설정
   const handleFeedbackClick = () => {
     setIsLoading(true);
@@ -103,7 +104,7 @@ export const ProgessResultPage: React.FC = () => {
       </ResultPageWrapper>
       {isLoading && (
         <Overlay>
-          <img src={ResultPostImg} alt="결과 전송 이미지" />
+          <video src={ResultPostVideo} autoPlay muted loop style={{ width: '203px', height: '200px' }} />
           <ProgressBarContainer>
             <ProgressBar />
           </ProgressBarContainer>
@@ -300,7 +301,6 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgb(255, 255, 255);
-  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;

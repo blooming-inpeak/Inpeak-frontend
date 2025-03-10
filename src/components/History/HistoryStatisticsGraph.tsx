@@ -183,12 +183,13 @@ const LabelCircle = styled.circle`
   filter: url(#dropShadow);
 `;
 
-const LabelText = styled.text`
+const LabelText = styled.text.attrs(() => ({
+  dx: '0.05em',
+  dy: '0.4em',
+}))`
   text-anchor: middle;
-  alignment-baseline: middle;
   fill: #212121;
   font-size: 18px;
-  font-style: normal;
   font-weight: 600;
   line-height: 150%;
 `;
