@@ -13,9 +13,10 @@ export const LoginDropdown = () => {
         </LoginDropdownProfile>
 
         <LoginDropdownButton
-          src={`/images/chevron/Chevron_${openModal ? 'top' : 'bottom'}.svg`}
+          src={`/images/chevron/Chevron_bottom.svg`}
           alt="chevron bottom"
           onClick={() => setOpenModal(!openModal)}
+          $openModal={openModal}
         />
       </LoginDropdownTop>
 
@@ -55,7 +56,9 @@ export const LoginDropdownName = styled.div`
   letter-spacing: -0.35px;
 `;
 
-export const LoginDropdownButton = styled.img`
+export const LoginDropdownButton = styled.img<{ $openModal: boolean }>`
   width: 16px;
   cursor: pointer;
+  transform: ${({ $openModal }) => ($openModal ? 'rotate(180deg)' : 'rotate(0)')};
+  transition: transform 0.3s ease;
 `;

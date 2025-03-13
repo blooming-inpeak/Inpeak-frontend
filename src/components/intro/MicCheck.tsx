@@ -40,11 +40,11 @@ export const MicCheck = ({
             }}
           >
             <MicName> {currentMic} </MicName>
-            <img
-              src={isClick ? '/images/chevron/Chevron_up_blue.svg' : '/images/chevron/Chevron_bottom_blue.svg'}
+            <MicListButton
+              src={'/images/chevron/Chevron_bottom_blue.svg'}
               alt="chevron bottom"
-              style={{ cursor: 'pointer', width: '16px', height: '16px' }}
               onClick={() => setIsClick(!isClick)}
+              $isClick={isClick}
             />
           </div>
           <div>
@@ -71,6 +71,14 @@ export const MicCheck = ({
     </MicCheckWrapper>
   );
 };
+
+// const buttonRotate = keyframes`
+//   0%{
+//     rotate: 0;
+//   } 100%{
+//     rotate: 180deg;
+//   }
+// `;
 
 export const MicCheckWrapper = styled.div`
   padding-top: 12px;
@@ -113,6 +121,15 @@ export const MicName = styled.div`
   font-weight: 500;
   letter-spacing: -0.3px;
 `;
+
+export const MicListButton = styled.img<{ $isClick: boolean }>`
+  cursor: 'pointer';
+  width: '16px';
+  height: '16px';
+  transform: ${({ $isClick }) => ($isClick ? 'rotate(180deg)' : 'rotate(0)')};
+  transition: transform 0.3s ease;
+`;
+
 export const MicSelectButton = styled.div`
   width: 80px;
   height: 24px;

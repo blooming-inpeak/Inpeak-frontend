@@ -1,9 +1,20 @@
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import styled from 'styled-components';
+import interviewAnimation from '../lottie/interviewAnimation.json';
+import { useEffect, useRef } from 'react';
 
 export const MainInterview = () => {
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.5);
+    }
+  });
   return (
     <MainInterviewWrapper>
-      <MainInterviewImage src="/images/mainpage/MainInterviewImg.svg" alt="Main Interview Image" />
+      {/* <MainInterviewImage src="/images/mainpage/MainInterviewImg.svg" alt="Main Interview Image" /> */}
+      <Lottie animationData={interviewAnimation} lottieRef={lottieRef} loop={false} />
 
       <MainInterviewContent>
         <MainInterviewTitle>모의면접 연습하기</MainInterviewTitle>
