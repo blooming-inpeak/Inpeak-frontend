@@ -13,7 +13,6 @@ export const MainInterview = () => {
   });
   return (
     <MainInterviewWrapper>
-      {/* <MainInterviewImage src="/images/mainpage/MainInterviewImg.svg" alt="Main Interview Image" /> */}
       <Lottie animationData={interviewAnimation} lottieRef={lottieRef} loop={false} />
 
       <MainInterviewContent>

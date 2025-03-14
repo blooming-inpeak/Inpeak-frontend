@@ -1,11 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { OpenLoginModal } from './OpenLoginModal';
 
 export const LoginDropdown = () => {
+  const dropMenuRef = useRef<HTMLDivElement | null>(null);
   const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    const handleOutSideClose = (e: MouseEvent) => {
+      // useRef current에 담긴 엘리먼트 바깥을 클릭 시 드롭메뉴 닫힘
+      if (openModal && !dropMenuRef.current?.contains(e.target as Node)) {
+        setOpenModal(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutSideClose);
+
+    return () => document.removeEventListener('click', handleOutSideClose);
+  }, [openModal]);
+
   return (
-    <LoginDropdownWrapper $isOpen={openModal}>
+    <LoginDropdownWrapper $isOpen={openModal} ref={dropMenuRef}>
       <LoginDropdownTop>
         <LoginDropdownProfile>
           <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
