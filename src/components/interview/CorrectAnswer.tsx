@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import AnswerSignGray from '../../assets/img/AnswersignGray.svg';
+import AnswerSignBlue from '../../assets/img/AnswersignBlue.svg';
+import AnswerSignEqual from '../../assets/img/AnswersignEqual.svg';
 
 interface AdjustedProps {
   adjusted?: 'small' | 'large';
@@ -40,7 +43,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
           </MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignGray.svg" alt="Sign" />
+        <img src={AnswerSignGray} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
@@ -58,7 +61,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
           <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignBlue.svg" alt="Sign" />
+        <img src={AnswerSignBlue} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
@@ -76,7 +79,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
           <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignEqual.svg" alt="Sign" />
+        <img src={AnswerSignEqual} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
@@ -94,7 +97,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
           <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignBlue.svg" alt="Sign" />
+        <img src={AnswerSignBlue} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle isBlue>평균 정답률</OtherCorrectAnswerTitle>
