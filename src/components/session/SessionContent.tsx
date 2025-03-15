@@ -109,6 +109,10 @@ export const SessionContent = ({ start, setStart }: Props) => {
         else reject('Failed to convert Blob to Base64');
       };
     });
+    setStart(false);
+
+    console.log(videoUrl);
+    console.log(videoBlob);
   };
 
   return (
