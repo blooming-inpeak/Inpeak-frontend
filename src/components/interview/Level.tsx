@@ -36,8 +36,8 @@ export const Level: React.FC<LevelProps> = ({ level, progress, remainingCount })
       </LevelLeft>
       <LevelRight>
         <LevelContent>
-          <LevelNumber data-content={String(level)}>{level}</LevelNumber>
           <LevelText>Lv.</LevelText>
+          <LevelNumber data-content={String(level)}>{level}</LevelNumber>
         </LevelContent>
         <ProgressBar>
           <ProgressBarFill width={`${progress}%`} />
@@ -78,52 +78,50 @@ export const LevelRight = styled.div`
   height: 224px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   box-sizing: border-box;
-  padding-left: 30px;
-  border-radius: 24px;
+  padding: 40px 40px 40px 30px;
+  border-radius: 0px 24px 24px 0px;
   background: rgba(133, 178, 255, 0.4);
   backdrop-filter: blur(40px);
 `;
 
 export const LevelContent = styled.div`
+  width: 62px;
+  height: 60px;
   display: flex;
-  gap: 10px;
+  gap: 6px;
   align-items: flex-end;
+  align-self: flex-end;
 `;
 
 export const LevelNumber = styled.div`
   color: #ffffff;
   font-size: 60px;
-  font-weight: 900;
   line-height: 100%;
-  letter-spacing: -2.4px;
   position: relative;
   z-index: 1;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 
   &::before {
     content: attr(data-content);
     position: absolute;
     z-index: -1;
-    -webkit-text-stroke: 13px #3277ed;
+    -webkit-text-stroke: 16px #3277ed;
   }
 `;
 
 export const LevelText = styled.div`
-  color: var(--text-1700, #fff);
+  color: #3277ed;
   font-size: 18px;
   font-weight: 600;
   line-height: 150%;
 `;
 
 export const LevelNextNum = styled.div`
-  width: 131px;
-  height: 29px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  background: var(--brand-subtle, #c3daff);
   color: var(--brand-darker, #0050d8);
   font-size: 14px;
   font-weight: 500;
@@ -138,7 +136,7 @@ export const ProgressBar = styled.div`
   background: var(--brand-subtle, #c3daff);
   border-radius: 4px;
   overflow: hidden;
-  margin-top: 24px;
+  margin-top: 12px;
 `;
 
 export const ProgressBarFill = styled.div<ProgressBarFillProps>`

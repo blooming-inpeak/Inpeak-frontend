@@ -133,6 +133,9 @@ export const HistoryCalendar = () => {
     return sampleInterviewData.find(item => item.date === formatted);
   };
 
+  // 인터뷰 데이터 전체가 존재하는지 여부 확인
+  const overallHasData = sampleInterviewData.length > 0;
+
   // 선택된 인터뷰의 질문들을 기준으로 총 소요시간 계산
   const getTotalTime = (questions: Question[]) => {
     const totalMinutes = questions.reduce((acc, q) => {
@@ -229,8 +232,12 @@ export const HistoryCalendar = () => {
     <Container>
       <LeftSection>
         <DateInfo>
-          <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
-          <TimeText>{interviewForSelectedDate ? getTotalTime(interviewForSelectedDate.questions) : '00:00'}</TimeText>
+          {interviewForSelectedDate && (
+            <>
+              <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
+              <TimeText>{getTotalTime(interviewForSelectedDate.questions)}</TimeText>
+            </>
+          )}
         </DateInfo>
         {interviewForSelectedDate ? (
           <QuestionList>
@@ -249,11 +256,21 @@ export const HistoryCalendar = () => {
           </QuestionList>
         ) : (
           <NoResultMessage>
-            해당 날짜에 진행된
-            <br /> 모의면접 결과가 없습니다
+            {overallHasData ? (
+              <>
+                해당 날짜에 진행된
+                <br /> 모의면접 결과가 없습니다
+              </>
+            ) : (
+              <>
+                현재까지 진행된
+                <br /> 모의면접 결과가 없습니다
+              </>
+            )}
           </NoResultMessage>
         )}
       </LeftSection>
+
       <RightSection>
         {renderHeader()}
         {renderDays()}
@@ -272,13 +289,13 @@ const Container = styled.div`
   box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
   display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const LeftSection = styled.div`
   flex: 1;
   display: flex;
+  width: 242px;
+  height: 321px;
   flex-direction: column;
   height: 100%;
   border-right: 1px solid #e6efff;
@@ -287,9 +304,13 @@ const LeftSection = styled.div`
 
 const DateInfo = styled.div`
   display: flex;
+  width: 100%;
+  height: 68px;
   justify-content: space-between;
+  gap: auto;
   box-sizing: border-box;
   padding: 30px 30px 15px 30px;
+  background: #fbfdff;
   border-bottom: 1px solid #e6efff;
 `;
 
@@ -298,6 +319,7 @@ const DateText = styled.div`
   font-size: 15px;
   font-weight: 600;
   line-height: 150%;
+  box-sizing: border-box;
 `;
 
 const TimeText = styled.div`
@@ -306,6 +328,7 @@ const TimeText = styled.div`
   font-weight: 500;
   line-height: 150%;
   letter-spacing: -0.3px;
+  box-sizing: border-box;
 `;
 
 const QuestionList = styled.div`
@@ -313,6 +336,7 @@ const QuestionList = styled.div`
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  box-sizing: border-box;
 `;
 
 const QuestionItem = styled.div`
