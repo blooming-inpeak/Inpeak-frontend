@@ -21,7 +21,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ answer }) => {
       <BottomBox>
         <TimeText>{answer.time}</TimeText>
         <ButtonGroup>
-          <MultiCaption type="오답-top" />
+          <MultiCaption type="오답-large" />
           <MultiCaption type="이해완료" />
         </ButtonGroup>
       </BottomBox>

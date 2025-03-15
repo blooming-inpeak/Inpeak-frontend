@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 import { AnsweredList } from '../components/history/AnsweredList';
 import { WrongNoteList } from '../components/history/WrongNoteList';
 import { HistoryStatistics } from '../components/history/HistoryStatistics';

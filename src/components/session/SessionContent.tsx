@@ -65,6 +65,9 @@ export const SessionContent = ({ start, setStart }: Props) => {
       streamRef.current.getTracks().forEach(track => track.stop());
     }
     setStart(false);
+
+    console.log(videoUrl);
+    console.log(videoBlob);
   };
 
   return (
