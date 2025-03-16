@@ -5,7 +5,7 @@ import { RecordCheck } from './RecordCheck';
 import { RecordTest } from './RecordTest';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { currentMicState, isRecordingState } from '../../store/Record/Record';
+import { currentMicState, isRecordingState } from '../../store/record/Record';
 
 export const IntroTestTop = () => {
   const [isRecord, setIsRecord] = useRecoilState(isRecordingState);

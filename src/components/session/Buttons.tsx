@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { PassQuestion } from '../../api/question/question';
 
@@ -7,19 +7,23 @@ interface Props {
   startRecording: () => void;
   stopRecording: () => void;
   nextPage: () => void;
+  currentPage: number;
   lastQuestion: boolean;
 }
 
-export const Buttons = ({ start, startRecording, stopRecording, nextPage, lastQuestion }: Props) => {
+export const Buttons = ({ start, startRecording, stopRecording, nextPage, currentPage, lastQuestion }: Props) => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const onPassQuestion = async () => {
-    const data = await PassQuestion();
-    console.log(data);
-    if (lastQuestion) {
-      navigate('/interview/result');
-    } else {
-      nextPage();
+    if (id) {
+      const data = await PassQuestion(String(currentPage), id);
+      console.log(data);
+      if (lastQuestion) {
+        navigate('/interview/result');
+      } else {
+        nextPage();
+      }
     }
   };
   return (

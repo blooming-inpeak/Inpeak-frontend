@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ExitInterview } from './ExitInterview';
+import { useRecoilState } from 'recoil';
+import { TimeState } from '../../store/time/Time';
 
 interface Props {
   start: boolean;
   setStart: (check: boolean) => void;
+  stopRecording: () => void;
 }
 
-export const SessionTop = ({ start, setStart }: Props) => {
-  const [time, setTime] = useState(300);
+export const SessionTop = ({ start, setStart, stopRecording }: Props) => {
+  const [time, setTime] = useRecoilState(TimeState);
   const [isClick, setIsClick] = useState(false);
 
   useEffect(() => {
@@ -19,6 +22,7 @@ export const SessionTop = ({ start, setStart }: Props) => {
       interval = setInterval(() => {
         setTime(prevTime => {
           if (prevTime <= 0) {
+            stopRecording();
             clearInterval(interval); // 타이머 종료
             setStart(false);
             return 0;

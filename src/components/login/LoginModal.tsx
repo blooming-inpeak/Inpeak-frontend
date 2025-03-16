@@ -11,13 +11,19 @@ import {
   LoginTitle,
 } from './LoginModalStyle';
 import { PrivacyPolicyModal } from '../common/policy/Policy';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
 }
 
 export const LoginModal = ({ setOpenLogin }: Props) => {
+  const navigate = useNavigate();
   const [isPolicy, setIsPolicy] = useState('');
+
+  const onClickKaKaoLogin = () => {
+    navigate('https://inpeak.kr/login/oauth2/code/kakao');
+  };
 
   const onClickClose = () => {
     setOpenLogin(false);
@@ -47,7 +53,7 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
         <LoginFooter>
           <LoginKakaotalk>
             <img src="/images/KakaoTalk.svg" alt="kakaotalk" style={{ width: '17px', fill: '#212121' }} />
-            <KaKaoTalkTitle>카카오로 로그인/회원가입</KaKaoTalkTitle>
+            <KaKaoTalkTitle onClick={onClickKaKaoLogin}>카카오로 로그인/회원가입</KaKaoTalkTitle>
           </LoginKakaotalk>
 
           <LoginTerms>
