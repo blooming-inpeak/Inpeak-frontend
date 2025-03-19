@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import InterviewStatistics from './InterviewStatistics';
+import axios from 'axios';
 
 interface LevelProps {
   level: number;
@@ -12,26 +13,38 @@ interface ProgressBarFillProps {
   width: string;
 }
 
-const totalPracticeTime = '01시간 35분';
-const totalQuestions = 30;
-const totalPracticeCount = '10번';
-const correctCount = 21;
-const wrongCount = 3;
-const giveUpCount = 6;
+interface StatisticsData {
+  totalPracticeTime: string;
+  totalQuestions: number;
+  totalPracticeCount: string;
+  correctCount: number;
+  wrongCount: number;
+  giveUpCount: number;
+}
 
 export const Level: React.FC<LevelProps> = ({ level, progress, remainingCount }) => {
+  const [stats, setStats] = useState<StatisticsData | null>(null);
+
+  useEffect(() => {
+    axios.get('/public/sampledata/historyStatistics.json').then(response => {
+      setStats(response.data);
+    });
+  }, []);
+
   return (
     <LevelWrapper>
       <LevelLeft>
         <LevelStatisticsBox>
-          <InterviewStatistics
-            totalPracticeTime={totalPracticeTime}
-            totalQuestions={totalQuestions}
-            totalPracticeCount={totalPracticeCount}
-            correctCount={correctCount}
-            wrongCount={wrongCount}
-            giveUpCount={giveUpCount}
-          />
+          {stats && (
+            <InterviewStatistics
+              totalPracticeTime={stats.totalPracticeTime}
+              totalQuestions={stats.totalQuestions}
+              totalPracticeCount={stats.totalPracticeCount}
+              correctCount={stats.correctCount}
+              wrongCount={stats.wrongCount}
+              giveUpCount={stats.giveUpCount}
+            />
+          )}
         </LevelStatisticsBox>
       </LevelLeft>
       <LevelRight>
@@ -47,6 +60,8 @@ export const Level: React.FC<LevelProps> = ({ level, progress, remainingCount })
     </LevelWrapper>
   );
 };
+
+export default Level;
 
 export const LevelWrapper = styled.div`
   width: 456px;
@@ -133,7 +148,7 @@ export const LevelNextNum = styled.div`
 export const ProgressBar = styled.div`
   width: 130px;
   height: 10px;
-  background: var(--brand-subtle, #c3daff);
+  background: #eff5ff;
   border-radius: 4px;
   overflow: hidden;
   margin-top: 12px;
@@ -142,6 +157,6 @@ export const ProgressBar = styled.div`
 export const ProgressBarFill = styled.div<ProgressBarFillProps>`
   width: ${props => props.width};
   height: 100%;
-  background: var(--brand-darker, #c4f752);
+  background: #c4f752;
   border-radius: 4px;
 `;

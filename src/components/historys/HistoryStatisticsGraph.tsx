@@ -141,13 +141,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
 export default HistoryStatisticsGraph;
 
 const SVGWrapper = styled.div`
-  width: 282.8px;
-  height: 282.8px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  flex-shrink: 0;
 `;
 
 const StyledSVG = styled.svg`

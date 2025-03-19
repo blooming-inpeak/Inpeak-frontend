@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import {
   format,
@@ -29,114 +30,37 @@ interface InterviewData {
   questions: Question[];
 }
 
-// 예시 모의면접 데이터
-const sampleInterviewData: InterviewData[] = [
-  {
-    date: '2025-02-05',
-    interviewId: 101,
-    questions: [
-      {
-        id: 1,
-        question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?',
-        time: '01:25',
-        status: '정답',
-      },
-      {
-        id: 2,
-        question: '이전 프로젝트에서 팀워크 경험을 공유해 주세요.',
-        time: '00:45',
-        status: '오답',
-      },
-    ],
-  },
-  {
-    date: '2025-02-10',
-    interviewId: 102,
-    questions: [
-      {
-        id: 3,
-        question: '본인의 강점과 약점에 대해 설명해 주세요.',
-        time: '00:50',
-        status: '포기',
-      },
-      {
-        id: 4,
-        question: '최근에 해결한 문제에 대해 말씀해 주세요.',
-        time: '01:05',
-        status: '정답',
-      },
-    ],
-  },
-  {
-    date: '2025-02-15',
-    interviewId: 103,
-    questions: [
-      {
-        id: 5,
-        question: '프로젝트 관리 경험에 대해 설명해 주세요.',
-        time: '01:15',
-        status: '오답',
-      },
-      {
-        id: 6,
-        question: '문제 해결 과정을 설명해 주세요.',
-        time: '00:40',
-        status: '정답',
-      },
-    ],
-  },
-  {
-    date: '2025-02-20',
-    interviewId: 104,
-    questions: [
-      {
-        id: 7,
-        question: '협업 경험에 대해 구체적으로 설명해 주세요.',
-        time: '01:10',
-        status: '포기',
-      },
-    ],
-  },
-  {
-    date: '2025-02-25',
-    interviewId: 105,
-    questions: [
-      {
-        id: 8,
-        question: '업무 중 발생한 갈등을 어떻게 해결했는지 설명해 주세요.',
-        time: '00:55',
-        status: '오답',
-      },
-      {
-        id: 9,
-        question: '자신의 경력 목표에 대해 말씀해 주세요.',
-        time: '01:20',
-        status: '정답',
-      },
-      {
-        id: 10,
-        question: '최근 읽은 책에 대해 공유해 주세요.',
-        time: '00:35',
-        status: '포기',
-      },
-    ],
-  },
-];
-
 export const HistoryCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const initialDate = new Date();
+  const [currentDate, setCurrentDate] = useState(initialDate);
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [interviewData, setInterviewData] = useState<InterviewData[]>([]);
 
-  // 선택된 날짜에 해당하는 인터뷰 데이터 조회 (날짜 형식: yyyy-MM-dd)
+  useEffect(() => {
+    const fetchInterviewData = async () => {
+      const month = format(currentDate, 'M');
+      const year = format(currentDate, 'yyyy');
+      try {
+        const response = await axios.get<InterviewData[]>('public/sampledata/sampleInterviewData.json', {
+          params: { month, year },
+          // headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        setInterviewData(response.data);
+      } catch (error) {
+        console.error('인터뷰 캘린더 데이터를 불러오는데 실패했습니다.', error);
+        setInterviewData([]);
+      }
+    };
+    fetchInterviewData();
+  }, [currentDate]);
+
   const getInterviewByDate = (date: Date) => {
     const formatted = format(date, 'yyyy-MM-dd');
-    return sampleInterviewData.find(item => item.date === formatted);
+    return interviewData.find(item => item.date === formatted);
   };
 
-  // 인터뷰 데이터 전체가 존재하는지 여부 확인
-  const overallHasData = sampleInterviewData.length > 0;
+  const overallHasData = interviewData.length > 0;
 
-  // 선택된 인터뷰의 질문들을 기준으로 총 소요시간 계산
   const getTotalTime = (questions: Question[]) => {
     const totalMinutes = questions.reduce((acc, q) => {
       const [hours, minutes] = q.time.split(':').map(Number);
@@ -159,12 +83,14 @@ export const HistoryCalendar = () => {
     <>
       <CalendarHeader>
         <span>{format(currentDate, 'yyyy. MM')}</span>
-        <NavButton onClick={prevMonth}>
-          <img src={LeftArrow} alt="전월로 돌아가기" />
-        </NavButton>
-        <NavButton onClick={nextMonth}>
-          <img src={RightArrow} alt="다음 월로 넘어가기" />
-        </NavButton>
+        <div id="button-container">
+          <NavButton onClick={prevMonth}>
+            <img src={LeftArrow} alt="전월로 돌아가기" />
+          </NavButton>
+          <NavButton onClick={nextMonth}>
+            <img src={RightArrow} alt="다음 월로 넘어가기" />
+          </NavButton>
+        </div>
       </CalendarHeader>
       <CalendarStroke />
     </>
@@ -293,25 +219,25 @@ const Container = styled.div`
 
 const LeftSection = styled.div`
   flex: 1;
-  display: flex;
   width: 242px;
   height: 321px;
+  display: flex;
   flex-direction: column;
-  height: 100%;
   border-right: 1px solid #e6efff;
   box-sizing: border-box;
 `;
 
+// [Left Section: Date & Question List]
 const DateInfo = styled.div`
   display: flex;
   width: 100%;
   height: 68px;
   justify-content: space-between;
-  gap: auto;
-  box-sizing: border-box;
+  align-items: center;
   padding: 30px 30px 15px 30px;
   background: #fbfdff;
   border-bottom: 1px solid #e6efff;
+  box-sizing: border-box;
 `;
 
 const DateText = styled.div`
@@ -319,7 +245,6 @@ const DateText = styled.div`
   font-size: 15px;
   font-weight: 600;
   line-height: 150%;
-  box-sizing: border-box;
 `;
 
 const TimeText = styled.div`
@@ -341,13 +266,13 @@ const QuestionList = styled.div`
 
 const QuestionItem = styled.div`
   width: 245px;
-  height: 108px;
+  min-height: 108px;
   border-bottom: 1px solid #e6efff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-sizing: border-box;
   padding: 16px 30px;
+  box-sizing: border-box;
   &:last-child {
     border-bottom: none;
   }
@@ -363,6 +288,7 @@ const QuestionTitle = styled.div`
 `;
 
 const QuestionText = styled.div`
+  width: 150px;
   overflow: hidden;
   color: #212121;
   text-overflow: ellipsis;
@@ -388,25 +314,26 @@ const QuestionTime = styled.div`
 
 const NoResultMessage = styled.div`
   padding-top: 90.5px;
-  font-size: 14px;
   text-align: center;
   color: #747474;
   font-size: 14px;
-  font-style: normal;
   font-weight: 500;
   line-height: 150%;
   letter-spacing: -0.35px;
 `;
 
+// [Right Section: Calendar Header & Body]
+
 const RightSection = styled.div`
-  width: 308px;
+  width: 311px;
   height: 321px;
 `;
 
 const CalendarHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 30.32px 24px 12.68px 24px;
+  padding: 34px 24px 0px 36px;
+  box-sizing: border-box;
   span {
     color: #202a43;
     text-align: center;
@@ -414,13 +341,18 @@ const CalendarHeader = styled.div`
     font-weight: 600;
     line-height: 150%;
   }
+  #button-container {
+    display: flex;
+    gap: 24px;
+  }
 `;
 
 const CalendarStroke = styled.div`
-  width: 251px;
+  width: 260px;
   height: 0.8px;
-  background: #747474;
+  background: #e6efff;
   margin: 0 auto;
+  margin-top: 10px;
   margin-bottom: 10px;
 `;
 
@@ -428,42 +360,46 @@ const NavButton = styled.button`
   cursor: pointer;
 `;
 
+// [Calendar Days Header]
 const DaysRow = styled.div`
   display: flex;
-  box-sizing: border-box;
   padding: 0px 24px;
-  gap: 6px;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+  align-self: stretch;
+  box-sizing: border-box;
 `;
 
 const Day = styled.div<{ isSunday?: boolean; isSaturday?: boolean }>`
-  width: 32px;
-  text-align: center;
+  width: 24px;
+  height: 28px;
   font-size: 13px;
-  font-style: normal;
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.325px;
   color: ${({ isSaturday, isSunday }) => (isSaturday ? '#3277ED' : isSunday ? '#FF6B6B' : '#747474')};
 `;
 
+// [Calendar Body: Dates]
 const Body = styled.div`
-  width: 308px;
-  height: 184px;
-  padding: 8px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 24px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
 `;
 
 const Row = styled.div`
   display: flex;
-  box-sizing: border-box;
-  gap: 14px;
-  padding: 6px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 
-const DateCell = styled.div<{
-  isToday?: boolean;
-  isSelected?: boolean;
-  isSameMonth?: boolean;
-}>`
+const DateCell = styled.div<{ isToday?: boolean; isSelected?: boolean; isSameMonth?: boolean }>`
   position: relative;
   width: 24px;
   height: 24px;
@@ -472,32 +408,20 @@ const DateCell = styled.div<{
   justify-content: center;
   font-size: 12px;
   border-radius: 50%;
-  background: ${({ isToday, isSelected }) => {
-    if (isToday) return '#3277ED';
-    if (isSelected) return '#C3DAFF';
-    return 'none';
-  }};
-  color: ${({ isToday, isSelected }) => {
-    if (isToday) return '#fff';
-    if (isSelected) return '#0050d8';
-    return '#747474';
-  }};
-  font-weight: ${({ isToday, isSelected }) => (isToday || isSelected ? '500' : '400')};
+  background: ${({ isToday, isSelected }) => (isToday ? '#3277ED' : isSelected ? '#C3DAFF' : 'none')};
+  color: ${({ isToday, isSelected }) => (isToday ? '#fff' : isSelected ? '#0050D8' : '#747474')};
+  font-weight: 400;
   cursor: pointer;
   &:hover {
-    background: #e6efff;
-    color: ${({ isToday, isSelected }) => {
-      if (isToday) return '#fff';
-      if (isSelected) return '#fff';
-      return '#0050d8';
-    }};
+    background: ${({ isToday }) => (isToday ? '#3277ED' : '#e6efff')};
+    color: ${({ isToday, isSelected }) => (isToday ? '#fff' : isSelected ? '#fff' : '#0050d8')};
   }
 `;
 
 const DateContent = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 const InterviewDot = styled.div`
@@ -508,7 +432,7 @@ const InterviewDot = styled.div`
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: #0050d8;
+  background: #85b2ff;
 `;
 
 export default HistoryCalendar;

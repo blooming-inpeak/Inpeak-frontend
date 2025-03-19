@@ -3,7 +3,8 @@ import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
 import { Level } from '../components/interview/Level';
 import { AskHistory } from '../components/interview/AskHistory';
-import BackgroundImage from '../assets/img/background.svg';
+import BackgroundImage from '../assets/img/banner/footprint_1280.png';
+import ResponsiveBackgroundImage from '../assets/img/banner/footprint_1024.png';
 import AdImage from '../assets/img/LevelCharacter.svg';
 import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
@@ -18,7 +19,7 @@ export const InterviewPage = () => {
       <InterviewWrapper>
         <InterviewTop>
           <div id="bannerTop">
-            <CorrectAnswer cumulative={80} average={70} />
+            <CorrectAnswer cumulative={70} average={65} />
             <InterviewChance chance={chance} />
           </div>
           <div id="bannerBottom">
@@ -70,6 +71,12 @@ export const InterviewWrapper = styled.div`
     background-position: center;
     background-size: cover;
   }
+
+  @media (max-width: 768px) {
+    &::before {
+      background-image: url(${ResponsiveBackgroundImage});
+    }
+  }
 `;
 
 export const InterviewTop = styled.div`
@@ -82,7 +89,7 @@ export const InterviewTop = styled.div`
   #bannerTop {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+
     width: 100%;
   }
 
@@ -116,7 +123,6 @@ export const InterviewTop = styled.div`
   }
 `;
 
-// disabled일 때 클릭이 되지 않도록 스타일 추가
 export const InterviewButton = styled(Link)<{ disabled?: boolean }>`
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
   width: 352px;
