@@ -1,12 +1,17 @@
 import styled from 'styled-components';
 import { MainIntroTop } from './MainIntroTop';
 import { MainIntroBody } from './MainIntroBody';
+import Lottie from 'lottie-react';
+import mainTopAnimation from '../lottie/mainTopAnimation.json';
 
 export const MainIntro = () => {
   return (
     <MainIntroWrapper>
       <MainIntroTop />
       <MainIntroBody />
+      <MainTopLottie>
+        <Lottie animationData={mainTopAnimation} />
+      </MainTopLottie>
     </MainIntroWrapper>
   );
 };
@@ -17,6 +22,7 @@ export const MainIntroWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 
   padding-bottom: 40px;
   gap: 300px;
@@ -29,4 +35,9 @@ export const MainIntroWrapper = styled.div`
     rgba(183, 209, 253, 0.03) 93.5%,
     rgba(195, 218, 255, 0) 100%
   );
+`;
+
+export const MainTopLottie = styled.div`
+  position: absolute;
+  top: 15px;
 `;

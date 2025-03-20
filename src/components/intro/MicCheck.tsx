@@ -36,18 +36,19 @@ export const MicCheck = ({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-end',
-              padding: '  4px 6px 4px 10px',
+              width: '236px',
+              padding: '4px 6px 4px 10px',
             }}
           >
             <MicName> {currentMic} </MicName>
-            <MicListButton
-              src={'/images/chevron/Chevron_bottom_blue.svg'}
+            <img
+              src={isClick ? '/images/chevron/Chevron_up_blue.svg' : '/images/chevron/Chevron_bottom_blue.svg'}
               alt="chevron bottom"
+              style={{ cursor: 'pointer', width: '16px', height: '16px' }}
               onClick={() => setIsClick(!isClick)}
-              $isClick={isClick}
             />
           </div>
-          <div>
+          <div style={{ backgroundColor: 'rgba(214, 230, 255, 0.2)' }}>
             {isClick &&
               micList.map((mic, index) => (
                 <MicList name={mic.label} setCurrentMic={setCurrentMic} isClose={() => setIsClick(false)} key={index} />
@@ -72,14 +73,6 @@ export const MicCheck = ({
   );
 };
 
-// const buttonRotate = keyframes`
-//   0%{
-//     rotate: 0;
-//   } 100%{
-//     rotate: 180deg;
-//   }
-// `;
-
 export const MicCheckWrapper = styled.div`
   padding-top: 12px;
   display: flex;
@@ -96,11 +89,11 @@ export const MicCheckTitle = styled.div`
 export const MicSelectContent = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  gap: 8px;
 `;
 
 export const MicSelect = styled.div`
-  width: 236px;
+  width: 252px;
   height: auto;
 
   display: flex;
@@ -109,13 +102,17 @@ export const MicSelect = styled.div`
   border: 1px solid #3277ed;
   border-radius: 4px;
   background-color: #fbfdff;
+`;
 
-  overflow: hidden;
+export const MicMenu = styled.div`
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 `;
 
 export const MicName = styled.div`
-  overflow-x: hidden;
-  width: 220px;
   color: #3277ed;
   font-size: 12px;
   font-weight: 500;

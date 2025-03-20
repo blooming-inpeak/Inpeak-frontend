@@ -79,6 +79,9 @@ export const MainIntroTopButton = styled.div`
   background-color: #202a43;
 
   cursor: pointer;
+  &:hover {
+    background-color: #464f69;
+  }
 `;
 
 export const MainIntroTopButtonText = styled.div`

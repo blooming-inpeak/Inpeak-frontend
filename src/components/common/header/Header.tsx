@@ -33,6 +33,7 @@ export const Header = () => {
               >
                 히스토리
               </MenuItem>
+              <Divider />
             </MenuItems>
           </HeaderRight>
           <HeaderLeft>

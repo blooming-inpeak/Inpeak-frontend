@@ -1,9 +1,13 @@
 import styled from 'styled-components';
+import historyAnimation from '../lottie/historyAnimation.json';
+import Lottie from 'lottie-react';
 
 export const MainHistory = () => {
   return (
     <MainHistoryWrapper>
-      <MainHistoryImg src="/images/mainpage/MainHistoryImg.svg" alt="main History" />
+      <MainHistoryImg>
+        <Lottie animationData={historyAnimation} />
+      </MainHistoryImg>
 
       <MainHistoryContent>
         <MainHistoryTitle>히스토리 모아보기</MainHistoryTitle>
@@ -31,9 +35,14 @@ export const MainHistoryWrapper = styled.div`
   margin-bottom: 100px;
 `;
 
-export const MainHistoryImg = styled.img`
+export const MainHistoryImg = styled.div`
   width: 780px;
   height: 461px;
+
+  border-radius: 12px;
+  box-shadow: 0px 0px 32px 0px rgba(0, 80, 216, 0.04), 0px 16px 8px 0px rgba(50, 59, 84, 0.08);
+
+  overflow: hidden;
 `;
 
 export const MainHistoryContent = styled.div`

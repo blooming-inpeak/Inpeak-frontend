@@ -4,12 +4,26 @@ import styled from 'styled-components';
 interface Props {
   name: string;
   color: string;
+  setSelect: React.Dispatch<React.SetStateAction<string[]>>;
+  select: string[];
 }
 
-export const Button = ({ name, color }: Props) => {
+export const Button = ({ name, color, setSelect, select }: Props) => {
   const [isClick, setIsClick] = useState(false);
+
+  const onClickButton = () => {
+    const nextClick = !isClick;
+    setIsClick(!isClick);
+    if (nextClick) {
+      setSelect((prev: string[]) => [...prev, name.toUpperCase()]);
+    } else {
+      const newSelect = select.filter(type => type.toUpperCase() !== name.toUpperCase());
+      setSelect(newSelect);
+    }
+  };
+
   return (
-    <ButtonWrapper onClick={() => setIsClick(!isClick)} $isClick={isClick}>
+    <ButtonWrapper onClick={onClickButton} $isClick={isClick}>
       <ButtonIcon style={{ backgroundColor: color }}>
         <img src={`/images/stackIcon/${name}.svg`} />
       </ButtonIcon>

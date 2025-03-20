@@ -99,8 +99,9 @@ export const SkipButton = styled.div`
 `;
 
 export const AnswerButton = styled.div`
-  width: 267px;
-  height: 44px;
+  width: 380px;
+  height: 24px;
+  padding: 10px 26px;
 
   display: flex;
   align-items: center;

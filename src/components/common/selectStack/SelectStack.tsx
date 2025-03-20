@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from './Button';
 import {
   SelectStackBody,
@@ -12,6 +13,7 @@ import {
 
 export const SelectStack = ({ onClose }: { onClose: () => void }) => {
   const pathname = window.location.pathname;
+  const [select, setSelect] = useState<string[]>([]); // 관심분야 선택한 항목 넣을 배열
   return (
     <SelectStackWrapper>
       <img
@@ -33,9 +35,9 @@ export const SelectStack = ({ onClose }: { onClose: () => void }) => {
           </SelectStackContentTop>
 
           <SelectStackContentBottom>
-            <Button name={'React'} color={'#1BC0E7'} />
-            <Button name={'Spring'} color={'#ffffff'} />
-            <Button name={'Database'} color={'#FFC813'} />
+            <Button name={'React'} color={'#1BC0E7'} setSelect={setSelect} select={select} />
+            <Button name={'Spring'} color={'#ffffff'} setSelect={setSelect} select={select} />
+            <Button name={'Database'} color={'#FFC813'} setSelect={setSelect} select={select} />
           </SelectStackContentBottom>
         </SelectStackContent>
 

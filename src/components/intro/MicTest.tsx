@@ -124,6 +124,7 @@ export const MicTestComplete = styled.div`
   font-size: 10px;
   font-weight: 500;
   letter-spacing: -0.25px;
+  line-height: 150%;
 
   &:hover {
     background-color: #72a6ff;
