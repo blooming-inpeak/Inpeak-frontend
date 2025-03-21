@@ -1,6 +1,20 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { GetInterest } from '../../api/getInterest/GetInterest';
 
 export const MyStack = () => {
+  const [myInterest, setMyInterest] = useState<string[]>(['React', 'Spring']);
+
+  useEffect(() => {
+    const getMyInterest = async () => {
+      const data = await GetInterest();
+      console.log(data);
+      setMyInterest(data.interests);
+    };
+
+    getMyInterest();
+  }, []);
+
   return (
     <MyStackWrapper>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -8,7 +22,16 @@ export const MyStack = () => {
         <MyStackSubTitle>마이페이지에서 변경 할 수 있어요</MyStackSubTitle>
       </div>
 
-      <MyStackContent>React, Spring</MyStackContent>
+      <MyStackContent>
+        {myInterest.map((interest, index) => {
+          return (
+            <>
+              <span>{interest}</span>
+              {myInterest.length - 1 !== index && <span>, </span>}
+            </>
+          );
+        })}
+      </MyStackContent>
     </MyStackWrapper>
   );
 };

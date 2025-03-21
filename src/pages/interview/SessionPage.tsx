@@ -77,7 +77,7 @@ export const SessionPage = () => {
     }
   };
 
-  // 녹화 중지
+  // 답변 끝내기
   const stopRecording = async () => {
     console.log(300 - time);
     if (mediaRecorderRef.current) {

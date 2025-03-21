@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
 
 interface Props {
   close: () => void;
 }
 
 export const ChangeNickname = ({ close }: Props) => {
-  const [nickname, setNickname] = useState('');
-  const [error, setError] = useState('');
+  const [nickname, setNickname] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -21,8 +22,9 @@ export const ChangeNickname = ({ close }: Props) => {
   };
 
   const SaveNickname = async () => {
-    if (!error) {
-      // api 호출
+    if (!error && nickname.length !== 0) {
+      const data = await SaveNicknameAPI(nickname);
+      console.log(data);
     }
   };
 
