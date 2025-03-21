@@ -30,6 +30,7 @@ export const MainIntroTopWrapper = styled.div`
   justify-content: center;
 
   margin-top: 65px;
+  position: relative;
 `;
 
 export const MainIntroTopBox = styled.div`

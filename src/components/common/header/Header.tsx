@@ -3,13 +3,13 @@ import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, Menu
 // import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
 import { Login } from '../../login/LoginButton';
 
-export const Header = () => {
+export const Header = ({ isState }: { isState: string }) => {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
   return (
     <>
-      <HeaderContainer>
+      <HeaderContainer $isState={isState}>
         <NavBar>
           <HeaderRight>
             <Logo src="/images/Logo.svg" alt="logo" onClick={() => navigate('/')} />

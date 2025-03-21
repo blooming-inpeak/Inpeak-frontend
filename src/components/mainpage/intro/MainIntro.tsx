@@ -22,7 +22,6 @@ export const MainIntroWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
 
   padding-bottom: 40px;
   gap: 300px;
@@ -36,7 +35,6 @@ export const MainIntroWrapper = styled.div`
     rgba(195, 218, 255, 0) 100%
   );
 `;
-
 export const MainTopLottie = styled.div`
   position: absolute;
   top: 15px;
