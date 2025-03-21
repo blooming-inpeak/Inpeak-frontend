@@ -7,20 +7,17 @@ export const MainInterview = () => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [showImage, setShowImage] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (lottieRef.current) {
-      lottieRef.current.setSpeed(0.5);
+      lottieRef.current.setSpeed(1);
     }
 
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // 스클로 진입: 이미지 숨기고 열림 애니메이션 실행
-            setShowImage(false);
             setIsClosing(false);
 
             lottieRef.current?.setDirection(1);
@@ -35,7 +32,7 @@ export const MainInterview = () => {
         });
       },
       {
-        threshold: 0.8, // 요소기 50% 보일 때 트리거
+        threshold: 0.6, // 요소기 60% 보일 때 트리거
       },
     );
 
@@ -54,17 +51,12 @@ export const MainInterview = () => {
 
   const handleComplete = () => {
     if (isClosing) {
-      setShowImage(true);
       setIsClosing(false);
     }
   };
   return (
     <MainInterviewWrapper ref={containerRef}>
-      {showImage ? (
-        <img src="/images/mainpage/MainInterviewImg.svg" alt="mainInterview img" />
-      ) : (
-        <Lottie animationData={interviewAnimation} lottieRef={lottieRef} loop={false} onComplete={handleComplete} />
-      )}
+      <Lottie animationData={interviewAnimation} lottieRef={lottieRef} loop={false} onComplete={handleComplete} />
 
       <MainInterviewContent>
         <MainInterviewTitle>모의면접 연습하기</MainInterviewTitle>
