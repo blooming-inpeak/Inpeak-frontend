@@ -49,9 +49,9 @@ export const SelectStack = () => {
       });
 
       if (response.status === 201) {
-        setIsVisible(false); // 모달 닫기
+        setIsVisible(false);
         navigate('/');
-        window.history.replaceState({}, '', '/'); // URL 정리
+        window.history.replaceState({}, '', '/');
       } else {
         alert('관심분야 등록 실패');
       }
@@ -61,7 +61,7 @@ export const SelectStack = () => {
     }
   };
 
-  if (!isVisible) return null; // 보이지 않으면 아무것도 렌더하지 않음
+  if (!isVisible) return null;
 
   return (
     <BlurBackground>

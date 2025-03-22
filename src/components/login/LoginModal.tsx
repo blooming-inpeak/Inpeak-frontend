@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CloseButton,
   KaKaoTalkTitle,
@@ -22,43 +22,30 @@ const OAUTH_URL = 'https://inpeak.kr/oauth2/authorization/kakao';
 export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onClickClose = () => setOpenLogin(false);
   const onClickPrivacy = () => setIsPolicy('privacy');
   const onClickService = () => setIsPolicy('service');
 
+  // 🔥 OAuth 로그인 버튼 클릭 시 호출되는 함수
   const handleKakaoLogin = () => {
     window.location.href = `${OAUTH_URL}?redirect_uri=http://localhost:5173/?status=NEED_MORE_INFO`;
   };
 
+  // 🔥 최초 모달 렌더링 시 무조건 이동되지 않도록 코드 수정
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
+    const params = new URLSearchParams(location.search);
+    const status = params.get('status');
 
-    if (code) {
-      fetch(`/login/oauth2/code/kakao?code=${code}`, {
-        method: 'GET',
-        credentials: 'include',
-      })
-        .then(res => {
-          if (res.status === 488) {
-            navigate('/?status=NEED_MORE_INFO');
-          } else if (res.ok) {
-            navigate('/');
-          } else {
-            throw new Error('로그인 실패');
-          }
-        })
-        .catch(err => {
-          console.error('로그인 처리 오류:', err);
-          alert('로그인 처리 오류');
-        })
-        .finally(() => {
-          setOpenLogin(false);
-          window.history.replaceState({}, '', '/');
-        });
+    if (status === 'NEED_MORE_INFO') {
+      navigate('/?status=NEED_MORE_INFO');
+      setOpenLogin(false);
     }
-  }, [setOpenLogin, navigate]);
+
+    // 기존 회원은 별도의 이동 처리가 필요 없고, 쿠키만 확인해도 됨
+    // 따라서 그 외의 경우는 아무 처리도 하지 않음
+  }, [location.search, navigate, setOpenLogin]);
 
   return (
     <>
