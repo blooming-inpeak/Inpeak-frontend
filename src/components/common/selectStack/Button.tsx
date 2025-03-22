@@ -4,31 +4,53 @@ import styled from 'styled-components';
 interface Props {
   name: string;
   color: string;
+  setSelect: React.Dispatch<React.SetStateAction<string[]>>;
+  select: string[];
 }
 
-export const Button = ({ name, color }: Props) => {
-  const [isClicke, setIsClick] = useState(false);
+export const Button = ({ name, color, setSelect, select }: Props) => {
+  const [isClick, setIsClick] = useState(false);
+
+  const onClickButton = () => {
+    const nextClick = !isClick;
+    setIsClick(!isClick);
+    if (nextClick) {
+      setSelect((prev: string[]) => [...prev, name.toUpperCase()]);
+    } else {
+      const newSelect = select.filter(type => type.toUpperCase() !== name.toUpperCase());
+      setSelect(newSelect);
+    }
+  };
+
   return (
-    <ButtonWrapper style={{ backgroundColor: isClicke ? '#3277ED' : '#F2F2F2' }} onClick={() => setIsClick(!isClicke)}>
+    <ButtonWrapper onClick={onClickButton} $isClick={isClick}>
       <ButtonIcon style={{ backgroundColor: color }}>
         <img src={`/images/stackIcon/${name}.svg`} />
       </ButtonIcon>
-      <ButtonTitle style={{ color: isClicke ? '#ffffff' : 'black' }}>{name}</ButtonTitle>
+      <ButtonTitle>{name}</ButtonTitle>
     </ButtonWrapper>
   );
 };
 
-export const ButtonWrapper = styled.div`
-  width: 100px;
-  height: 28px;
+export const ButtonWrapper = styled.div<{ $isClick: boolean }>`
+  width: 120px;
+  height: 48px;
+  padding: 10px;
+  box-sizing: border-box;
 
   display: flex;
   align-items: center;
   cursor: pointer;
+  background-color: ${({ $isClick }) => ($isClick ? '#F5F9FF' : '#F2F2F2')};
+  border: ${({ $isClick }) => ($isClick ? '1.5px dashed #3277ed' : '')};
 
   padding: 10px;
   border-radius: 16px;
   gap: 8px;
+
+  &:hover {
+    background-color: #e6efff;
+  }
 `;
 
 export const ButtonIcon = styled.div`
