@@ -1,12 +1,43 @@
-import Lottie from 'lottie-react';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import styled from 'styled-components';
 import interestAnmation from '../lottie/interestAnimation.json';
+import { useEffect, useRef } from 'react';
 
 export const MainInterest = () => {
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.6,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
   return (
-    <MainInterestWrapper>
+    <MainInterestWrapper ref={containerRef}>
       <MainInterestCard>
-        <Lottie animationData={interestAnmation} />
+        <Lottie animationData={interestAnmation} lottieRef={lottieRef} />
       </MainInterestCard>
     </MainInterestWrapper>
   );

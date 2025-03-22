@@ -1,12 +1,43 @@
 import styled from 'styled-components';
 import historyAnimation from '../lottie/historyAnimation.json';
-import Lottie from 'lottie-react';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
+import { useEffect, useRef } from 'react';
 
 export const MainHistory = () => {
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.6,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
   return (
-    <MainHistoryWrapper>
+    <MainHistoryWrapper ref={containerRef}>
       <MainHistoryImg>
-        <Lottie animationData={historyAnimation} />
+        <Lottie animationData={historyAnimation} lottieRef={lottieRef} />
       </MainHistoryImg>
 
       <MainHistoryContent>

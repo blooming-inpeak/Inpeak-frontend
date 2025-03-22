@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { SessionTop } from '../../components/session/SessionTop';
 import { SessionContent } from '../../components/session/SessionContent';
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentMicState, isRecordingState } from '../../store/record/Record';
 import { Toast } from '../../components/session/Toast';
 import { QuestionsState } from '../../store/question/Question';
@@ -10,6 +10,7 @@ import { TimeState } from '../../store/time/Time';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
 import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question/question';
+import { ResultState } from '../../store/result/ResultState';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
@@ -23,6 +24,7 @@ export const SessionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
   const time = useRecoilValue(TimeState);
+  const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
@@ -102,6 +104,7 @@ export const SessionPage = () => {
       );
       console.log(data);
     }
+    setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
     console.log('스탑');
 
     if (lastQuestion) {

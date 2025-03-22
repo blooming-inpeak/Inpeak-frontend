@@ -5,14 +5,41 @@ import { useEffect, useRef } from 'react';
 
 export const MainFeedback = () => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (lottieRef.current) {
       lottieRef.current.setSpeed(0.3);
     }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.6,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
   });
   return (
-    <FeedbackWrapper>
+    <FeedbackWrapper ref={containerRef}>
       <FeedbackContainer>
         <FeedbackContent>
           <FeedbackTitle>AI 피드백</FeedbackTitle>

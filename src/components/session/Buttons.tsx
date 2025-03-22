@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { PassQuestion } from '../../api/question/question';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
+import { ResultState } from '../../store/result/ResultState';
 
 interface Props {
   start: boolean;
@@ -16,11 +17,13 @@ interface Props {
 export const Buttons = ({ start, startRecording, stopRecording, nextPage, currentPage, lastQuestion }: Props) => {
   const navigate = useNavigate();
   const Question = useRecoilValue(QuestionsState);
+  const setResult = useSetRecoilState(ResultState);
   const { id } = useParams();
 
   // 잘 모르겠어요
   const onPassQuestion = async () => {
     if (id) {
+      setResult(prev => [...prev, { question: Question[currentPage - 1].content, time: 0, isAnswer: false }]);
       const data = await PassQuestion(String(Question[currentPage - 1].id), id);
       console.log(data);
       if (lastQuestion) {

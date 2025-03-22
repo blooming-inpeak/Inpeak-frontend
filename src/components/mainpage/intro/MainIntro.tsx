@@ -1,21 +1,54 @@
 import styled from 'styled-components';
 import { MainIntroTop } from './MainIntroTop';
 import { MainIntroBody } from './MainIntroBody';
-import Lottie from 'lottie-react';
+
 import mainTopAnimation from '../lottie/mainTopAnimation.json';
+import { useEffect, useRef } from 'react';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
 export const MainIntro = () => {
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
   return (
-    <MainIntroWrapper>
+    <MainIntroWrapper ref={containerRef}>
       <MainIntroTop />
       <MainIntroBody />
       <MainTopLottie>
-        <Lottie animationData={mainTopAnimation} />
+        <Lottie animationData={mainTopAnimation} lottieRef={lottieRef} />
       </MainTopLottie>
     </MainIntroWrapper>
   );
 };
-
+// vanilla extract
+// emotion css prop
 export const MainIntroWrapper = styled.div`
   width: 100%;
   display: flex;

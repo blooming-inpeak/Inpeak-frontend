@@ -1,13 +1,11 @@
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import styled from 'styled-components';
 import interviewAnimation from '../lottie/interviewAnimation.json';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const MainInterview = () => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -18,21 +16,17 @@ export const MainInterview = () => {
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            setIsClosing(false);
-
             lottieRef.current?.setDirection(1);
             lottieRef.current?.play();
           } else {
             // 스크롤 아웃: 닫히는 애니메이션 실행
-            setIsClosing(true);
-
             lottieRef.current?.setDirection(-1);
             lottieRef.current?.play();
           }
         });
       },
       {
-        threshold: 0.6, // 요소기 60% 보일 때 트리거
+        threshold: 0.6, // 요소가 60% 보일 때 트리거
       },
     );
 
@@ -49,14 +43,9 @@ export const MainInterview = () => {
     };
   }, []);
 
-  const handleComplete = () => {
-    if (isClosing) {
-      setIsClosing(false);
-    }
-  };
   return (
     <MainInterviewWrapper ref={containerRef}>
-      <Lottie animationData={interviewAnimation} lottieRef={lottieRef} loop={false} onComplete={handleComplete} />
+      <Lottie animationData={interviewAnimation} lottieRef={lottieRef} loop={false} />
 
       <MainInterviewContent>
         <MainInterviewTitle>모의면접 연습하기</MainInterviewTitle>

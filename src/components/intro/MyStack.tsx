@@ -5,15 +5,14 @@ import { GetInterest } from '../../api/getInterest/GetInterest';
 export const MyStack = () => {
   const [myInterest, setMyInterest] = useState<string[]>(['React', 'Spring']);
 
-  useEffect(() => {
-    const getMyInterest = async () => {
-      const data = await GetInterest();
-      console.log(data);
-      setMyInterest(data.interests);
-    };
+  // useEffect(() => {
+  //   const getMyInterest = async () => {
+  //     const data = await GetInterest();
+  //     setMyInterest(data.interests);
+  //   };
 
-    getMyInterest();
-  }, []);
+  //   getMyInterest();
+  // }, []);
 
   return (
     <MyStackWrapper>
@@ -25,10 +24,10 @@ export const MyStack = () => {
       <MyStackContent>
         {myInterest.map((interest, index) => {
           return (
-            <>
+            <span key={index}>
               <span>{interest}</span>
               {myInterest.length - 1 !== index && <span>, </span>}
-            </>
+            </span>
           );
         })}
       </MyStackContent>
