@@ -5,12 +5,12 @@ import ArrowIcon from '/images/Arrow.svg';
 interface SortDropdownProps {
   options: string[];
   defaultOption?: string;
+  onChange?: (selectedOption: string) => void;
 }
 
-export const SortDropdown: React.FC<SortDropdownProps> = ({ options, defaultOption = '최신순' }) => {
+export const SortDropdown: React.FC<SortDropdownProps> = ({ options, defaultOption = '최신순', onChange }) => {
   const [selected, setSelected] = useState(defaultOption);
   const [isOpen, setIsOpen] = useState(false);
-
   const handleToggle = () => {
     setIsOpen(prev => !prev);
   };
@@ -18,6 +18,7 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({ options, defaultOpti
   const handleSelect = (option: string) => {
     setSelected(option);
     setIsOpen(false);
+    if (onChange) onChange(option);
   };
 
   return (
