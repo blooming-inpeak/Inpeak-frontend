@@ -8,9 +8,9 @@ import { Toast } from '../../components/session/Toast';
 import { QuestionsState } from '../../store/question/Question';
 import { TimeState } from '../../store/time/Time';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
 import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question/question';
 import { ResultState } from '../../store/result/ResultState';
+import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
@@ -19,7 +19,7 @@ export const SessionPage = () => {
   const currentMic = useRecoilValue(currentMicState);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [videoBlob, setVideoBlob] = useState<Blob | null>(null); //녹화된 Blob 저장
+  const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [audioBase64, setAudioBase64] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
@@ -29,6 +29,10 @@ export const SessionPage = () => {
   const { id } = useParams();
   const lastQuestion = page === currentPage;
   const navigate = useNavigate();
+
+  // 녹화 데이터 처리가 완료되면 resolve하는 Promise를 저장할 Ref
+  const recordingPromiseRef = useRef<Promise<{ videoBlob: Blob; audioBase64: string }>>(null);
+  let resolveRecordingPromise: (value: { videoBlob: Blob; audioBase64: string }) => void;
 
   // 녹화 시작
   const startRecording = async () => {
@@ -45,32 +49,40 @@ export const SessionPage = () => {
       mediaRecorderRef.current = mediaRecorder;
       setStart(true);
 
-      const videoChunks: Blob[] = []; // 녹화된 데이터 저장할 배열
-      const audioChunks: Blob[] = []; // 녹음 데이터 저장할 배열
+      const videoChunks: Blob[] = []; // 영상 데이터 저장 배열
+      const audioChunks: Blob[] = []; // 오디오 데이터 저장 배열
+
+      // 새로운 Promise 생성 후 Ref에 할당
+      recordingPromiseRef.current = new Promise(resolve => {
+        resolveRecordingPromise = resolve;
+      });
 
       mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
-          videoChunks.push(event.data); // 영상 데이터
+          videoChunks.push(event.data);
           if (event.data.type.startsWith('audio')) {
-            audioChunks.push(event.data); // 오디오 데이터
+            audioChunks.push(event.data);
           }
         }
       };
 
       mediaRecorder.onstop = async () => {
-        // Blob 형식으로 백엔드로 전송
-        const webmBlob = new Blob(videoChunks, { type: 'video/webm' }); //WebM 형식으로 저장
+        // 영상 Blob 생성 및 상태 업데이트
+        console.log(videoChunks);
+        const webmBlob = new Blob(videoChunks, { type: 'video/webm' });
         setVideoBlob(webmBlob);
 
-        // Blob을 Base64로 변환
+        // 오디오 Blob 생성 및 Base64 변환
+        console.log(audioChunks);
         const wavBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        // setAudioBlob(wavBlob);
-
+        let newAudioBase64 = '';
+        console.log(wavBlob);
         if (wavBlob) {
-          const audioBase64 = await ConvertBlobToBase64(wavBlob);
-          setAudioBase64(audioBase64);
-          console.log(audioBase64);
+          newAudioBase64 = await ConvertBlobToBase64(wavBlob);
+          setAudioBase64(newAudioBase64);
         }
+        // Promise resolve: 녹화 데이터 처리 완료
+        resolveRecordingPromise({ videoBlob: webmBlob, audioBase64: newAudioBase64 });
       };
 
       mediaRecorder.start();
@@ -79,22 +91,29 @@ export const SessionPage = () => {
     }
   };
 
-  // 답변 끝내기
+  // 녹화 종료 및 API 요청
   const stopRecording = async () => {
-    console.log(300 - time);
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
     }
-    if (videoBlob && id) {
-      const startDate = getFormattedDate();
-      // presigned url 발급
-      const presignedUrl = await getVideoUrl(startDate);
-      // S3로 영상 올리기
-      await uploadVideoToS3(videoBlob, presignedUrl);
-      // 답변 완료 api
+
+    // onstop 이벤트에서 데이터 처리가 완료될 때까지 대기
+    const { videoBlob, audioBase64 } = await recordingPromiseRef.current!;
+
+    if (id) {
+      let presignedUrl;
+      if (videoBlob && isRecording) {
+        const startDate = getFormattedDate();
+        // presigned URL 발급
+        presignedUrl = await getVideoUrl(startDate);
+        // S3로 영상 업로드
+        await uploadVideoToS3(videoBlob, presignedUrl.url);
+      }
+      console.log(audioBase64);
+      // 답변 완료 API 호출
       const data = await AnswerQuestion(
         audioBase64,
         300 - time,
@@ -104,18 +123,18 @@ export const SessionPage = () => {
       );
       console.log(data);
     }
+
     setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
-    console.log('스탑');
 
     if (lastQuestion) {
-      navigate('/interview/result');
+      navigate('/interview/progressresult');
     } else {
       setCurrentPage(prev => prev + 1);
       setStart(false);
     }
   };
 
-  // Blob을 Base64 문자열로 변환
+  // Blob을 Base64 문자열로 변환하는 함수
   const ConvertBlobToBase64 = (blob: Blob): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

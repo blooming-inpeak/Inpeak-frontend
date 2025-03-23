@@ -4,6 +4,7 @@ import { PassQuestion } from '../../api/question/question';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
 import { ResultState } from '../../store/result/ResultState';
+import { useState } from 'react';
 
 interface Props {
   start: boolean;
@@ -16,6 +17,7 @@ interface Props {
 
 export const Buttons = ({ start, startRecording, stopRecording, nextPage, currentPage, lastQuestion }: Props) => {
   const navigate = useNavigate();
+  const [ishover, setIsHover] = useState(false);
   const Question = useRecoilValue(QuestionsState);
   const setResult = useSetRecoilState(ResultState);
   const { id } = useParams();
@@ -27,7 +29,7 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
       const data = await PassQuestion(String(Question[currentPage - 1].id), id);
       console.log(data);
       if (lastQuestion) {
-        navigate('/interview/result');
+        navigate('/interview/progressresult');
       } else {
         nextPage();
       }
@@ -41,7 +43,19 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
         </>
       ) : (
         <ButtonsWrapper>
-          <SkipButton onClick={onPassQuestion}>잘 모르겠어요</SkipButton>
+          {ishover && (
+            <SkipButtonModal>
+              '잘 모르겠어요' 클릭시 <br />
+              포기한 질문으로 표시됩니다.
+            </SkipButtonModal>
+          )}
+          <SkipButton
+            onClick={onPassQuestion}
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
+          >
+            잘 모르겠어요
+          </SkipButton>
           <AnswerButton onClick={startRecording}>답변시작</AnswerButton>
         </ButtonsWrapper>
       )}
@@ -78,13 +92,14 @@ export const ButtonsWrapper = styled.div`
   height: 44px;
 
   display: flex;
+  position: relative;
   cursor: pointer;
 
   margin-top: 45px;
 `;
 
 export const SkipButton = styled.div`
-  width: 163px;
+  width: 165px;
   height: 42px;
 
   display: flex;
@@ -106,7 +121,7 @@ export const SkipButton = styled.div`
 `;
 
 export const AnswerButton = styled.div`
-  width: 380px;
+  width: 267px;
   height: 24px;
   padding: 10px 26px;
 
@@ -124,5 +139,39 @@ export const AnswerButton = styled.div`
 
   &:hover {
     background-color: #464f69;
+  }
+`;
+
+export const SkipButtonModal = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 133px;
+  height: 36px;
+  padding: 10px 20px;
+
+  border-radius: 12px;
+  background-color: #1463e8;
+
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 150%;
+  letter-spacing: -0.3px;
+
+  position: absolute;
+  top: -75px;
+  left: -20px;
+
+  &::after {
+    position: absolute;
+    content: '';
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 15px 10px 0 10px;
+    border-style: solid;
+    border-color: #1463e8 transparent transparent transparent;
   }
 `;
