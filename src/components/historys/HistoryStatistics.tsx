@@ -1,70 +1,83 @@
 import { useState, useEffect } from 'react';
-// import { useRecoilValue } from 'recoil';
-// import { userState } from '../../store/User/User';
 import axios from 'axios';
 import styled from 'styled-components';
 import HistoryStatisticsGraph from './HistoryStatisticsGraph';
 import StatisticsRightComponent from './StatisticsRightComponent';
 
 export const HistoryStatistics = () => {
-  // 현재 recoil 기능이 구현되지 않아 임시 user 객체 사용
   const user = { name: '김인픽' };
 
-  // JSON 파일에서 불러올 통계 데이터 (username 제외)
+  // 환경 변수에서 엑세스 토큰을 가져옴
+  const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
+
   const [stats, setStats] = useState<{
-    totalPracticeTime: string;
-    totalQuestions: number;
-    totalPracticeCount: string;
-    correctCount: number;
-    wrongCount: number;
-    giveUpCount: number;
+    totalAnswerCount: number;
+    correctAnswerCount: number;
+    incorrectAnswerCount: number;
+    skippedAnswerCount: number;
+    totalInterviewCount: number;
+    totalRunningTime: number;
   } | null>(null);
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        // public/sampledata/historyStatistics.json 파일에서 데이터를 불러옴.
-        const response = await axios.get('/public/sampledata/historyStatistics.json', {
-          // headers: { Authorization: `Bearer ${accessToken}` },
+        // 프록시 설정에 따라 /answer/summary로 요청이 자동으로 API 서버로 전달됩니다.
+        const response = await axios.get('/answer/summary', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
-        setStats(response.data);
+        const data = response.data;
+
+        setStats({
+          totalAnswerCount: data.totalAnswerCount,
+          correctAnswerCount: data.correctAnswerCount,
+          incorrectAnswerCount: data.incorrectAnswerCount,
+          skippedAnswerCount: data.skippedAnswerCount,
+          totalInterviewCount: data.totalInterviewCount,
+          totalRunningTime: data.totalRunningTime,
+        });
       } catch (error) {
         console.error('히스토리 통계 데이터를 불러오는데 실패했습니다.', error);
       }
     };
     fetchStatistics();
-  }, []);
+  }, [accessToken]);
 
   if (!stats) {
     return <div>Loading...</div>;
   }
 
-  const totalQuestions = stats.totalQuestions;
-  const correctCount = stats.correctCount;
-  const wrongCount = stats.wrongCount;
-  const giveUpCount = stats.giveUpCount;
+  const {
+    totalAnswerCount,
+    correctAnswerCount,
+    incorrectAnswerCount,
+    skippedAnswerCount,
+    totalInterviewCount,
+    totalRunningTime,
+  } = stats;
 
-  const correctPercentage = (correctCount / totalQuestions) * 100;
-  const giveUpPercentage = (giveUpCount / totalQuestions) * 100;
-  const wrongPercentage = (wrongCount / totalQuestions) * 100;
+  const correctPercentage = (correctAnswerCount / totalAnswerCount) * 100;
+  const skippedPercentage = (skippedAnswerCount / totalAnswerCount) * 100;
+  const incorrectPercentage = (incorrectAnswerCount / totalAnswerCount) * 100;
 
   return (
     <HistoryStatisticsBox>
       <StatisticsRightComponent
-        // 추후 recoil에서 가져온 user.name 사용. 현재는 임시값 '김인픽' 사용
         userName={user?.name || '김인픽'}
-        totalPracticeTime={stats.totalPracticeTime}
-        totalQuestions={totalQuestions}
-        totalPracticeCount={stats.totalPracticeCount}
-        correctCount={correctCount}
-        wrongCount={wrongCount}
-        giveUpCount={giveUpCount}
+        totalPracticeTime={`${totalRunningTime}초`}
+        totalQuestions={totalAnswerCount}
+        totalPracticeCount={totalInterviewCount}
+        correctCount={correctAnswerCount}
+        wrongCount={incorrectAnswerCount}
+        giveUpCount={skippedAnswerCount}
       />
       <StatisticsLeft>
         <HistoryStatisticsGraph
           percentage1={correctPercentage}
-          percentage2={giveUpPercentage}
-          percentage3={wrongPercentage}
+          percentage2={skippedPercentage}
+          percentage3={incorrectPercentage}
         />
       </StatisticsLeft>
     </HistoryStatisticsBox>

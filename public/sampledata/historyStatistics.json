@@ -1,9 +1,8 @@
 {
-    "totalPracticeTime": "01시간 35분",
-    "totalQuestions": 30,
-    "totalPracticeCount": "10번",
-    "correctCount": 21,
-    "wrongCount": 3,
-    "giveUpCount": 6
-  }
-  
+  "totalAnswerCount": 15,
+  "correctAnswerCount": 8,
+  "incorrectAnswerCount": 5,
+  "skippedAnswerCount": 2,
+  "totalInterviewCount": 3,
+  "totalRunningTime": 450
+}

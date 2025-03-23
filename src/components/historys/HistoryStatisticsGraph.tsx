@@ -61,6 +61,9 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
   const y3 = center + effectiveLabelRadius * Math.sin(rad3);
 
   const isAllZero = percentage1 === 0 && percentage2 === 0 && percentage3 === 0;
+  const isValidPercentage1 = !isNaN(percentage1) && percentage1 >= 0;
+  const isValidPercentage2 = !isNaN(percentage2) && percentage2 >= 0;
+  const isValidPercentage3 = !isNaN(percentage3) && percentage3 >= 0;
 
   return (
     <>
@@ -71,66 +74,78 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
           {/* 모든 퍼센트가 0일 때 색상을 F5F9FF로 */}
           <BackgroundCircle cx={center} cy={center} r={radius} strokeWidth={strokeWidth} zero={isAllZero} />
 
-          {!isAllZero && (
-            <>
-              <Arc
-                stroke={strokeColor1}
-                strokeWidth={strokeWidth}
-                dasharray={`${seg1} ${circumference - seg1}`}
-                dashoffset={seg1}
-                transform={`rotate(-90 ${center} ${center})`}
-                cx={center}
-                cy={center}
-                r={radius}
-              >
-                <animate attributeName="stroke-dashoffset" from={seg1} to="0" dur="1s" fill="freeze" />
-              </Arc>
+          {/* 첫 번째 퍼센트가 유효한 경우에만 표시 */}
+          {isValidPercentage1 && (
+            <Arc
+              stroke={strokeColor1}
+              strokeWidth={strokeWidth}
+              dasharray={`${seg1} ${circumference - seg1}`}
+              dashoffset={seg1}
+              transform={`rotate(-90 ${center} ${center})`}
+              cx={center}
+              cy={center}
+              r={radius}
+            >
+              <animate attributeName="stroke-dashoffset" from={seg1} to="0" dur="1s" fill="freeze" />
+            </Arc>
+          )}
 
-              <Arc
-                stroke={strokeColor2}
-                strokeWidth={strokeWidth}
-                dasharray={`${seg2} ${circumference - seg2}`}
-                dashoffset={seg2}
-                transform={`rotate(${-90 + angle1} ${center} ${center})`}
-                cx={center}
-                cy={center}
-                r={radius}
-              >
-                <animate attributeName="stroke-dashoffset" from={seg2} to="0" dur="1s" fill="freeze" />
-              </Arc>
+          {/* 두 번째 퍼센트가 유효한 경우에만 표시 */}
+          {isValidPercentage2 && (
+            <Arc
+              stroke={strokeColor2}
+              strokeWidth={strokeWidth}
+              dasharray={`${seg2} ${circumference - seg2}`}
+              dashoffset={seg2}
+              transform={`rotate(${-90 + angle1} ${center} ${center})`}
+              cx={center}
+              cy={center}
+              r={radius}
+            >
+              <animate attributeName="stroke-dashoffset" from={seg2} to="0" dur="1s" fill="freeze" />
+            </Arc>
+          )}
 
-              <Arc
-                stroke={strokeColor3}
-                strokeWidth={strokeWidth}
-                dasharray={`${seg3} ${circumference - seg3}`}
-                dashoffset={seg3}
-                transform={`rotate(${-90 + angle1 + angle2} ${center} ${center})`}
-                cx={center}
-                cy={center}
-                r={radius}
-              >
-                <animate attributeName="stroke-dashoffset" from={seg3} to="0" dur="1s" fill="freeze" />
-              </Arc>
+          {/* 세 번째 퍼센트가 유효한 경우에만 표시 */}
+          {isValidPercentage3 && (
+            <Arc
+              stroke={strokeColor3}
+              strokeWidth={strokeWidth}
+              dasharray={`${seg3} ${circumference - seg3}`}
+              dashoffset={seg3}
+              transform={`rotate(${-90 + angle1 + angle2} ${center} ${center})`}
+              cx={center}
+              cy={center}
+              r={radius}
+            >
+              <animate attributeName="stroke-dashoffset" from={seg3} to="0" dur="1s" fill="freeze" />
+            </Arc>
+          )}
 
-              <g>
-                <LabelCircle cx={x1} cy={y1} r={labelRadius} />
-                <LabelText x={x1} y={y1}>
-                  {percentage1}%
-                </LabelText>
-              </g>
-              <g>
-                <LabelCircle cx={x2} cy={y2} r={labelRadius} />
-                <LabelText x={x2} y={y2}>
-                  {percentage2}%
-                </LabelText>
-              </g>
-              <g>
-                <LabelCircle cx={x3} cy={y3} r={labelRadius} />
-                <LabelText x={x3} y={y3}>
-                  {percentage3}%
-                </LabelText>
-              </g>
-            </>
+          {/* 유효한 값일 때만 텍스트와 원 표시 */}
+          {isValidPercentage1 && (
+            <g>
+              <LabelCircle cx={x1} cy={y1} r={labelRadius} />
+              <LabelText x={x1} y={y1}>
+                {percentage1}%
+              </LabelText>
+            </g>
+          )}
+          {isValidPercentage2 && (
+            <g>
+              <LabelCircle cx={x2} cy={y2} r={labelRadius} />
+              <LabelText x={x2} y={y2}>
+                {percentage2}%
+              </LabelText>
+            </g>
+          )}
+          {isValidPercentage3 && (
+            <g>
+              <LabelCircle cx={x3} cy={y3} r={labelRadius} />
+              <LabelText x={x3} y={y3}>
+                {percentage3}%
+              </LabelText>
+            </g>
           )}
         </StyledSVG>
       </SVGWrapper>

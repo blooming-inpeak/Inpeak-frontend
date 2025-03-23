@@ -28,12 +28,10 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const onClickPrivacy = () => setIsPolicy('privacy');
   const onClickService = () => setIsPolicy('service');
 
-  // 🔥 OAuth 로그인 버튼 클릭 시 호출되는 함수
   const handleKakaoLogin = () => {
     window.location.href = `${OAUTH_URL}?redirect_uri=http://localhost:5173/?status=NEED_MORE_INFO`;
   };
 
-  // 🔥 최초 모달 렌더링 시 무조건 이동되지 않도록 코드 수정
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const status = params.get('status');
@@ -42,9 +40,6 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
       navigate('/?status=NEED_MORE_INFO');
       setOpenLogin(false);
     }
-
-    // 기존 회원은 별도의 이동 처리가 필요 없고, 쿠키만 확인해도 됨
-    // 따라서 그 외의 경우는 아무 처리도 하지 않음
   }, [location.search, navigate, setOpenLogin]);
 
   return (

@@ -11,7 +11,7 @@ interface StatisticsRightProps {
   userName: string;
   totalPracticeTime: string;
   totalQuestions: number;
-  totalPracticeCount: string;
+  totalPracticeCount: number; // 변경된 부분
   correctCount: number;
   wrongCount: number;
   giveUpCount: number;
@@ -49,7 +49,7 @@ const StatisticsRightComponent: React.FC<StatisticsRightProps> = ({
           <DividerCell>
             <Divider />
           </DividerCell>
-          <StatsValue>{totalPracticeCount}</StatsValue>
+          <StatsValue>{totalPracticeCount}번</StatsValue>
         </StatsRow>
       </StatsBox>
       <QuestionStatsContainer>
