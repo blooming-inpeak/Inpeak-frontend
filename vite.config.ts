@@ -7,10 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https:/api.inpeak.kr',  // API 서버의 URL
+        target: 'https://api.inpeak.kr',  // 실제 API 서버의 URL
         changeOrigin: true,
-        secure: false, // HTTPS를 사용할 때 인증서 문제를 무시
-        rewrite: (path) => path.replace(/^\/api/, '') // /api로 시작하는 경로를 API 서버로 전달
+        secure: false,  // HTTPS를 사용할 때 인증서 문제를 무시
+        rewrite: (path) => path  // /api 그대로 전달
       }
     }
   }

@@ -17,7 +17,7 @@ interface Props {
   setOpenLogin: (value: boolean) => void;
 }
 
-const OAUTH_URL = 'https://inpeak.kr/oauth2/authorization/kakao';
+const OAUTH_URL = 'https://api.inpeak.kr/oauth2/authorization/kakao';
 
 export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
@@ -29,7 +29,7 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const onClickService = () => setIsPolicy('service');
 
   const handleKakaoLogin = () => {
-    window.location.href = `${OAUTH_URL}?redirect_uri=http://localhost:5173/?status=NEED_MORE_INFO`;
+    window.location.href = `${OAUTH_URL}`;
   };
 
   useEffect(() => {

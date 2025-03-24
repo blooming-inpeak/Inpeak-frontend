@@ -11,7 +11,7 @@ interface StatisticsRightProps {
   userName: string;
   totalPracticeTime: string;
   totalQuestions: number;
-  totalPracticeCount: number; // 변경된 부분
+  totalPracticeCount: number;
   correctCount: number;
   wrongCount: number;
   giveUpCount: number;
@@ -114,7 +114,7 @@ const StatsTitle = styled.h2`
   letter-spacing: -0.35px;
   margin: 0;
   text-align: left;
-  padding: 2px 12px 2px 0; /* 위아래 2px, 오른쪽 12px */
+  padding: 2px 12px 2px 0;
 `;
 
 const DividerCell = styled.div`

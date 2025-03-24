@@ -70,11 +70,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
       <SVGWrapper>
         <StyledSVG viewBox={`0 0 ${svgSize} ${svgSize}`}>
           <SvgDefs />
-
-          {/* 모든 퍼센트가 0일 때 색상을 F5F9FF로 */}
           <BackgroundCircle cx={center} cy={center} r={radius} strokeWidth={strokeWidth} zero={isAllZero} />
-
-          {/* 첫 번째 퍼센트가 유효한 경우에만 표시 */}
           {isValidPercentage1 && (
             <Arc
               stroke={strokeColor1}
@@ -90,7 +86,6 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
             </Arc>
           )}
 
-          {/* 두 번째 퍼센트가 유효한 경우에만 표시 */}
           {isValidPercentage2 && (
             <Arc
               stroke={strokeColor2}
@@ -105,8 +100,6 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
               <animate attributeName="stroke-dashoffset" from={seg2} to="0" dur="1s" fill="freeze" />
             </Arc>
           )}
-
-          {/* 세 번째 퍼센트가 유효한 경우에만 표시 */}
           {isValidPercentage3 && (
             <Arc
               stroke={strokeColor3}
@@ -121,13 +114,11 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
               <animate attributeName="stroke-dashoffset" from={seg3} to="0" dur="1s" fill="freeze" />
             </Arc>
           )}
-
-          {/* 유효한 값일 때만 텍스트와 원 표시 */}
           {isValidPercentage1 && (
             <g>
               <LabelCircle cx={x1} cy={y1} r={labelRadius} />
               <LabelText x={x1} y={y1}>
-                {percentage1}%
+                {Math.round(percentage1)}%
               </LabelText>
             </g>
           )}
@@ -135,7 +126,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
             <g>
               <LabelCircle cx={x2} cy={y2} r={labelRadius} />
               <LabelText x={x2} y={y2}>
-                {percentage2}%
+                {Math.round(percentage2)}%
               </LabelText>
             </g>
           )}
@@ -143,7 +134,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
             <g>
               <LabelCircle cx={x3} cy={y3} r={labelRadius} />
               <LabelText x={x3} y={y3}>
-                {percentage3}%
+                {Math.round(percentage3)}%
               </LabelText>
             </g>
           )}
