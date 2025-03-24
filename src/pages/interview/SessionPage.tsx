@@ -74,10 +74,11 @@ export const SessionPage = () => {
 
         // 오디오 Blob 생성 및 Base64 변환
         console.log(audioChunks);
-        const wavBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const webmAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         let newAudioBase64 = '';
-        console.log(wavBlob);
-        if (wavBlob) {
+        console.log(webmAudioBlob);
+        if (webmAudioBlob) {
+          const wavBlob = await convertWebMBlobToWav(webmAudioBlob);
           newAudioBase64 = await ConvertBlobToBase64(wavBlob);
           setAudioBase64(newAudioBase64);
         }
@@ -133,6 +134,80 @@ export const SessionPage = () => {
       setStart(false);
     }
   };
+
+  /**
+   * AudioBuffer의 데이터를 WAV 파일 형식의 ArrayBuffer로 인코딩하는 함수
+   */
+  function encodeWAV(audioBuffer: AudioBuffer): ArrayBuffer {
+    const channelData = audioBuffer.getChannelData(0); // 모노 채널 사용 (스테레오일 경우 병합 필요)
+    const sampleRate = audioBuffer.sampleRate;
+    const bufferLength = channelData.length * 2; // 16비트 PCM이므로 각 샘플마다 2바이트
+    const buffer = new ArrayBuffer(44 + bufferLength); // WAV 헤더는 44바이트
+    const view = new DataView(buffer);
+
+    // 문자열을 DataView에 기록하는 헬퍼 함수
+    function writeString(view: DataView, offset: number, str: string) {
+      for (let i = 0; i < str.length; i++) {
+        view.setUint8(offset + i, str.charCodeAt(i));
+      }
+    }
+
+    let offset = 0;
+    writeString(view, offset, 'RIFF');
+    offset += 4;
+    view.setUint32(offset, 36 + bufferLength, true);
+    offset += 4;
+    writeString(view, offset, 'WAVE');
+    offset += 4;
+    writeString(view, offset, 'fmt ');
+    offset += 4;
+    view.setUint32(offset, 16, true);
+    offset += 4; // PCM 서브청크 크기
+    view.setUint16(offset, 1, true);
+    offset += 2; // 오디오 포맷 (1 = PCM)
+    view.setUint16(offset, 1, true);
+    offset += 2; // 채널 수 (모노)
+    view.setUint32(offset, sampleRate, true);
+    offset += 4;
+    view.setUint32(offset, sampleRate * 2, true);
+    offset += 4; // ByteRate = sampleRate * channels * bitsPerSample/8
+    view.setUint16(offset, 2, true);
+    offset += 2; // BlockAlign = channels * bitsPerSample/8
+    view.setUint16(offset, 16, true);
+    offset += 2; // Bits per sample
+    writeString(view, offset, 'data');
+    offset += 4;
+    view.setUint32(offset, bufferLength, true);
+    offset += 4;
+
+    // PCM 샘플을 16비트 정수로 변환하여 기록
+    for (let i = 0; i < channelData.length; i++) {
+      let sample = channelData[i];
+      // 샘플값을 -1 ~ 1 사이로 제한
+      sample = Math.max(-1, Math.min(1, sample));
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+      offset += 2;
+    }
+    return buffer;
+  }
+
+  /**
+   * WebM Blob(예: audio/webm; codecs=opus)을 받아서 WAV Blob으로 변환하는 함수
+   */
+  async function convertWebMBlobToWav(webmBlob: Blob): Promise<Blob> {
+    // 1. Blob을 ArrayBuffer로 변환
+    const arrayBuffer = await webmBlob.arrayBuffer();
+
+    // 2. AudioContext 생성 및 ArrayBuffer 디코딩
+    const audioContext = new AudioContext();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    // 3. AudioBuffer를 WAV 형식의 ArrayBuffer로 인코딩
+    const wavArrayBuffer = encodeWAV(audioBuffer);
+
+    // 4. WAV ArrayBuffer를 Blob으로 변환
+    return new Blob([wavArrayBuffer], { type: 'audio/wav' });
+  }
 
   // Blob을 Base64 문자열로 변환하는 함수
   const ConvertBlobToBase64 = (blob: Blob): Promise<string> => {

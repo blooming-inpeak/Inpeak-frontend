@@ -1,8 +1,19 @@
 import styled from 'styled-components';
 import { MyPageTop } from '../components/mypage/MyPageTop';
 import { MyPageBottom } from '../components/mypage/MyPageBottom';
+import { useEffect } from 'react';
+import { GetMyPage } from '../api/getMyPage/GetMyPage';
 
 export const MyPage = () => {
+  // useEffect(() => {
+  //   const getMyPage = async () => {
+  //     const data = await GetMyPage();
+  //     console.log(data);
+  //   };
+
+  //   getMyPage();
+  // }, []);
+
   return (
     <MyPageWrapper>
       <MyPageContent>
