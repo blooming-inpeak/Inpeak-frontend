@@ -3,7 +3,6 @@ import { apiClient } from '../apiClient';
 
 export const fetchOverallInterviewHistory = async (token: string) => {
   try {
-    // month, year 필터 없이 전체 면접 데이터를 반환하는 API 호출
     const response = await apiClient.get('/interview/history', {
       headers: { Authorization: `Bearer ${token}` },
     });
