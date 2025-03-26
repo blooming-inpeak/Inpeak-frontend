@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { SessionTop } from '../../components/session/SessionTop';
 import { SessionContent } from '../../components/session/SessionContent';
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentMicState, isRecordingState } from '../../store/record/Record';
 import { Toast } from '../../components/session/Toast';
 import { QuestionsState } from '../../store/question/Question';
@@ -19,12 +19,12 @@ export const SessionPage = () => {
   const currentMic = useRecoilValue(currentMicState);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
-  const [audioBase64, setAudioBase64] = useState<string>('');
+  // const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
+  // const [audioBase64, setAudioBase64] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
   const time = useRecoilValue(TimeState);
-  const setResult = useSetRecoilState(ResultState);
+  const [result, setResult] = useRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
@@ -70,7 +70,7 @@ export const SessionPage = () => {
         // 영상 Blob 생성 및 상태 업데이트
         console.log(videoChunks);
         const webmBlob = new Blob(videoChunks, { type: 'video/webm' });
-        setVideoBlob(webmBlob);
+        // setVideoBlob(webmBlob);
 
         // 오디오 Blob 생성 및 Base64 변환
         console.log(audioChunks);
@@ -80,7 +80,7 @@ export const SessionPage = () => {
         if (webmAudioBlob) {
           const wavBlob = await convertWebMBlobToWav(webmAudioBlob);
           newAudioBase64 = await ConvertBlobToBase64(wavBlob);
-          setAudioBase64(newAudioBase64);
+          // setAudioBase64(newAudioBase64);
         }
         // Promise resolve: 녹화 데이터 처리 완료
         resolveRecordingPromise({ videoBlob: webmBlob, audioBase64: newAudioBase64 });
@@ -123,11 +123,15 @@ export const SessionPage = () => {
         presignedUrl,
       );
       console.log(data);
+
+      setResult(prev => [
+        ...prev,
+        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
+      ]);
     }
 
-    setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
-
     if (lastQuestion) {
+      localStorage.setItem('result', JSON.stringify(result));
       navigate('/interview/progressresult');
     } else {
       setCurrentPage(prev => prev + 1);

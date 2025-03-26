@@ -1,18 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { GetInterest } from '../../api/getInterest/GetInterest';
 
 export const MyStack = () => {
   const [myInterest, setMyInterest] = useState<string[]>(['React', 'Spring']);
-
-  // useEffect(() => {
-  //   const getMyInterest = async () => {
-  //     const data = await GetInterest();
-  //     setMyInterest(data.interests);
-  //   };
-
-  //   getMyInterest();
-  // }, []);
 
   return (
     <MyStackWrapper>

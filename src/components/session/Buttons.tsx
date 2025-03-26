@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { PassQuestion } from '../../api/question/question';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
 import { ResultState } from '../../store/result/ResultState';
 import { useState } from 'react';
@@ -18,28 +18,40 @@ interface Props {
 export const Buttons = ({ start, startRecording, stopRecording, nextPage, currentPage, lastQuestion }: Props) => {
   const navigate = useNavigate();
   const [ishover, setIsHover] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const Question = useRecoilValue(QuestionsState);
-  const setResult = useSetRecoilState(ResultState);
+  const [result, setResult] = useRecoilState(ResultState);
   const { id } = useParams();
 
   // 잘 모르겠어요
   const onPassQuestion = async () => {
     if (id) {
-      setResult(prev => [...prev, { question: Question[currentPage - 1].content, time: 0, isAnswer: false }]);
       const data = await PassQuestion(String(Question[currentPage - 1].id), id);
+      setResult(prev => [
+        ...prev,
+        { question: Question[currentPage - 1].content, time: 0, isAnswer: false, answerId: data.answerId },
+      ]);
       console.log(data);
       if (lastQuestion) {
+        localStorage.setItem('result', JSON.stringify(result));
         navigate('/interview/progressresult');
       } else {
         nextPage();
       }
     }
   };
+
+  const handleStopClick = async () => {
+    setIsSubmitting(true);
+    await stopRecording();
+    setIsSubmitting(false);
+  };
+
   return (
     <>
       {start ? (
         <>
-          <StopButton onClick={stopRecording}>답변 끝내기</StopButton>
+          <StopButton onClick={!isSubmitting ? handleStopClick : undefined}>답변 끝내기</StopButton>
         </>
       ) : (
         <ButtonsWrapper>

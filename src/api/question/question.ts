@@ -1,19 +1,16 @@
 import axios from 'axios';
-import { apiClient } from '../apiClient';
+import api from '../apiClient';
 
 export const PassQuestion = async (questionId: string, interviewId: string) => {
   try {
-    const response = await apiClient.post(
+    const response = await api.post(
       '/answer/skip',
       {
         questionId,
         interviewId,
       },
       {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpbnBlYWsiLCJpYXQiOjIyMjIyMjIyMjIsImV4cCI6MzMzMzMzMzMzMywic3ViIjoiMyJ9.cFBpPAPdOggAePoyuveOrMqMb-EQ1U730XbjsGfsStU',
-        },
+        headers: {},
       },
     );
 
@@ -25,14 +22,12 @@ export const PassQuestion = async (questionId: string, interviewId: string) => {
 
 export const getVideoUrl = async (startDate: string) => {
   try {
-    const response = await apiClient.get('/answer/presigned-url', {
+    const response = await api.get('/answer/presigned-url', {
       params: {
         startDate,
         extension: 'webm',
       },
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpbnBlYWsiLCJpYXQiOjIyMjIyMjIyMjIsImV4cCI6MzMzMzMzMzMzMywic3ViIjoiMyJ9.cFBpPAPdOggAePoyuveOrMqMb-EQ1U730XbjsGfsStU',
         'Content-Type': 'application/json',
       },
     });
@@ -64,7 +59,7 @@ export const AnswerQuestion = async (
   videoURL: string,
 ) => {
   try {
-    const response = await apiClient.post(
+    const response = await api.post(
       '/answer/create',
       {
         audioFile,
@@ -75,8 +70,6 @@ export const AnswerQuestion = async (
       },
       {
         headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpbnBlYWsiLCJpYXQiOjIyMjIyMjIyMjIsImV4cCI6MzMzMzMzMzMzMywic3ViIjoiMyJ9.cFBpPAPdOggAePoyuveOrMqMb-EQ1U730XbjsGfsStU',
           'Content-Type': 'application/json',
         },
       },
@@ -90,14 +83,12 @@ export const AnswerQuestion = async (
 
 export const GetQuestion = async (today: string) => {
   try {
-    const response = await apiClient.post(
+    const response = await api.post(
       '/interview/start',
       {},
       {
         params: { startDate: today },
         headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpbnBlYWsiLCJpYXQiOjIyMjIyMjIyMjIsImV4cCI6MzMzMzMzMzMzMywic3ViIjoiMyJ9.cFBpPAPdOggAePoyuveOrMqMb-EQ1U730XbjsGfsStU',
           'Content-Type': 'application/json',
         },
       },
