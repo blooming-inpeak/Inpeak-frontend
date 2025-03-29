@@ -12,6 +12,7 @@ import {
   SelectStackWrapper,
 } from './SelectStackStyle';
 import { BlurBackground } from '../background/BlurBackground';
+import { registerInterest } from '../../../api/interest/interestAPI'; // API 호출 함수 임포트
 
 export const SelectStack = () => {
   const navigate = useNavigate();
@@ -37,27 +38,14 @@ export const SelectStack = () => {
     }
 
     const interestTypes = select.map(item => item.toUpperCase());
+    const result = await registerInterest(interestTypes);
 
-    try {
-      const response = await fetch('/interest', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ interestTypes }),
-      });
-
-      if (response.status === 201) {
-        setIsVisible(false);
-        navigate('/');
-        window.history.replaceState({}, '', '/');
-      } else {
-        alert('관심분야 등록 실패');
-      }
-    } catch (error) {
-      console.error('관심분야 등록 중 오류:', error);
-      alert('관심분야 등록 중 오류 발생');
+    if (result.success) {
+      setIsVisible(false);
+      navigate('/');
+      window.history.replaceState({}, '', '/');
+    } else {
+      alert(result.message);
     }
   };
 

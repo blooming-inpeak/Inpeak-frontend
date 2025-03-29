@@ -1,10 +1,9 @@
-import { apiClient } from '../apiClient';
+import api from '../apiClient';
 
-export const fetchInterviewCalendarData = async (month: string, year: string, token: string) => {
+export const fetchInterviewCalendarData = async (month: string, year: string) => {
   try {
-    const response = await apiClient.get('/interview/calendar', {
+    const response = await api.get('/interview/calendar', {
       params: { month, year },
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {

@@ -7,14 +7,13 @@ import { HistoryStatisticsBox, StatisticsLeft } from './HistoryStatisticsStyles'
 
 export const HistoryStatistics = () => {
   const user = { name: '김인픽' };
-  const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
   const [stats, setStats] = useState<HistoryStatisticsData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchHistoryStatistics(accessToken);
+        const data = await fetchHistoryStatistics();
         setStats(data);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
@@ -22,7 +21,7 @@ export const HistoryStatistics = () => {
       }
     };
     fetchData();
-  }, [accessToken]);
+  }, []);
 
   if (!stats) {
     return <div>Loading...</div>;

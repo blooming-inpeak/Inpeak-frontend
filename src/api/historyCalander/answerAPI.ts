@@ -1,10 +1,9 @@
-import { apiClient } from '../apiClient';
+import api from '../apiClient';
 
-export const fetchAnswerDataByDate = async (date: string, token: string) => {
+export const fetchAnswerDataByDate = async (date: string) => {
   try {
-    const response = await apiClient.get('/answer/date', {
+    const response = await api.get('/answer/date', {
       params: { date },
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {

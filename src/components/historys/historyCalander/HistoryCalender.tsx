@@ -56,11 +56,10 @@ interface InterviewData {
   questions: CalendarQuestion[];
 }
 
-// API /answer/date response 타입
 interface Answer {
   dateTime: string;
   questionContent: string;
-  runningTime: number; // 초 단위
+  runningTime: number;
   answerStatus: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
   isUnderstood: boolean;
 }
@@ -71,12 +70,13 @@ interface AnswerResponse {
   answers: Answer[];
 }
 
-export const HistoryCalendar = () => {
+const HistoryCalendar = () => {
   const initialDate = new Date();
   const [currentDate, setCurrentDate] = useState(initialDate);
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [interviewData, setInterviewData] = useState<InterviewData[]>([]);
   const [answerData, setAnswerData] = useState<AnswerResponse | null>(null);
+  const [, setDataExists] = useState<boolean>(false);
 
   const captionMapping: Record<'CORRECT' | 'INCORRECT' | 'SKIPPED', CaptionType> = {
     CORRECT: '정답-small',
@@ -84,45 +84,48 @@ export const HistoryCalendar = () => {
     SKIPPED: '포기-small',
   };
 
-  const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
-
   useEffect(() => {
     const fetchData = async () => {
       const month = format(currentDate, 'M');
       const year = format(currentDate, 'yyyy');
       try {
-        const data = await fetchInterviewCalendarData(month, year, accessToken);
-        setInterviewData(data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const data = await fetchInterviewCalendarData(month, year);
+
+        if (data && data.calendarList) {
+          setInterviewData(data.calendarList);
+          setDataExists(data.calendarList.length > 0);
+        } else {
+          setInterviewData([]);
+          setDataExists(false);
+        }
       } catch (error) {
+        console.error('인터뷰 캘린더 데이터를 불러오는데 실패했습니다.', error);
         setInterviewData([]);
+        setDataExists(false);
       }
     };
     fetchData();
-  }, [accessToken, currentDate]);
+  }, [currentDate]);
 
-  // 선택된 날짜에 대한 상세 답변 데이터를 가져오는 API 호출 (/api/answer/date)
   useEffect(() => {
     const fetchAnswer = async () => {
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       try {
-        const data = await fetchAnswerDataByDate(formattedDate, accessToken);
+        const data = await fetchAnswerDataByDate(formattedDate);
         setAnswerData(data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
+        console.error('답변 데이터를 불러오는데 실패했습니다.', error);
         setAnswerData(null);
       }
     };
     fetchAnswer();
-  }, [accessToken, selectedDate]);
+  }, [selectedDate]);
 
-  // 달력 상에 기록이 있는 날짜를 표시하기 위한 헬퍼 함수
   const getInterviewByDate = (date: Date) => {
     const formatted = format(date, 'yyyy-MM-dd');
-    return interviewData.find(item => item.date === formatted);
+    return interviewData.find(item => item.date === formatted) || null;
   };
 
-  // 좌측 영역 상단에 전체 진행 시간을 표시 (총 runningTime의 합을 HH:MM 형식으로 변환)
   const getTotalTime = (answers: Answer[]) => {
     const totalSeconds = answers.reduce((acc, a) => acc + a.runningTime, 0);
     const minutes = Math.floor(totalSeconds / 60);
@@ -130,22 +133,14 @@ export const HistoryCalendar = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // 개별 질문의 runningTime을 mm:ss 형식으로 포맷
   const formatRunningTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const prevMonth = () => {
-    setCurrentDate(subMonths(currentDate, 1));
-  };
-
-  const nextMonth = () => {
-    setCurrentDate(addMonths(currentDate, 1));
-  };
-
-  const overallHasData = interviewData.length > 0;
+  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
+  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
   const renderHeader = () => (
     <>
@@ -168,15 +163,11 @@ export const HistoryCalendar = () => {
     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     return (
       <DaysRow>
-        {days.map((day, index) => {
-          const isSunday = index === 0;
-          const isSaturday = index === 6;
-          return (
-            <Day key={index} isSunday={isSunday} isSaturday={isSaturday}>
-              {day}
-            </Day>
-          );
-        })}
+        {days.map((day, index) => (
+          <Day key={index} isSunday={index === 0} isSaturday={index === 6}>
+            {day}
+          </Day>
+        ))}
       </DaysRow>
     );
   };
@@ -190,11 +181,10 @@ export const HistoryCalendar = () => {
     const rows = [];
     let days = [];
     let day = startDate;
-    let formattedDate = '';
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        formattedDate = format(day, 'd');
+        const formattedDate = format(day, 'd');
         const cloneDay = day;
         const interviewForDate = getInterviewByDate(cloneDay);
 
@@ -248,7 +238,7 @@ export const HistoryCalendar = () => {
           </QuestionList>
         ) : (
           <NoResultMessage>
-            {overallHasData ? (
+            {getInterviewByDate(selectedDate) ? (
               <>
                 해당 날짜에 진행된
                 <br /> 모의면접 결과가 없습니다

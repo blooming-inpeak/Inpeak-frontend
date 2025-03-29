@@ -114,7 +114,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
               <animate attributeName="stroke-dashoffset" from={seg3} to="0" dur="1s" fill="freeze" />
             </Arc>
           )}
-          {isValidPercentage1 && (
+          {isValidPercentage1 && percentage1 > 0 && (
             <g>
               <LabelCircle cx={x1} cy={y1} r={labelRadius} />
               <LabelText x={x1} y={y1}>
@@ -122,7 +122,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
               </LabelText>
             </g>
           )}
-          {isValidPercentage2 && (
+          {isValidPercentage2 && percentage2 > 0 && (
             <g>
               <LabelCircle cx={x2} cy={y2} r={labelRadius} />
               <LabelText x={x2} y={y2}>
@@ -130,7 +130,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
               </LabelText>
             </g>
           )}
-          {isValidPercentage3 && (
+          {isValidPercentage3 && percentage3 > 0 && (
             <g>
               <LabelCircle cx={x3} cy={y3} r={labelRadius} />
               <LabelText x={x3} y={y3}>

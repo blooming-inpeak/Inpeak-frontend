@@ -36,7 +36,7 @@ export const InterviewPage = () => {
 
         <InterviewBottom>
           <InterviewBottomLeft>
-            <Level level={1} progress={60} remainingCount={13} />
+            <Level level={1} progress={250} maxProgress={400} />
             <InterviewBottomAd>
               <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
             </InterviewBottomAd>
@@ -62,7 +62,7 @@ export const InterviewWrapper = styled.div`
   &::before {
     content: '';
     position: absolute;
-    top: -80px;
+    top: -50px;
     left: 0;
     width: 100%;
     height: calc(544px + 80px);
