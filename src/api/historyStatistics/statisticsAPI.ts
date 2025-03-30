@@ -1,4 +1,3 @@
-// statisticsAPI.ts
 import api from '../apiClient';
 
 export interface HistoryStatisticsData {

@@ -1,6 +1,5 @@
 import api from '../apiClient';
 
-// 관심 분야 등록 요청 함수
 export const registerInterest = async (interestTypes: string[]) => {
   try {
     const response = await api.post('/interest', { interestTypes });

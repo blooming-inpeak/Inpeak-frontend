@@ -1,6 +1,5 @@
-import api from '../apiClient'; // 기존의 apiClient.ts 파일을 사용
+import api from '../apiClient';
 
-// 최근 질문 히스토리 데이터 요청 함수
 export const fetchRecentAnswers = async (status: 'ALL' | 'CORRECT' | 'INCORRECT' | 'SKIPPED') => {
   try {
     const response = await api.get('/answer/recent', {

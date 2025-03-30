@@ -24,7 +24,6 @@ interface CorrectAnswerWrapperProps {
 }
 
 export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, average = 0 }) => {
-  // 누적 정답률이 없을 때는 onlyAverage를 사용 (이때는 평균값만 표시)
   if (!cumulative) {
     return (
       <CorrectAnswerWrapper onlyAverage>

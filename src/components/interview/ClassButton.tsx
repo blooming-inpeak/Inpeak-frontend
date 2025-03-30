@@ -4,7 +4,7 @@ import styled from 'styled-components';
 interface Props {
   name: '전체' | '정답' | '오답' | '포기'; // 허용되는 값들을 명확히 지정
   isSelect: boolean;
-  setIsSelect: React.Dispatch<React.SetStateAction<'전체' | '정답' | '오답' | '포기'>>; // 상태 업데이트 함수 타입 지정
+  setIsSelect: React.Dispatch<React.SetStateAction<'전체' | '정답' | '오답' | '포기'>>;
 }
 
 export const ClassButton: React.FC<Props> = ({ name, isSelect, setIsSelect }) => {

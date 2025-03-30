@@ -11,7 +11,6 @@ import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
 
 export const InterviewPage = () => {
-  // 남은 면접 횟수 예시 데이터
   const chance: number = 1;
 
   return (

@@ -1,4 +1,3 @@
-// HistoryStatisticsStyles.ts
 import styled from 'styled-components';
 
 export const HistoryStatisticsBox = styled.div`

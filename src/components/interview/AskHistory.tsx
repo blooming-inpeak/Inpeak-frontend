@@ -29,6 +29,7 @@ export const AskHistory: React.FC = () => {
     const response = await fetchRecentAnswers(statusParam);
 
     if (response.success) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const formattedData = response.data.map((item: any) => ({
         interviewId: item.interviewId,
         questionId: item.questionId,
@@ -53,6 +54,7 @@ export const AskHistory: React.FC = () => {
 
   useEffect(() => {
     fetchHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSelect]);
 
   return (
