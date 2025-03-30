@@ -11,7 +11,7 @@ interface StatisticsRightProps {
   userName: string;
   totalPracticeTime: string;
   totalQuestions: number;
-  totalPracticeCount: string;
+  totalPracticeCount: number;
   correctCount: number;
   wrongCount: number;
   giveUpCount: number;
@@ -32,18 +32,24 @@ const StatisticsRightComponent: React.FC<StatisticsRightProps> = ({
       <StatsBox>
         <StatsRow>
           <StatsTitle>누적 연습시간</StatsTitle>
-          <Divider />
+          <DividerCell>
+            <Divider />
+          </DividerCell>
           <StatsValue>{totalPracticeTime}</StatsValue>
         </StatsRow>
         <StatsRow>
           <StatsTitle>누적 질문 수</StatsTitle>
-          <Divider />
+          <DividerCell>
+            <Divider />
+          </DividerCell>
           <StatsValue>{totalQuestions}개</StatsValue>
         </StatsRow>
         <StatsRow>
           <StatsTitle>총 연습 횟수</StatsTitle>
-          <Divider />
-          <StatsValue>{totalPracticeCount}</StatsValue>
+          <DividerCell>
+            <Divider />
+          </DividerCell>
+          <StatsValue>{totalPracticeCount}번</StatsValue>
         </StatsRow>
       </StatsBox>
       <QuestionStatsContainer>
@@ -53,14 +59,14 @@ const StatisticsRightComponent: React.FC<StatisticsRightProps> = ({
           <QuestionValue>{correctCount}개</QuestionValue>
         </QuestionStatsRow>
         <QuestionStatsRow>
-          <QuestionCircle isGreen />
-          <QuestionLabel>포기한 질문</QuestionLabel>
-          <QuestionValue>{giveUpCount}개</QuestionValue>
-        </QuestionStatsRow>
-        <QuestionStatsRow>
           <QuestionCircle isPink />
           <QuestionLabel>오답</QuestionLabel>
           <QuestionValue>{wrongCount}개</QuestionValue>
+        </QuestionStatsRow>
+        <QuestionStatsRow>
+          <QuestionCircle isGreen />
+          <QuestionLabel>포기한 질문</QuestionLabel>
+          <QuestionValue>{giveUpCount}개</QuestionValue>
         </QuestionStatsRow>
       </QuestionStatsContainer>
     </Container>
@@ -70,11 +76,9 @@ const StatisticsRightComponent: React.FC<StatisticsRightProps> = ({
 export default StatisticsRightComponent;
 
 const Container = styled.div`
-  width: auto;
-  height: 237px;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
-  padding-top: 42px;
-  padding-left: 40px;
 `;
 
 const Title = styled.h1`
@@ -88,7 +92,6 @@ const Title = styled.h1`
 
 const StatsBox = styled.div`
   width: 208px;
-  height: 83px;
   background: #f5f9ff;
   padding: 8px 16px;
   box-sizing: border-box;
@@ -106,13 +109,24 @@ const StatsTitle = styled.h2`
   display: table-cell;
   color: #212121;
   font-size: 14px;
-  font-style: normal;
   font-weight: 400;
   line-height: 150%;
   letter-spacing: -0.35px;
   margin: 0;
   text-align: left;
-  padding-right: 12px;
+  padding: 2px 12px 2px 0;
+`;
+
+const DividerCell = styled.div`
+  display: table-cell;
+  vertical-align: middle;
+`;
+
+const Divider = styled.div`
+  width: 1px;
+  height: 16px;
+  background: #e6efff;
+  background-blend-mode: multiply;
 `;
 
 const StatsValue = styled.h2`
@@ -125,23 +139,15 @@ const StatsValue = styled.h2`
   letter-spacing: -0.35px;
   margin: 0;
   text-align: left;
-  padding-left: 12px;
-`;
-
-const Divider = styled.div`
-  width: 1px;
-  height: 16px;
-  background: #e6efff;
-  background-blend-mode: multiply;
+  padding: 2px 0 2px 12px;
 `;
 
 const QuestionStatsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 53px;
+  gap: 4px;
   width: 157px;
-  height: 59px;
+  margin-top: auto;
 `;
 
 const QuestionStatsRow = styled.div`

@@ -1,52 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ClassButton } from './ClassButton';
 import { AskHistoryBox } from './AskHistoryBox';
 import { AskHistoryMore } from './AskHistoryMore';
+import { fetchRecentAnswers } from '../../api/interview/recentInterviewAPI';
 import { CaptionType } from '../common/caption/CaptionType';
 
 interface HistoryItem {
+  interviewId: number;
+  questionId: number;
+  answerId: number;
   question: string;
   answer: string;
-  // common 폴더의 caption 컴포넌트 사용
   status: CaptionType;
   detailUrl: string;
 }
 
 export const AskHistory: React.FC = () => {
-  const [isSelect, setIsSelect] = useState('전체');
+  const [isSelect, setIsSelect] = useState<'전체' | '정답' | '오답' | '포기'>('전체');
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // 예시 데이터 배열
-  const sampleHistory: HistoryItem[] = [
-    {
-      question: '사용자 중심 디자인에 귀하의 접근 방식을 설명해 주시겠어요?',
-      answer: '저는 디자인이 단순히 문제 해결을 넘어, 감정적 연결과 긍정적 경험을 제공해야 한다고 믿습니다.',
-      status: '정답-small',
-      detailUrl: '/detail/1',
-    },
-    {
-      question: '최근에 어떤 프로젝트를 진행했나요?',
-      answer: '저는 최근에 AI 기반 디자인 도구를 개발하는 프로젝트에 참여했습니다.',
-      status: '오답-small',
-      detailUrl: '/detail/2',
-    },
-    {
-      question: '어떤 상황에서 어려움을 겪었나요?',
-      answer: '팀원 간의 의견 차이로 프로젝트 진행이 지연된 경험이 있습니다.',
-      status: '포기-small',
-      detailUrl: '/detail/3',
-    },
-  ];
+  const fetchHistory = async () => {
+    setLoading(true);
+    const statusParam =
+      isSelect === '전체' ? 'ALL' : isSelect === '정답' ? 'CORRECT' : isSelect === '오답' ? 'INCORRECT' : 'SKIPPED';
 
-  const filteredHistory = sampleHistory.filter(item => {
-    if (isSelect === '전체') return true;
-    return item.status.startsWith(isSelect);
-  });
+    const response = await fetchRecentAnswers(statusParam);
+
+    if (response.success) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const formattedData = response.data.map((item: any) => ({
+        interviewId: item.interviewId,
+        questionId: item.questionId,
+        answerId: item.answerId,
+        question: item.questionContent,
+        answer: item.answerContent || '',
+        status:
+          item.answerStatus === 'CORRECT'
+            ? '정답-small'
+            : item.answerStatus === 'INCORRECT'
+            ? '오답-small'
+            : '포기-small',
+        detailUrl: `/detail/${item.answerId}`,
+      }));
+
+      setHistoryItems(formattedData);
+    } else {
+      alert(response.message);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSelect]);
 
   return (
     <AskHistoryWrapper>
       <AskHistoryTitle>최근 질문 히스토리</AskHistoryTitle>
-      {filteredHistory.length > 0 ? (
+      {loading ? (
+        <EmptyMessage>로딩 중...</EmptyMessage>
+      ) : historyItems.length > 0 ? (
         <>
           <AskHistoryClass>
             <ClassButton name="전체" isSelect={isSelect === '전체'} setIsSelect={setIsSelect} />
@@ -55,9 +71,9 @@ export const AskHistory: React.FC = () => {
             <ClassButton name="포기" isSelect={isSelect === '포기'} setIsSelect={setIsSelect} />
           </AskHistoryClass>
 
-          {filteredHistory.map((item, index) => (
+          {historyItems.map(item => (
             <AskHistoryBox
-              key={index}
+              key={item.answerId}
               question={item.question}
               answer={item.answer}
               status={item.status}
@@ -65,7 +81,7 @@ export const AskHistory: React.FC = () => {
             />
           ))}
 
-          {filteredHistory.length >= 3 && <AskHistoryMore />}
+          {historyItems.length >= 3 && <AskHistoryMore />}
         </>
       ) : (
         <EmptyMessage>

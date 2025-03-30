@@ -1,24 +1,22 @@
+import React from 'react';
 import styled from 'styled-components';
 
 interface Props {
-  name: string;
+  name: '전체' | '정답' | '오답' | '포기'; // 허용되는 값들을 명확히 지정
   isSelect: boolean;
-  setIsSelect: (name: string) => void;
+  setIsSelect: React.Dispatch<React.SetStateAction<'전체' | '정답' | '오답' | '포기'>>;
 }
 
-export const ClassButton = ({ name, isSelect, setIsSelect }: Props) => {
+export const ClassButton: React.FC<Props> = ({ name, isSelect, setIsSelect }) => {
   return (
-    <ClassButtonWrapper
-      style={{ color: isSelect ? '#0050d8' : '#747474', backgroundColor: isSelect ? '#e6efff' : '#f5f9ff' }}
-      onClick={() => setIsSelect(name)}
-    >
+    <ClassButtonWrapper isSelect={isSelect} onClick={() => setIsSelect(name)}>
       {name}
     </ClassButtonWrapper>
   );
 };
 
-export const ClassButtonWrapper = styled.div`
-  width: 21px;
+export const ClassButtonWrapper = styled.div<{ isSelect: boolean }>`
+  width: auto;
   height: 18px;
   padding: 4px 10px;
   cursor: pointer;
@@ -31,6 +29,8 @@ export const ClassButtonWrapper = styled.div`
   font-size: 12px;
   font-weight: 500;
   letter-spacing: -0.3px;
-
   margin-bottom: 20px;
+
+  background-color: ${({ isSelect }) => (isSelect ? '#e6efff' : '#f5f9ff')};
+  color: ${({ isSelect }) => (isSelect ? '#0050d8' : '#747474')};
 `;

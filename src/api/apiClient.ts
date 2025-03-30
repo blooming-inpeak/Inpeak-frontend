@@ -56,7 +56,6 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (reissueError) {
         console.error('🔒 토큰 재발급 실패');
-        alert('세션이 만료되었습니다. 다시 로그인 해주세요.');
         return Promise.reject(reissueError);
       }
     }

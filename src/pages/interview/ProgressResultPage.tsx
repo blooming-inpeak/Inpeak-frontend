@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import Lottie from 'lottie-react';
+import loadingAnimationData from '../../../public/images/loading/loading.json';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
-import ResultPostVideo from '../../assets/video/ResultPostVideo.mp4'; // mp4 파일 변경 예정
 
 type ResultDataType = {
   question: string;
@@ -64,7 +65,6 @@ export const ProgessResultPage: React.FC = () => {
     setTotalTime(calculateTotalTime());
   }, [resultData]);
 
-  // 페이지 이동 임의 설정
   const handleFeedbackClick = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -104,7 +104,12 @@ export const ProgessResultPage: React.FC = () => {
       </ResultPageWrapper>
       {isLoading && (
         <Overlay>
-          <video src={ResultPostVideo} autoPlay muted loop style={{ width: '203px', height: '200px' }} />
+          <Lottie
+            animationData={loadingAnimationData}
+            loop={true}
+            autoplay={true}
+            style={{ width: '203px', height: '200px' }}
+          />
           <ProgressBarContainer>
             <ProgressBar />
           </ProgressBarContainer>
@@ -252,7 +257,7 @@ const ResultList = styled.div`
       }
 
       h3 {
-        color: var(--text-bw-500, #747474);
+        color: #747474;
         font-size: 12px;
         font-weight: 500;
         margin: 0;
