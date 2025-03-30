@@ -80,5 +80,8 @@ export const SelectStackButton = styled.div`
   line-height: 150%;
   letter-spacing: -0.35px;
 
+  &:hover {
+    background-color: #72a6ff;
+  }
   cursor: pointer;
 `;

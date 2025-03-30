@@ -44,8 +44,11 @@ export const LoginTitle = styled.img`
 `;
 
 export const LoginBanner = styled.img`
-  width: 200px;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const LoginFooter = styled.div`
