@@ -30,6 +30,7 @@ export const MainIntroTopWrapper = styled.div`
   justify-content: center;
 
   margin-top: 65px;
+  position: relative;
 `;
 
 export const MainIntroTopBox = styled.div`
@@ -79,6 +80,9 @@ export const MainIntroTopButton = styled.div`
   background-color: #202a43;
 
   cursor: pointer;
+  &:hover {
+    background-color: #464f69;
+  }
 `;
 
 export const MainIntroTopButtonText = styled.div`

@@ -23,6 +23,6 @@ export const MicListWrapper = styled.div`
   font-weight: 500;
   letter-spacing: -0.3px;
 
-  background-color: #e6efff;
+  background-color: rgba(214, 230, 255, 0.2);
   cursor: pointer;
 `;

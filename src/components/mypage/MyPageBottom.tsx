@@ -17,10 +17,20 @@ import {
 import { BlurBackground } from '../common/background/BlurBackground';
 import { WithdrawalModal } from './WithdrawalModal';
 import { SelectStack } from '../common/selectStack/SelectStack';
+import { PrivacyPolicyModal } from '../common/policy/Policy';
 
 export const MyPageBottom = () => {
   const [isWithdrawal, setIsWithdrawal] = useState(false);
   const [isSelectStack, setIsSelectStack] = useState(false);
+  const [isPolicy, setIsPolicy] = useState('');
+
+  const onClickPrivacy = () => {
+    setIsPolicy('privacy');
+  };
+
+  const onClickService = () => {
+    setIsPolicy('service');
+  };
 
   return (
     <MyPageBottomWrapper>
@@ -38,11 +48,11 @@ export const MyPageBottom = () => {
       <MyPageTerms>
         <MyPageTermsTitle>이용약관</MyPageTermsTitle>
         <MyPageTermsContents>
-          <MyPageTermsContent>
+          <MyPageTermsContent onClick={onClickPrivacy}>
             개인정보처리방침
             <img src="/images/chevron/Chevron_right.svg" style={{ width: '16px' }} />
           </MyPageTermsContent>
-          <MyPageTermsContent>
+          <MyPageTermsContent onClick={onClickService}>
             서비스약관
             <img src="/images/chevron/Chevron_right.svg" style={{ width: '16px' }} />
           </MyPageTermsContent>
@@ -59,6 +69,11 @@ export const MyPageBottom = () => {
       {isSelectStack && (
         <BlurBackground>
           <SelectStack onClose={() => setIsSelectStack(false)} />
+        </BlurBackground>
+      )}
+      {isPolicy && (
+        <BlurBackground>
+          <PrivacyPolicyModal isPolicy={isPolicy} onClose={() => setIsPolicy('')} />
         </BlurBackground>
       )}
     </MyPageBottomWrapper>

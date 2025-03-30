@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from './Button';
 import {
   SelectStackBody,
@@ -11,6 +12,8 @@ import {
 } from './SelectStackStyle';
 
 export const SelectStack = ({ onClose }: { onClose: () => void }) => {
+  const pathname = window.location.pathname;
+  const [select, setSelect] = useState<string[]>([]); // 관심분야 선택한 항목 넣을 배열
   return (
     <SelectStackWrapper>
       <img
@@ -24,13 +27,17 @@ export const SelectStack = ({ onClose }: { onClose: () => void }) => {
         <SelectStackContent>
           <SelectStackContentTop>
             <SelectStackTitle>관심 분야를 선택해주세요</SelectStackTitle>
-            <SelectStackSubTitle>가입완료 후 마이페이지에서 변경가능합니다</SelectStackSubTitle>
+            {pathname !== '/mypage' ? (
+              <SelectStackSubTitle>가입완료 후 마이페이지에서 변경가능합니다</SelectStackSubTitle>
+            ) : (
+              <SelectStackSubTitle>선택한 분야들이 면접 질문으로 나옵니다</SelectStackSubTitle>
+            )}
           </SelectStackContentTop>
 
           <SelectStackContentBottom>
-            <Button name={'React'} color={'#1BC0E7'} />
-            <Button name={'Spring'} color={'#ffffff'} />
-            <Button name={'Database'} color={'#FFC813'} />
+            <Button name={'React'} color={'#1BC0E7'} setSelect={setSelect} select={select} />
+            <Button name={'Spring'} color={'#ffffff'} setSelect={setSelect} select={select} />
+            <Button name={'Database'} color={'#FFC813'} setSelect={setSelect} select={select} />
           </SelectStackContentBottom>
         </SelectStackContent>
 

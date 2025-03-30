@@ -1,3 +1,4 @@
+import { WithdrawalUser } from '../../api/withdrawalUser/withdrawalUser';
 import {
   CloseButton,
   NoButton,
@@ -11,6 +12,12 @@ import {
 } from './WithdrawalModalStyle';
 
 export const WithdrawalModal = ({ onClose }: { onClose: () => void }) => {
+  const onClickWithdrawal = async () => {
+    const data = await WithdrawalUser();
+    console.log(data);
+    // 성공하면 쿠키에서 토큰 삭제
+  };
+
   return (
     <WithdrawalModalWrapper>
       <CloseButton>
@@ -24,8 +31,8 @@ export const WithdrawalModal = ({ onClose }: { onClose: () => void }) => {
         </WithdrawalContent>
 
         <WithdrawalButtons>
-          <YesButton>탈퇴하기</YesButton>
-          <NoButton>회원을 유지하기</NoButton>
+          <YesButton onClick={onClickWithdrawal}>탈퇴하기</YesButton>
+          <NoButton onClick={onClose}>회원을 유지하기</NoButton>
         </WithdrawalButtons>
       </WithdrawalBody>
     </WithdrawalModalWrapper>

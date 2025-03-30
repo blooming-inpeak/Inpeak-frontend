@@ -101,6 +101,9 @@ export const StopButton = styled.div`
   font-weight: 600;
   letter-spacing: -0.35px;
 
+  &:hover {
+    background-color: #e6efff;
+  }
   cursor: pointer;
 `;
 
@@ -119,6 +122,10 @@ export const ContinueButton = styled.div`
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.35px;
+
+  &:hover {
+    background-color: #72a6ff;
+  }
 
   cursor: pointer;
 `;

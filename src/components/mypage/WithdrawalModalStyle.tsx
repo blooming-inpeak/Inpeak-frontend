@@ -82,6 +82,10 @@ export const YesButton = styled.div`
   letter-spacing: -0.35px;
   color: #0050d8;
 
+  &:hover {
+    background-color: #e6efff;
+  }
+
   cursor: pointer;
 `;
 
@@ -103,5 +107,8 @@ export const NoButton = styled.div`
   line-height: 150%;
   letter-spacing: -0.35px;
 
+  &:hover {
+    background-color: #72a6ff;
+  }
   cursor: pointer;
 `;

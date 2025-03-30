@@ -5,7 +5,7 @@ import { RecordCheck } from './RecordCheck';
 import { RecordTest } from './RecordTest';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { currentMicState, isRecordingState } from '../../store/Record/Record';
+import { currentMicState, isRecordingState } from '../../store/record/Record';
 
 export const IntroTestTop = () => {
   const [isRecord, setIsRecord] = useRecoilState(isRecordingState);
@@ -18,8 +18,6 @@ export const IntroTestTop = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  console.log(currentMic);
-
   useEffect(() => {
     // 연결된 마이크 장치 리스트
     const getDivices = async () => {
@@ -31,25 +29,12 @@ export const IntroTestTop = () => {
     // 웹캠과 마이크 권한 요청
     const getMedia = async () => {
       try {
-        let constraints: MediaStreamConstraints;
-
-        if (isRecord) {
-          // isRecord가 true일 때 비디오와 오디오 모두 활성화
-          constraints = {
-            video: true,
-            audio: {
-              deviceId: currentMic,
-            },
-          };
-        } else {
-          // isRecord가 false일 때 비디오를 비활성화하고 오디오만 활성화
-          constraints = {
-            video: false,
-            audio: {
-              deviceId: currentMic,
-            },
-          };
-        }
+        const constraints: MediaStreamConstraints = {
+          video: isRecord,
+          audio: {
+            deviceId: currentMic || undefined,
+          },
+        };
 
         const newStream = await navigator.mediaDevices.getUserMedia(constraints);
         streamRef.current = newStream;
@@ -78,7 +63,7 @@ export const IntroTestTop = () => {
         gainNodeRef.current = gainNode;
 
         const analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
+        analyser.fftSize = 128;
         analyserRef.current = analyser;
 
         source.connect(gainNode);
@@ -102,6 +87,13 @@ export const IntroTestTop = () => {
     };
   }, [isRecord, currentMic]);
 
+  // 볼륨이 바뀔 때 gainNode에 반영
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = volume;
+    }
+  }, [volume]);
+
   // 볼륨 조절 핸들러
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(event.target.value);
@@ -123,6 +115,7 @@ export const IntroTestTop = () => {
         volume={volume}
         handleVolumeChange={handleVolumeChange}
         analyser={analyserRef.current}
+        setVolume={setVolume}
       />
     </IntroTestTopWrapper>
   );

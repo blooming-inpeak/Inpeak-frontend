@@ -2,12 +2,24 @@ import styled from 'styled-components';
 import { IntroDescription } from '../../components/intro/IntroDescription';
 import { IntroTestTop } from '../../components/intro/IntroTestTop';
 import { useNavigate } from 'react-router-dom';
+import { GetQuestion } from '../../api/question/question';
+import { useSetRecoilState } from 'recoil';
+import { QuestionsState } from '../../store/question/Question';
+import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
 
 export const IntroPage = () => {
   const navigate = useNavigate();
-  const onClickStart = () => {
-    navigate('/interview/session');
+  const setQuestions = useSetRecoilState(QuestionsState);
+
+  const onClickStart = async () => {
+    const today = getFormattedDate();
+    const data = await GetQuestion(today);
+    console.log(data);
+    setQuestions(data.questions);
+    const interviewId = data.interviewId;
+    navigate(`/interview/session/${interviewId}`);
   };
+
   return (
     <IntroWrapper>
       <IntroBody>
@@ -76,4 +88,8 @@ export const IntroStartButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+
+  &:hover {
+    background-color: #464f69;
+  }
 `;

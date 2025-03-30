@@ -1,33 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { OpenLoginModal } from './OpenLoginModal';
 
 export const LoginDropdown = () => {
+  const dropMenuRef = useRef<HTMLDivElement | null>(null);
   const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    const handleOutSideClose = (e: MouseEvent) => {
+      // useRef current에 담긴 엘리먼트 바깥을 클릭 시 드롭메뉴 닫힘
+      if (openModal && !dropMenuRef.current?.contains(e.target as Node)) {
+        setOpenModal(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutSideClose);
+
+    return () => document.removeEventListener('click', handleOutSideClose);
+  }, [openModal]);
+
   return (
-    <LoginDropdownWrapper>
-      <LoginDropdownProfile>
-        <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
-        <LoginDropdownName>김인픽</LoginDropdownName>
-      </LoginDropdownProfile>
-      <LoginDropdownButton
-        src="/images/chevron/Chevron_bottom.svg"
-        alt="chevron bottom"
-        onClick={() => setOpenModal(true)}
-      />
-      {openModal && <OpenLoginModal onCloseModal={() => setOpenModal(false)} />}
+    <LoginDropdownWrapper $isOpen={openModal} ref={dropMenuRef}>
+      <LoginDropdownTop>
+        <LoginDropdownProfile>
+          <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
+          <LoginDropdownName>김인픽</LoginDropdownName>
+        </LoginDropdownProfile>
+
+        <LoginDropdownButton
+          src={`/images/chevron/Chevron_bottom.svg`}
+          alt="chevron bottom"
+          onClick={() => setOpenModal(!openModal)}
+          $openModal={openModal}
+        />
+      </LoginDropdownTop>
+
+      {openModal && <OpenLoginModal />}
     </LoginDropdownWrapper>
   );
 };
 
-export const LoginDropdownWrapper = styled.div`
+export const LoginDropdownWrapper = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px 12px 0 0;
+  background-color: ${({ $isOpen }) => ($isOpen ? '#ffffff' : '')};
+`;
+
+export const LoginDropdownTop = styled.div`
   width: 150px;
   height: 30px;
+  padding: 10px 20px;
 
   display: flex;
   justify-content: space-between;
-
-  gap: 30px;
 `;
 
 export const LoginDropdownProfile = styled.div`
@@ -45,7 +71,9 @@ export const LoginDropdownName = styled.div`
   letter-spacing: -0.35px;
 `;
 
-export const LoginDropdownButton = styled.img`
+export const LoginDropdownButton = styled.img<{ $openModal: boolean }>`
   width: 16px;
   cursor: pointer;
+  transform: ${({ $openModal }) => ($openModal ? 'rotate(180deg)' : 'rotate(0)')};
+  transition: transform 0.3s ease;
 `;

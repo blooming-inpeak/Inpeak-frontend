@@ -25,7 +25,7 @@ function App() {
       </Route>
 
       <Route path="/interview/intro" element={<IntroPage />} />
-      <Route path="/interview/session" element={<SessionPage />} />
+      <Route path="/interview/session/:id" element={<SessionPage />} />
       <Route path="/interview/progressresult" element={<ProgessResultPage />} />
       <Route path="/interview/result" element={<ResultPage />} />
     </Routes>

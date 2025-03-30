@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
 
 interface Props {
   close: () => void;
 }
 
 export const ChangeNickname = ({ close }: Props) => {
-  const [nickname, setNickname] = useState('');
-  const [error, setError] = useState('');
+  const [nickname, setNickname] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -17,6 +18,13 @@ export const ChangeNickname = ({ close }: Props) => {
       setError('2글자 이상의 닉네임만 사용 가능합니다.');
     } else {
       setError('');
+    }
+  };
+
+  const SaveNickname = async () => {
+    if (!error && nickname.length !== 0) {
+      const data = await SaveNicknameAPI(nickname);
+      console.log(data);
     }
   };
 
@@ -36,7 +44,7 @@ export const ChangeNickname = ({ close }: Props) => {
             onChange={handleChange}
             $isError={error}
           />
-          <SaveButton $isError={error} $isNickname={nickname}>
+          <SaveButton $isError={error} $isNickname={nickname} onClick={SaveNickname}>
             저장
           </SaveButton>
         </Content>

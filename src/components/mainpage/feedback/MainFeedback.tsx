@@ -1,17 +1,59 @@
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import styled from 'styled-components';
+import AIFeedbackAnimation from '../lottie/AIFeedbackAnimation.json';
+import { useEffect, useRef } from 'react';
 
 export const MainFeedback = () => {
-  return (
-    <FeedbackWrapper>
-      <FeedbackContent>
-        <FeedbackTitle>AI 피드백</FeedbackTitle>
-        <FeedbackSubTitle>
-          똑똑한 AI 인삑이에게 피드백 받고 <br /> 나의 면접 실력 수직 상승 시키기
-        </FeedbackSubTitle>
-      </FeedbackContent>
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-      <FeedbackImg src="/images/mainpage/MainFeedbackImg.svg" alt="feedback Img" />
-      <FeedbackInpeak src="/images/mainpage/MainInpeak.svg" alt="main inpeak" />
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.3);
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.6,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  });
+  return (
+    <FeedbackWrapper ref={containerRef}>
+      <FeedbackContainer>
+        <FeedbackContent>
+          <FeedbackTitle>AI 피드백</FeedbackTitle>
+          <FeedbackSubTitle>
+            똑똑한 AI 면접관 인삑이에게 <br />
+            피드백 받고 면접 실력 수직 상승 시키기
+          </FeedbackSubTitle>
+        </FeedbackContent>
+        <FeedbackImg>
+          <Lottie animationData={AIFeedbackAnimation} lottieRef={lottieRef} />
+        </FeedbackImg>
+
+        <FeedbackInpeak src="/images/mainpage/MainInpeak.svg" alt="main inpeak" />
+      </FeedbackContainer>
     </FeedbackWrapper>
   );
 };
@@ -20,14 +62,18 @@ export const FeedbackWrapper = styled.div`
   width: 100%;
   height: 800px;
 
-  position: relative;
   margin-bottom: 24px;
-  z-index: 1;
-  gap: 30px;
 
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const FeedbackContainer = styled.div`
+  display: flex;
+  position: relative;
+  gap: 30px;
+  z-index: 1;
 `;
 
 export const FeedbackContent = styled.div`
@@ -41,7 +87,7 @@ export const FeedbackContent = styled.div`
 `;
 
 export const FeedbackTitle = styled.div`
-  color: #0050db;
+  color: #0050d8;
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.1px;
@@ -57,13 +103,15 @@ export const FeedbackSubTitle = styled.div`
   text-align: right;
 `;
 
-export const FeedbackImg = styled.img`
+export const FeedbackImg = styled.div`
   width: 643px;
   height: 400px;
+  border-radius: 24px;
+  overflow: hidden;
 `;
 
 export const FeedbackInpeak = styled.img`
   position: absolute;
-  top: 578px;
-  right: 442px;
+  top: 378px;
+  right: 46px;
 `;

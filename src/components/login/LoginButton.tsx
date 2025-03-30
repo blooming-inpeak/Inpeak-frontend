@@ -42,6 +42,6 @@ export const LoginButton = styled.div`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    background-color: #4386f8;
+    background-color: #72a6ff;
   }
 `;
