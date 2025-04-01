@@ -30,7 +30,7 @@ export const IntroTestTop = () => {
     const getMedia = async () => {
       try {
         const constraints: MediaStreamConstraints = {
-          video: isRecord,
+          video: isRecord as boolean,
           audio: {
             deviceId: currentMic || undefined,
           },

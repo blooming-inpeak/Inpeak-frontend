@@ -1,4 +1,4 @@
-import { WithdrawalUser } from '../../api/withdrawalUser/withdrawalUser';
+import { WithdrawalUser } from '../../api/withdrawalUser/WithdrawalUser';
 import {
   CloseButton,
   NoButton,

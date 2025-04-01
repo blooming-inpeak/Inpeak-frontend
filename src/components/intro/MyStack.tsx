@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 export const MyStack = () => {
-  const [myInterest, setMyInterest] = useState<string[]>(['React', 'Spring']);
+  const [myInterest, setMyInterest] = useState<string[]>([]);
+
+  // 일단 오류나서 해놨습니다.
+  useEffect(() => {
+    setMyInterest(['React', 'Spring']);
+  }, []);
 
   return (
     <MyStackWrapper>
