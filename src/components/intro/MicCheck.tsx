@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MicList } from './MicList';
 import { BlurBackground } from '../common/background/BlurBackground';
@@ -11,29 +11,20 @@ interface Props {
   volume: number;
   handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   analyser: AnalyserNode | null;
+  setVolume: (volume: number) => void;
 }
 
-export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVolumeChange, analyser }: Props) => {
+export const MicCheck = ({
+  currentMic,
+  micList,
+  setCurrentMic,
+  volume,
+  handleVolumeChange,
+  analyser,
+  setVolume,
+}: Props) => {
   const [isClick, setIsClick] = useState(false);
   const [micTest, setMicTest] = useState(false);
-  const [audioLevel, setAudioLevel] = useState(0); // 마이크 입력 볼륨 표시용
-
-  useEffect(() => {
-    console.log(analyser);
-    if (!analyser) return;
-
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    const checkVolume = () => {
-      analyser.getByteFrequencyData(dataArray);
-      const avgVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
-      setAudioLevel(avgVolume);
-      requestAnimationFrame(checkVolume);
-    };
-
-    checkVolume();
-  }, [analyser]);
 
   return (
     <MicCheckWrapper>
@@ -45,7 +36,8 @@ export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVol
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-end',
-              padding: '  4px 6px 4px 10px',
+              width: '236px',
+              padding: '4px 6px 4px 10px',
             }}
           >
             <MicName> {currentMic} </MicName>
@@ -56,7 +48,7 @@ export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVol
               onClick={() => setIsClick(!isClick)}
             />
           </div>
-          <div>
+          <div style={{ backgroundColor: 'rgba(214, 230, 255, 0.2)' }}>
             {isClick &&
               micList.map((mic, index) => (
                 <MicList name={mic.label} setCurrentMic={setCurrentMic} isClose={() => setIsClick(false)} key={index} />
@@ -70,8 +62,9 @@ export const MicCheck = ({ currentMic, micList, setCurrentMic, volume, handleVol
             <MicTest
               volume={volume}
               handleVolumeChange={handleVolumeChange}
-              audioLevel={audioLevel}
+              analyser={analyser}
               closeMicTest={() => setMicTest(false)}
+              setVolume={setVolume}
             />
           </BlurBackground>
         )}
@@ -96,11 +89,11 @@ export const MicCheckTitle = styled.div`
 export const MicSelectContent = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  gap: 8px;
 `;
 
 export const MicSelect = styled.div`
-  width: 236px;
+  width: 252px;
   height: auto;
 
   display: flex;
@@ -109,18 +102,31 @@ export const MicSelect = styled.div`
   border: 1px solid #3277ed;
   border-radius: 4px;
   background-color: #fbfdff;
+`;
 
-  overflow: hidden;
+export const MicMenu = styled.div`
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 `;
 
 export const MicName = styled.div`
-  overflow-x: hidden;
-  width: 220px;
   color: #3277ed;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: -0.3px;
 `;
+
+export const MicListButton = styled.img<{ $isClick: boolean }>`
+  cursor: 'pointer';
+  width: '16px';
+  height: '16px';
+  transform: ${({ $isClick }) => ($isClick ? 'rotate(180deg)' : 'rotate(0)')};
+  transition: transform 0.3s ease;
+`;
+
 export const MicSelectButton = styled.div`
   width: 80px;
   height: 24px;
@@ -138,4 +144,8 @@ export const MicSelectButton = styled.div`
   letter-spacing: -0.3px;
 
   cursor: pointer;
+
+  &:hover {
+    background-color: #72a6ff;
+  }
 `;

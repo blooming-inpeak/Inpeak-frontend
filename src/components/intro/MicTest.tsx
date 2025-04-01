@@ -1,15 +1,45 @@
 import styled from 'styled-components';
 import { MicLevel } from './MicLevel';
 import { MicVolumeSlide } from './MicVolumeSlide';
+import { useEffect, useState } from 'react';
 
 interface Props {
   volume: number;
   handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  audioLevel: number;
+  analyser: AnalyserNode | null;
   closeMicTest: () => void;
+  setVolume: (volume: number) => void;
 }
 
-export const MicTest = ({ volume, handleVolumeChange, audioLevel, closeMicTest }: Props) => {
+export const MicTest = ({ volume, handleVolumeChange, analyser, closeMicTest, setVolume }: Props) => {
+  const [audioLevel, setAudioLevel] = useState(0);
+  console.log(audioLevel);
+
+  useEffect(() => {
+    console.log(analyser);
+    if (!analyser) return;
+
+    setVolume(0.5);
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    let animationId: number;
+
+    const checkVolume = () => {
+      analyser.getByteFrequencyData(dataArray);
+      const avgVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
+      setAudioLevel(avgVolume);
+      animationId = requestAnimationFrame(checkVolume);
+    };
+
+    checkVolume();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+    };
+  }, [analyser]);
+
   return (
     <MicTestWrapper>
       <MicTestTitle>적정한 입력 레벨이 나올때까지 입력 볼륨을 조절해주세요</MicTestTitle>
@@ -94,4 +124,9 @@ export const MicTestComplete = styled.div`
   font-size: 10px;
   font-weight: 500;
   letter-spacing: -0.25px;
+  line-height: 150%;
+
+  &:hover {
+    background-color: #72a6ff;
+  }
 `;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { AnsweredList } from '../components/historys/AnsweredList';
 import { WrongNoteList } from '../components/historys/WrongNoteList';
-import { HistoryStatistics } from '../components/historys/HistoryStatistics';
-import HistoryCalendar from '../components/historys/HistoryCalender';
+import { HistoryStatistics } from '../components/historys/historyStatistics/HistoryStatistics';
+import HistoryCalendar from '../components/historys/historyCalander/HistoryCalender';
 export const HistoryPage = () => {
   return (
     <HistoryWrapper>

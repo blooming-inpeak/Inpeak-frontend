@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 export const isRecordingState = atom<boolean>({
   key: 'isRecordingState',
-  default: true,
+  default: false,
 });
 
 export const currentMicState = atom<string>({

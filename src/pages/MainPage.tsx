@@ -6,6 +6,7 @@ import { MainFeedback } from '../components/mainpage/feedback/MainFeedback';
 import { MainHistory } from '../components/mainpage/history/MainHistory';
 import { MainInterviewStart } from '../components/mainpage/interviewStart/MainInterviewStart';
 import { MainHelp } from '../components/mainpage/help/MainHelp';
+import Footer from '../components/common/Footer/Footer';
 
 export const MainPage = () => {
   return (
@@ -17,6 +18,7 @@ export const MainPage = () => {
       <MainHistory />
       <MainInterviewStart />
       <MainHelp />
+      <Footer />
       <MainPageDottedLine src="/images/mainpage/Dotted_line.svg" alt="dotted line" />
     </MainPageWrapper>
   );
@@ -36,9 +38,9 @@ export const MainPageWrapper = styled.div`
 
 export const MainPageDottedLine = styled.img`
   width: 123px;
-  height: 3000px;
+  height: 3526px;
 
   position: absolute;
-  left: 898.5px;
-  top: 1700px;
+  left: 50%;
+  top: 1400px;
 `;

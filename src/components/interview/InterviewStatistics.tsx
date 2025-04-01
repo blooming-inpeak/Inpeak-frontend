@@ -24,13 +24,22 @@ const InterviewStatistics: React.FC<StatisticsProps> = ({
   wrongCount,
   giveUpCount,
 }) => {
+  // 시간 변환 로직: "MM:SS" 형태를 시간:분 형태로 변환
+  const convertToHourMinute = (time: string) => {
+    const [minutesStr] = time.split(':');
+    const minutes = parseInt(minutesStr, 10);
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${String(hours).padStart(2, '0')}시간 ${String(remainingMinutes).padStart(2, '0')}분`;
+  };
+
   return (
     <Container>
       <StatsBox>
         <StatsRow>
           <StatsTitle>누적 연습시간</StatsTitle>
           <Divider />
-          <StatsValue>{totalPracticeTime}</StatsValue>
+          <StatsValue>{convertToHourMinute(totalPracticeTime)}</StatsValue>
         </StatsRow>
         <StatsRow>
           <StatsTitle>누적 질문 수</StatsTitle>
@@ -40,7 +49,7 @@ const InterviewStatistics: React.FC<StatisticsProps> = ({
         <StatsRow>
           <StatsTitle>총 연습 횟수</StatsTitle>
           <Divider />
-          <StatsValue>{totalPracticeCount}</StatsValue>
+          <StatsValue>{totalPracticeCount}번</StatsValue>
         </StatsRow>
       </StatsBox>
       <QuestionStatsContainer>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const HeaderContainer = styled.div`
+export const HeaderContainer = styled.div<{ $isState: string }>`
   width: 100%;
   height: 60px;
 
@@ -19,6 +19,11 @@ export const HeaderContainer = styled.div`
 
   background: rgba(255, 255, 255, 0.01);
   backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease-in-out;
+
+  transform: ${({ $isState }) => ($isState === 'show' ? 'translateY(0)' : 'translateY(-100%)')};
+  opacity: ${({ $isState }) => ($isState === 'show' ? 1 : 0)};
 `;
 
 export const NavBar = styled.div`

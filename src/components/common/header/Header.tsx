@@ -1,15 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, MenuItems, NavBar } from './HeaderStyle';
-import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
-// import { Login } from '../../login/LoginButton';
+// import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
+import { Login } from '../../login/LoginButton';
 
-export const Header = () => {
+export const Header = ({ isState }: { isState: string }) => {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
   return (
     <>
-      <HeaderContainer>
+      <HeaderContainer $isState={isState}>
         <NavBar>
           <HeaderRight>
             <Logo src="/images/Logo.svg" alt="logo" onClick={() => navigate('/')} />
@@ -33,11 +33,14 @@ export const Header = () => {
               >
                 히스토리
               </MenuItem>
+              <Divider />
             </MenuItems>
           </HeaderRight>
           <HeaderLeft>
-            {/* <Login /> */}
-            <LoginDropdown />
+            {/* 로그인 */}
+            <Login />
+            {/* 로그인 드롭다운 */}
+            {/* <LoginDropdown /> */}
           </HeaderLeft>
         </NavBar>
       </HeaderContainer>

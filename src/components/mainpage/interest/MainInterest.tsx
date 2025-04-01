@@ -1,17 +1,43 @@
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import styled from 'styled-components';
+import interestAnmation from '../lottie/interestAnimation.json';
+import { useEffect, useRef } from 'react';
 
 export const MainInterest = () => {
-  return (
-    <MainInterestWrapper>
-      <MainInterestCard>
-        <MainInterestTitle>관심분야 선택</MainInterestTitle>
-        <MainInterestSubTitle>
-          나의 관심분야에 맞는
-          <br />
-          맞춤형 질문으로 효율적이게
-        </MainInterestSubTitle>
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-        <MainInterestImage src="/images/mainpage/MainInterest.svg" />
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.6,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+  return (
+    <MainInterestWrapper ref={containerRef}>
+      <MainInterestCard>
+        <Lottie animationData={interestAnmation} lottieRef={lottieRef} />
       </MainInterestCard>
     </MainInterestWrapper>
   );
@@ -30,11 +56,8 @@ export const MainInterestWrapper = styled.div`
 `;
 
 export const MainInterestCard = styled.div`
-  width: 620px;
-  height: 352px;
-  padding: 24px 40px;
-
   border-radius: 24px;
+  height: 400px;
   background: rgba(255, 255, 255, 0.5);
 
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04), 0px 0px 32px 0px rgba(0, 80, 216, 0.04),
@@ -42,28 +65,4 @@ export const MainInterestCard = styled.div`
   backdrop-filter: blur(10px);
 
   overflow: hidden;
-  position: relative;
-`;
-
-export const MainInterestTitle = styled.div`
-  color: #0050d8;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.1px;
-
-  margin-bottom: 4px;
-`;
-
-export const MainInterestSubTitle = styled.div`
-  color: #212121;
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 150%;
-  letter-spacing: -0.15px;
-`;
-
-export const MainInterestImage = styled.img`
-  position: absolute;
-  top: 56px;
-  left: 181.85px;
 `;
