@@ -68,7 +68,7 @@ export const MyPageBottom = () => {
       )}
       {isSelectStack && (
         <BlurBackground>
-          <SelectStack onClose={() => setIsSelectStack(false)} />
+          <SelectStack />
         </BlurBackground>
       )}
       {isPolicy && (
