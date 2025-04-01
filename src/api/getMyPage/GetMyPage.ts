@@ -1,8 +1,8 @@
-import { apiClient } from '../apiClient';
+import api from '../apiClient';
 
 export const GetMyPage = async () => {
   try {
-    const response = await apiClient.get('/api/member/my', {
+    const response = await api.get('/api/member/my', {
       headers: {
         Authorization: '',
         'Content-Type': 'application/json',
