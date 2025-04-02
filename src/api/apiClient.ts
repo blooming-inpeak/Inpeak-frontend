@@ -81,9 +81,6 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 console.log('✅ baseURL:', baseURL);
 
-// let accessToken = import.meta.env.VITE_ACCESS_TOKEN;
-// let refreshToken = import.meta.env.VITE_REFRESH_TOKEN;
-
 const api = axios.create({
   baseURL,
   headers: {
