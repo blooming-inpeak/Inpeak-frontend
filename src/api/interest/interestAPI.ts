@@ -4,7 +4,7 @@ export const registerInterest = async (interestTypes: string[]) => {
   try {
     const response = await api.post('/interest', { interestTypes });
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       console.log('✅ 관심분야 등록 성공:', response.data);
       return { success: true };
     } else {
