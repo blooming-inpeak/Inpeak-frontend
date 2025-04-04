@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { OpenLoginModal } from './OpenLoginModal';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../store/auth/userState';
 
 export const LoginDropdown = () => {
+  const user = useRecoilValue(userState);
+  const nickname = user?.nickname || '김인픽';
   const dropMenuRef = useRef<HTMLDivElement | null>(null);
   const [openModal, setOpenModal] = useState(false);
 
@@ -24,7 +28,7 @@ export const LoginDropdown = () => {
       <LoginDropdownTop>
         <LoginDropdownProfile>
           <img src="/images/profile.png" alt="profile" style={{ width: '30px', height: '30px' }} />
-          <LoginDropdownName>김인픽</LoginDropdownName>
+          <LoginDropdownName>{nickname}</LoginDropdownName>
         </LoginDropdownProfile>
 
         <LoginDropdownButton

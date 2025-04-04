@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
@@ -10,15 +11,36 @@ import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
 
+import { fetchTodayInterviewSummary, InterviewSummaryResponse } from '../api/interview/interviewAPI';
+
 export const InterviewPage = () => {
-  const chance: number = 1;
+  const [summary, setSummary] = useState<InterviewSummaryResponse | null>(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const data = await fetchTodayInterviewSummary(today);
+        setSummary(data);
+      } catch (error) {
+        console.error('면접 요약 불러오기 실패:', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const chance = summary?.remainingInterviews.count ?? 0;
 
   return (
     <>
       <InterviewWrapper>
         <InterviewTop>
           <div id="bannerTop">
-            <CorrectAnswer cumulative={70} average={65} />
+            <CorrectAnswer
+              cumulative={summary?.successRate.userSuccessRate ?? 0}
+              average={summary?.successRate.averageSuccessRate ?? 0}
+            />
             <InterviewChance chance={chance} />
           </div>
           <div id="bannerBottom">
@@ -35,7 +57,11 @@ export const InterviewPage = () => {
 
         <InterviewBottom>
           <InterviewBottomLeft>
-            <Level level={1} progress={250} maxProgress={400} />
+            <Level
+              level={summary?.levelInfo.level ?? 1}
+              progress={summary?.levelInfo.currentExp ?? 0}
+              maxProgress={summary?.levelInfo.nextExp ?? 100}
+            />
             <InterviewBottomAd>
               <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
             </InterviewBottomAd>

@@ -13,10 +13,12 @@ import {
 import Layout from './pages/Layout';
 import { ResultPage } from './pages/interview/ResultPage';
 import { SelectStack } from './components/common/selectStack/SelectStack';
+import AppInitializer from './AppInitializer';
 
 function App() {
   return (
     <>
+      <AppInitializer /> {/* 시작 시 유저 정보 Recoil에 저장 */}
       <SelectStack />
       <Routes>
         <Route element={<Layout />}>
