@@ -28,28 +28,27 @@ export const AskHistory: React.FC = () => {
 
     const response = await fetchRecentAnswers(statusParam);
 
-    if (response.success) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const formattedData = response.data.map((item: any) => ({
+    if (response.success && response.data) {
+      const formattedData = response.data.map(item => ({
         interviewId: item.interviewId,
         questionId: item.questionId,
         answerId: item.answerId,
         question: item.questionContent,
         answer: item.answerContent || '',
-        status:
-          item.answerStatus === 'CORRECT'
-            ? '정답-small'
-            : item.answerStatus === 'INCORRECT'
-            ? '오답-small'
-            : '포기-small',
+        status: (item.answerStatus === 'CORRECT'
+          ? '정답-small'
+          : item.answerStatus === 'INCORRECT'
+          ? '오답-small'
+          : '포기-small') as CaptionType,
         detailUrl: `/detail/${item.answerId}`,
       }));
 
       setHistoryItems(formattedData);
     } else {
-      alert(response.message);
+      console.warn('❗ 최근 질문 히스토리 불러오기 실패:', response.message);
     }
-    setLoading(false);
+
+    setLoading(false); // ✅ 반드시 함수 내부에 있어야 함
   };
 
   useEffect(() => {

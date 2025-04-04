@@ -1,3 +1,5 @@
+// 로그인된 유저의 정보를 Recoil 상태에 저장
+
 import { useSetRecoilState } from 'recoil';
 import { GetMyPage } from './api/getMyPage/GetMyPage';
 import { userState } from './store/auth/userState';

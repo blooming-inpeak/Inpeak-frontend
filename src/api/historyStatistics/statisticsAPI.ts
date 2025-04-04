@@ -15,6 +15,15 @@ export const fetchHistoryStatistics = async (): Promise<HistoryStatisticsData> =
     return response.data;
   } catch (error) {
     console.error('히스토리 통계 데이터를 불러오는데 실패했습니다.', error);
-    throw error;
+
+    // ✅ 실패 시 기본값 반환
+    return {
+      totalAnswerCount: 0,
+      correctAnswerCount: 0,
+      incorrectAnswerCount: 0,
+      skippedAnswerCount: 0,
+      totalInterviewCount: 0,
+      totalRunningTime: 0,
+    };
   }
 };
