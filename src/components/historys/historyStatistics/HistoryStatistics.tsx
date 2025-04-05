@@ -52,7 +52,7 @@ export const HistoryStatistics = () => {
   return (
     <HistoryStatisticsBox>
       <StatisticsRightComponent
-        userName={user.nickname || '김인픽'}
+        userName={user?.nickname ?? '김인픽'}
         totalPracticeTime={formatTotalTime(totalRunningTime)}
         totalQuestions={totalAnswerCount}
         totalPracticeCount={totalInterviewCount}

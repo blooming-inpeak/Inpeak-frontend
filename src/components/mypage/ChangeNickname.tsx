@@ -1,43 +1,40 @@
+// src/components/mypage/ChangeNickname.tsx
 import { useState } from 'react';
 import styled from 'styled-components';
 import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
-import { UserInfo } from '../../pages/MyPage';
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../../store/auth/userState';
 
 interface Props {
   close: () => void;
-  setUser: React.Dispatch<React.SetStateAction<UserInfo>>;
 }
 
-export const ChangeNickname = ({ close, setUser }: Props) => {
-  const [nickname, setNickname] = useState<string>('');
-  const [error, setError] = useState<string>('');
+export const ChangeNickname = ({ close }: Props) => {
+  const setUser = useSetRecoilState(userState);
+  const [nickname, setNickname] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNickname(value);
 
-    if (value !== '' && value.length < 2) {
+    if (value && value.length < 2) {
       setError('2글자 이상의 닉네임만 사용 가능합니다.');
     } else {
       setError('');
     }
   };
 
-  const SaveNickname = async () => {
-    if (!error && nickname.length !== 0) {
+  const saveNickname = async () => {
+    if (!error && nickname.length > 0) {
       const data = await SaveNicknameAPI(nickname);
-      console.log(data);
-
-      setUser(prev => ({ ...prev, nickname: data }));
-
-      // ✅ 로컬스토리지도 같이 변경
-      const stored = localStorage.getItem('user');
-      if (stored) {
-        const parsed = JSON.parse(stored);
+      setUser(prev => (prev ? { ...prev, nickname: data } : prev));
+      const cachedUser = localStorage.getItem('user');
+      if (cachedUser) {
+        const parsed = JSON.parse(cachedUser);
         parsed.nickname = data;
         localStorage.setItem('user', JSON.stringify(parsed));
       }
-
       close();
     }
   };
@@ -58,7 +55,7 @@ export const ChangeNickname = ({ close, setUser }: Props) => {
             onChange={handleChange}
             $isError={error}
           />
-          <SaveButton $isError={error} $isNickname={nickname} onClick={SaveNickname}>
+          <SaveButton $isError={error} $isNickname={nickname} onClick={saveNickname}>
             저장
           </SaveButton>
         </Content>

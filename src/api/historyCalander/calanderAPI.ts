@@ -6,8 +6,13 @@ export const fetchInterviewCalendarData = async (month: string, year: string) =>
       params: { month, year },
     });
     return response.data;
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      return { calendarList: [] };
+    }
+
     console.error('인터뷰 캘린더 데이터를 불러오는데 실패했습니다.', error);
-    throw error;
+    return { calendarList: [] };
   }
 };
