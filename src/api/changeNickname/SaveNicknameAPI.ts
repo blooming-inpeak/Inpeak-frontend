@@ -1,18 +1,13 @@
-import axios from 'axios';
+import api from '../apiClient';
 
 export const SaveNicknameAPI = async (nickname: string) => {
   try {
-    const response = await axios.patch(
+    const response = await api.patch(
       '/member',
       {
         nickname,
       },
-      {
-        headers: {
-          Authorization: '',
-          'Content-Type': 'application/json',
-        },
-      },
+      {},
     );
 
     return response.data;
