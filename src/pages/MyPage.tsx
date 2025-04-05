@@ -4,14 +4,14 @@ import { MyPageBottom } from '../components/mypage/MyPageBottom';
 import { useEffect, useState } from 'react';
 import { GetMyPage } from '../api/getMyPage/GetMyPage';
 
-interface UserInfo {
+export interface UserInfo {
   nickname: string;
   kakaoEmail: string;
   interests: string[];
 }
 
 export const MyPage = () => {
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<UserInfo>({ nickname: '', kakaoEmail: '', interests: [] });
   useEffect(() => {
     const getUserInfo = async () => {
       const data = await GetMyPage();
@@ -25,7 +25,7 @@ export const MyPage = () => {
   return (
     <MyPageWrapper>
       <MyPageContent>
-        <MyPageTop userInfo={{ nickname: user?.nickname, kakaoEmail: user?.kakaoEmail }} />
+        <MyPageTop user={user} setUser={setUser} />
         <MyPageBottom interests={user?.interests} />
       </MyPageContent>
     </MyPageWrapper>
