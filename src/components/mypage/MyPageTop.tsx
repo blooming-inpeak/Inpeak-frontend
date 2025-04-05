@@ -1,5 +1,5 @@
 // src/components/mypage/MyPageTop.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   EditIcon,
   MyPageEmail,
