@@ -42,6 +42,7 @@ export const MainHelpTitle = styled.div`
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.12px;
+  margin-bottom: 12px;
 `;
 
 export const MainHelpSubTitle = styled.div`
@@ -51,6 +52,7 @@ export const MainHelpSubTitle = styled.div`
   font-weight: 400;
   line-height: 150%;
   letter-spacing: -0.45px;
+  margin-bottom: 46px;
 `;
 
 export const MainHelpButton = styled.div`
@@ -68,7 +70,6 @@ export const MainHelpButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
-  margin-top: 24px;
 
   cursor: pointer;
 `;

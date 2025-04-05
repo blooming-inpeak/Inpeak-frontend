@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import AnswerSignGray from '../../assets/img/AnswersignGray.svg';
+import AnswerSignBlue from '../../assets/img/AnswersignBlue.svg';
+import AnswerSignEqual from '../../assets/img/AnswersignEqual.svg';
 
 interface AdjustedProps {
   adjusted?: 'small' | 'large';
@@ -7,6 +10,7 @@ interface AdjustedProps {
   isBlue?: boolean;
   strokeGray?: boolean;
   heading?: boolean;
+  isOnlyAverage?: boolean;
 }
 
 interface CorrectAnswerProps {
@@ -16,6 +20,7 @@ interface CorrectAnswerProps {
 
 interface CorrectAnswerWrapperProps {
   onlyAverage?: boolean;
+  averageGreater?: boolean;
 }
 
 export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, average = 0 }) => {
@@ -24,7 +29,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
       <CorrectAnswerWrapper onlyAverage>
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
-          <OtherCorrectAnswerPercent adjusted="small" strokeGray data-content={`${average}%`}>
+          <OtherCorrectAnswerPercent isOnlyAverage data-content={`${average}%`}>
             {average}%
           </OtherCorrectAnswerPercent>
         </OtherCorrectAnswer>
@@ -32,7 +37,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
     );
   } else if (cumulative < average) {
     return (
-      <CorrectAnswerWrapper>
+      <CorrectAnswerWrapper averageGreater={true}>
         <MyCorrectAnswer>
           <MyCorrectAnswerTitle>누적 정답률</MyCorrectAnswerTitle>
           <MyCorrectAnswerPercent data-content={`${cumulative}%`} adjusted="small" isBlue>
@@ -40,7 +45,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
           </MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignGray.svg" alt="Sign" />
+        <img src={AnswerSignGray} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
@@ -52,17 +57,17 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
     );
   } else if (cumulative > average) {
     return (
-      <CorrectAnswerWrapper>
+      <CorrectAnswerWrapper averageGreater={false}>
         <MyCorrectAnswer>
           <MyCorrectAnswerTitle>누적 정답률</MyCorrectAnswerTitle>
           <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignBlue.svg" alt="Sign" />
+        <img src={AnswerSignBlue} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
-          <OtherCorrectAnswerPercent adjusted="small" strokeGray data-content={`${average}%`}>
+          <OtherCorrectAnswerPercent adjusted="small" data-content={`${average}%`}>
             {average}%
           </OtherCorrectAnswerPercent>
         </OtherCorrectAnswer>
@@ -70,13 +75,13 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
     );
   } else if (cumulative === average) {
     return (
-      <CorrectAnswerWrapper>
+      <CorrectAnswerWrapper averageGreater={false}>
         <MyCorrectAnswer>
           <MyCorrectAnswerTitle>누적 정답률</MyCorrectAnswerTitle>
           <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignEqual.svg" alt="Sign" />
+        <img src={AnswerSignEqual} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
@@ -88,13 +93,13 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
     );
   } else {
     return (
-      <CorrectAnswerWrapper>
+      <CorrectAnswerWrapper averageGreater={false}>
         <MyCorrectAnswer>
           <MyCorrectAnswerTitle>누적 정답률</MyCorrectAnswerTitle>
           <MyCorrectAnswerPercent data-content={`${cumulative}%`}>{cumulative}%</MyCorrectAnswerPercent>
         </MyCorrectAnswer>
 
-        <img src="/src/assets/img/AnswersignBlue.svg" alt="Sign" />
+        <img src={AnswerSignBlue} alt="Sign" />
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle isBlue>평균 정답률</OtherCorrectAnswerTitle>
@@ -108,9 +113,9 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
 };
 
 export const CorrectAnswerWrapper = styled.div<CorrectAnswerWrapperProps>`
-  width: ${props => (props.onlyAverage ? '144px' : '259px')};
+  width: ${props => (props.onlyAverage ? '150px' : props.averageGreater ? '300.2132px' : '295.2132px')};
   height: 120px;
-  gap: 16px;
+  gap: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,13 +124,14 @@ export const CorrectAnswerWrapper = styled.div<CorrectAnswerWrapperProps>`
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
   backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  padding: 20px 35px 20px 45px;
 `;
 
 export const MyCorrectAnswer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 `;
 
 export const MyCorrectAnswerTitle = styled.div<AdjustedProps>`
@@ -138,7 +144,6 @@ export const MyCorrectAnswerTitle = styled.div<AdjustedProps>`
 
 export const MyCorrectAnswerPercent = styled.div<AdjustedProps>`
   color: ${props => (props.isBlue ? '#3277ed' : props.isGray ? '#9a9a9a' : '#ffffff')};
-  text-align: center;
   font-size: ${props => (props.adjusted === 'small' ? '24px' : '32px')};
   font-weight: 700;
   position: relative;
@@ -174,11 +179,14 @@ export const OtherCorrectAnswerTitle = styled.div<AdjustedProps>`
 
 export const OtherCorrectAnswerPercent = styled.div<AdjustedProps>`
   position: relative;
-  display: inline-block;
+  display: ${props => (props.isOnlyAverage ? 'flex' : 'inline-block')};
+  align-items: ${props => (props.isOnlyAverage ? 'center' : 'initial')};
+  justify-content: ${props => (props.isOnlyAverage ? 'center' : 'initial')};
   text-align: center;
-  font-size: ${props => (props.heading ? '32px' : props.adjusted === 'small' ? '24px' : '32px')};
+  font-size: ${props =>
+    props.isOnlyAverage ? '32px' : props.heading ? '32px' : props.adjusted === 'small' ? '24px' : '32px'};
   font-weight: 700;
-  color: ${props => (props.heading ? '#ffffff' : props.isBlue ? '#3277ed' : '#9a9a9a')};
+  color: ${props => (props.isOnlyAverage ? '#FFF' : props.heading ? '#ffffff' : props.isBlue ? '#3277ed' : '#9a9a9a')};
 
   &::before {
     content: attr(data-content);
@@ -189,10 +197,16 @@ export const OtherCorrectAnswerPercent = styled.div<AdjustedProps>`
     height: 100%;
     z-index: -1;
     ${props =>
-      props.heading &&
-      `
-        -webkit-text-stroke: 11px rgb(135, 135, 135);
-        -webkit-text-fill-color: transparent;
-      `}
+      props.isOnlyAverage
+        ? `
+          color: transparent;
+          -webkit-text-stroke: 11px #9A9A9A;
+        `
+        : props.heading || props.strokeGray
+        ? `
+          -webkit-text-stroke: 11px #9A9A9A;
+          -webkit-text-fill-color: transparent;
+        `
+        : ''}
   }
 `;

@@ -1,21 +1,73 @@
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { PassQuestion } from '../../api/question/question';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { QuestionsState } from '../../store/question/Question';
+import { ResultState } from '../../store/result/ResultState';
+import { useState } from 'react';
 
 interface Props {
   start: boolean;
   startRecording: () => void;
   stopRecording: () => void;
+  nextPage: () => void;
+  currentPage: number;
+  lastQuestion: boolean;
 }
 
-export const Buttons = ({ start, startRecording, stopRecording }: Props) => {
+export const Buttons = ({ start, startRecording, stopRecording, nextPage, currentPage, lastQuestion }: Props) => {
+  const navigate = useNavigate();
+  const [ishover, setIsHover] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const Question = useRecoilValue(QuestionsState);
+  const [result, setResult] = useRecoilState(ResultState);
+  const { id } = useParams();
+
+  // 잘 모르겠어요
+  const onPassQuestion = async () => {
+    if (id) {
+      const data = await PassQuestion(String(Question[currentPage - 1].id), id);
+      setResult(prev => [
+        ...prev,
+        { question: Question[currentPage - 1].content, time: 0, isAnswer: false, answerId: data.answerId },
+      ]);
+      console.log(data);
+      if (lastQuestion) {
+        localStorage.setItem('result', JSON.stringify(result));
+        navigate('/interview/progressresult');
+      } else {
+        nextPage();
+      }
+    }
+  };
+
+  const handleStopClick = async () => {
+    setIsSubmitting(true);
+    await stopRecording();
+    setIsSubmitting(false);
+  };
+
   return (
     <>
       {start ? (
         <>
-          <StopButton onClick={stopRecording}>답변 끝내기</StopButton>
+          <StopButton onClick={!isSubmitting ? handleStopClick : undefined}>답변 끝내기</StopButton>
         </>
       ) : (
         <ButtonsWrapper>
-          <SkipButton>잘 모르겠어요</SkipButton>
+          {ishover && (
+            <SkipButtonModal>
+              '잘 모르겠어요' 클릭시 <br />
+              포기한 질문으로 표시됩니다.
+            </SkipButtonModal>
+          )}
+          <SkipButton
+            onClick={onPassQuestion}
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
+          >
+            잘 모르겠어요
+          </SkipButton>
           <AnswerButton onClick={startRecording}>답변시작</AnswerButton>
         </ButtonsWrapper>
       )}
@@ -24,8 +76,10 @@ export const Buttons = ({ start, startRecording, stopRecording }: Props) => {
 };
 
 export const StopButton = styled.div`
-  width: 291px;
-  height: 44px;
+  width: 380px;
+  height: 24px;
+  padding: 10px 26px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,6 +93,10 @@ export const StopButton = styled.div`
   border-radius: 100px;
   margin-top: 45px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #464f69;
+  }
 `;
 
 export const ButtonsWrapper = styled.div`
@@ -46,13 +104,14 @@ export const ButtonsWrapper = styled.div`
   height: 44px;
 
   display: flex;
+  position: relative;
   cursor: pointer;
 
   margin-top: 45px;
 `;
 
 export const SkipButton = styled.div`
-  width: 163px;
+  width: 165px;
   height: 42px;
 
   display: flex;
@@ -67,11 +126,16 @@ export const SkipButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
 `;
 
 export const AnswerButton = styled.div`
   width: 267px;
-  height: 44px;
+  height: 24px;
+  padding: 10px 26px;
 
   display: flex;
   align-items: center;
@@ -84,4 +148,42 @@ export const AnswerButton = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+
+  &:hover {
+    background-color: #464f69;
+  }
+`;
+
+export const SkipButtonModal = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 133px;
+  height: 36px;
+  padding: 10px 20px;
+
+  border-radius: 12px;
+  background-color: #1463e8;
+
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 150%;
+  letter-spacing: -0.3px;
+
+  position: absolute;
+  top: -75px;
+  left: -20px;
+
+  &::after {
+    position: absolute;
+    content: '';
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 15px 10px 0 10px;
+    border-style: solid;
+    border-color: #1463e8 transparent transparent transparent;
+  }
 `;

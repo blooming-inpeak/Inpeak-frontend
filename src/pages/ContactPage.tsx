@@ -14,7 +14,7 @@ const Title = styled.h1`
 `;
 
 const QuestionSection = styled.div`
-  margin-botton: 110px;
+  margin-bottom: 110px;
 `;
 
 const QuestionContainer = styled.div`

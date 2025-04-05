@@ -1,9 +1,44 @@
 import styled from 'styled-components';
+import historyAnimation from '../lottie/historyAnimation.json';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
+import { useEffect, useRef } from 'react';
 
 export const MainHistory = () => {
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.6,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
   return (
-    <MainHistoryWrapper>
-      <MainHistoryImg src="/images/mainpage/MainHistoryImg.svg" alt="main History" />
+    <MainHistoryWrapper ref={containerRef}>
+      <MainHistoryImg>
+        <Lottie animationData={historyAnimation} lottieRef={lottieRef} />
+      </MainHistoryImg>
 
       <MainHistoryContent>
         <MainHistoryTitle>히스토리 모아보기</MainHistoryTitle>
@@ -31,9 +66,14 @@ export const MainHistoryWrapper = styled.div`
   margin-bottom: 100px;
 `;
 
-export const MainHistoryImg = styled.img`
+export const MainHistoryImg = styled.div`
   width: 780px;
   height: 461px;
+
+  border-radius: 12px;
+  box-shadow: 0px 0px 32px 0px rgba(0, 80, 216, 0.04), 0px 16px 8px 0px rgba(50, 59, 84, 0.08);
+
+  overflow: hidden;
 `;
 
 export const MainHistoryContent = styled.div`

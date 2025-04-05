@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 export const MicLevel = ({ audioLevel }: { audioLevel: number }) => {
   const totalBars = 17; // 막대 개수
-  const activeBars = Math.round((audioLevel / 255) * totalBars); // 활성화될 막대 개수
+  const activeBars = Math.round((audioLevel / 127) * totalBars); // 활성화될 막대 개수
+  console.log(audioLevel);
   return (
     <MicLevelWrapper>
       {[...Array(totalBars)].map((_, i) => (

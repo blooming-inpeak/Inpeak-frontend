@@ -3,14 +3,14 @@ import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
 import { Level } from '../components/interview/Level';
 import { AskHistory } from '../components/interview/AskHistory';
-import BackgroundImage from '../assets/img/background.svg';
+import BackgroundImage from '../assets/img/banner/footprint_1280.png';
+import ResponsiveBackgroundImage from '../assets/img/banner/footprint_1024.png';
 import AdImage from '../assets/img/LevelCharacter.svg';
 import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
 
 export const InterviewPage = () => {
-  // 남은 면접 횟수 예시 데이터
   const chance: number = 1;
 
   return (
@@ -18,7 +18,7 @@ export const InterviewPage = () => {
       <InterviewWrapper>
         <InterviewTop>
           <div id="bannerTop">
-            <CorrectAnswer cumulative={80} average={70} />
+            <CorrectAnswer cumulative={70} average={65} />
             <InterviewChance chance={chance} />
           </div>
           <div id="bannerBottom">
@@ -35,7 +35,7 @@ export const InterviewPage = () => {
 
         <InterviewBottom>
           <InterviewBottomLeft>
-            <Level level={1} progress={60} remainingCount={13} />
+            <Level level={1} progress={250} maxProgress={400} />
             <InterviewBottomAd>
               <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
             </InterviewBottomAd>
@@ -61,7 +61,7 @@ export const InterviewWrapper = styled.div`
   &::before {
     content: '';
     position: absolute;
-    top: -80px;
+    top: -50px;
     left: 0;
     width: 100%;
     height: calc(544px + 80px);
@@ -69,6 +69,12 @@ export const InterviewWrapper = styled.div`
     background-image: url(${BackgroundImage});
     background-position: center;
     background-size: cover;
+  }
+
+  @media (max-width: 768px) {
+    &::before {
+      background-image: url(${ResponsiveBackgroundImage});
+    }
   }
 `;
 
@@ -82,7 +88,7 @@ export const InterviewTop = styled.div`
   #bannerTop {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+
     width: 100%;
   }
 
@@ -116,7 +122,6 @@ export const InterviewTop = styled.div`
   }
 `;
 
-// disabled일 때 클릭이 되지 않도록 스타일 추가
 export const InterviewButton = styled(Link)<{ disabled?: boolean }>`
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
   width: 352px;
