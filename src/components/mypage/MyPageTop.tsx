@@ -14,7 +14,11 @@ import {
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ChangeNickname } from './ChangeNickname';
 
-export const MyPageTop = () => {
+export const MyPageTop = ({
+  userInfo,
+}: {
+  userInfo: { nickname: string | undefined; kakaoEmail: string | undefined };
+}) => {
   const [isChange, setIsChange] = useState(false);
   const onChangeNickname = () => {
     setIsChange(true);
@@ -26,13 +30,13 @@ export const MyPageTop = () => {
       <MyPageInfo>
         <MyPageInfoTop>
           <Space></Space>
-          <MyPageName>김인픽</MyPageName>
+          <MyPageName>{userInfo.nickname}</MyPageName>
           <EditIcon src="/images/Edit.svg" onClick={onChangeNickname} />
         </MyPageInfoTop>
 
         <MyPageInfoBottom>
           <MyPageKakaoTalk src="/images/KakaoTalkRound.svg" alt="kakaotalk" />
-          <MyPageEmail>inpeak1234@email.com</MyPageEmail>
+          <MyPageEmail>{userInfo.kakaoEmail}</MyPageEmail>
         </MyPageInfoBottom>
       </MyPageInfo>
 
