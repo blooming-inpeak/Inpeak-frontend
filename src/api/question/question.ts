@@ -9,9 +9,7 @@ export const PassQuestion = async (questionId: string, interviewId: string) => {
         questionId,
         interviewId,
       },
-      {
-        headers: {},
-      },
+      {},
     );
 
     return response.data;
@@ -65,11 +63,7 @@ export const AnswerQuestion = async (
         interviewId,
         videoURL,
       },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
+      {},
     );
 
     return response.data;
@@ -85,9 +79,6 @@ export const GetQuestion = async (today: string) => {
       {},
       {
         params: { startDate: today },
-        headers: {
-          'Content-Type': 'application/json',
-        },
       },
     );
 

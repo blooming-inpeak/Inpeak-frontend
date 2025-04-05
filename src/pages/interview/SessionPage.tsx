@@ -123,19 +123,17 @@ export const SessionPage = () => {
 
       // console.log(audioBase64);
       // 답변 완료 API 호출
+      console.log(300 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
       const data = await AnswerQuestion(
         audioBase64,
         300 - time,
         Questions[currentPage - 1].id,
         parseInt(id),
-        presignedUrl,
+        presignedUrl ? presignedUrl.url : presignedUrl,
       );
       console.log(data);
 
-      setResult(prev => [
-        ...prev,
-        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
-      ]);
+      setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
     }
 
     if (lastQuestion) {
