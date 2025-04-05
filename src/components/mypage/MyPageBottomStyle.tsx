@@ -44,6 +44,8 @@ export const MyPageInterestContent = styled.div`
 `;
 
 export const MyPageField = styled.div`
+  display: flex;
+
   color: #888;
 
   font-size: 14px;

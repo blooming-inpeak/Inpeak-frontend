@@ -48,7 +48,7 @@ export const AskHistory: React.FC = () => {
       console.warn('❗ 최근 질문 히스토리 불러오기 실패:', response.message);
     }
 
-    setLoading(false); // ✅ 반드시 함수 내부에 있어야 함
+    setLoading(false);
   };
 
   useEffect(() => {

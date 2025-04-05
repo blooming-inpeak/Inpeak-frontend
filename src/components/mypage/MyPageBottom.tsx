@@ -19,16 +19,10 @@ import { WithdrawalModal } from './WithdrawalModal';
 import { SelectStack } from '../common/selectStack/SelectStack';
 import { PrivacyPolicyModal } from '../common/policy/Policy';
 
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../store/auth/userState';
-
-export const MyPageBottom = () => {
+export const MyPageBottom = ({ interests }: { interests: string[] | undefined }) => {
   const [isWithdrawal, setIsWithdrawal] = useState(false);
   const [isSelectStack, setIsSelectStack] = useState(false);
   const [isPolicy, setIsPolicy] = useState('');
-
-  const user = useRecoilValue(userState);
-  const interests = user?.interests?.join(', ') || '설정된 관심 분야가 없습니다.';
 
   const onClickPrivacy = () => {
     setIsPolicy('privacy');
@@ -43,7 +37,7 @@ export const MyPageBottom = () => {
       <MyPageInterest>
         <MyPageIntersetTitle>관심분야</MyPageIntersetTitle>
         <MyPageInterestContent>
-          <MyPageField>{interests}</MyPageField>
+          <MyPageField>{interests?.join(', ')}</MyPageField>
           <FieldChange>
             <FieldChangeTitle onClick={() => setIsSelectStack(true)}>변경하기</FieldChangeTitle>
             <FiledChangeIcon src="/images/chevron/Chevron_right.svg" alt="chevron_right" />

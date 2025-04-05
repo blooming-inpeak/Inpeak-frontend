@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   EditIcon,
   MyPageEmail,
@@ -13,20 +13,18 @@ import {
 } from './MyPageTopStyle';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ChangeNickname } from './ChangeNickname';
+import { UserInfo } from '../../pages/MyPage';
 
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../store/auth/userState';
+interface Props {
+  user: UserInfo;
+  setUser: React.Dispatch<React.SetStateAction<UserInfo>>;
+}
 
-export const MyPageTop = () => {
+export const MyPageTop = ({ user, setUser }: Props) => {
   const [isChange, setIsChange] = useState(false);
   const onChangeNickname = () => {
     setIsChange(true);
   };
-
-  const user = useRecoilValue(userState);
-  const nickname = user?.nickname || '닉네임 없음';
-  const email = user?.email || '이메일 없음';
-
   return (
     <MyPageTopWrapper>
       <MyPageProfile src="/images/profile.png" alt="profile" />
@@ -34,19 +32,19 @@ export const MyPageTop = () => {
       <MyPageInfo>
         <MyPageInfoTop>
           <Space></Space>
-          <MyPageName>{nickname}</MyPageName>
+          <MyPageName>{user.nickname}</MyPageName>
           <EditIcon src="/images/Edit.svg" onClick={onChangeNickname} />
         </MyPageInfoTop>
 
         <MyPageInfoBottom>
           <MyPageKakaoTalk src="/images/KakaoTalkRound.svg" alt="kakaotalk" />
-          <MyPageEmail>{email}</MyPageEmail>
+          <MyPageEmail>{user.kakaoEmail}</MyPageEmail>
         </MyPageInfoBottom>
       </MyPageInfo>
 
       {isChange && (
         <BlurBackground>
-          <ChangeNickname close={() => setIsChange(false)} />
+          <ChangeNickname close={() => setIsChange(false)} setUser={setUser} />
         </BlurBackground>
       )}
     </MyPageTopWrapper>

@@ -18,7 +18,7 @@ import AppInitializer from './AppInitializer';
 function App() {
   return (
     <>
-      <AppInitializer /> {/* 시작 시 유저 정보 Recoil에 저장 */}
+      <AppInitializer />
       <SelectStack />
       <Routes>
         <Route element={<Layout />}>

@@ -1,5 +1,5 @@
 import api from '../apiClient';
-import { RecentAnswerItem } from './types'; // 위에 만든 타입
+import { RecentAnswerItem } from './recentAnswerItem';
 
 export const fetchRecentAnswers = async (
   status: 'ALL' | 'CORRECT' | 'INCORRECT' | 'SKIPPED',

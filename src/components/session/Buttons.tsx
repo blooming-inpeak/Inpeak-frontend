@@ -51,7 +51,9 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
     <>
       {start ? (
         <>
-          <StopButton onClick={!isSubmitting ? handleStopClick : undefined}>답변 끝내기</StopButton>
+          <StopButton onClick={!isSubmitting ? handleStopClick : undefined} disabled={isSubmitting}>
+            {isSubmitting ? '답변 제출 중' : '답변 끝내기'}
+          </StopButton>
         </>
       ) : (
         <ButtonsWrapper>
@@ -75,7 +77,7 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
   );
 };
 
-export const StopButton = styled.div`
+export const StopButton = styled.div<{ disabled: boolean }>`
   width: 380px;
   height: 24px;
   padding: 10px 26px;
@@ -84,18 +86,18 @@ export const StopButton = styled.div`
   align-items: center;
   justify-content: center;
 
-  color: #ffffff;
+  color: ${({ disabled }) => (disabled ? 'black' : '#ffffff')};
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
 
-  background-color: #202a43;
+  background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#202A43')};
   border-radius: 100px;
   margin-top: 45px;
   cursor: pointer;
 
   &:hover {
-    background-color: #464f69;
+    background-color: ${({ disabled }) => (disabled ? '' : '#464f69')};
   }
 `;
 
