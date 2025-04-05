@@ -4,9 +4,11 @@ import HistoryStatisticsGraph from './HistoryStatisticsGraph';
 import StatisticsRightComponent from './StatisticsRightComponent';
 import { fetchHistoryStatistics, HistoryStatisticsData } from '../../../api/historyStatistics/statisticsAPI';
 import { HistoryStatisticsBox, StatisticsLeft } from './HistoryStatisticsStyles';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../store/auth/userState';
 
 export const HistoryStatistics = () => {
-  const user = { name: '김인픽' };
+  const user = useRecoilValue(userState);
 
   const [stats, setStats] = useState<HistoryStatisticsData | null>(null);
 
@@ -50,7 +52,7 @@ export const HistoryStatistics = () => {
   return (
     <HistoryStatisticsBox>
       <StatisticsRightComponent
-        userName={user?.name || '김인픽'}
+        userName={user.nickname || '김인픽'}
         totalPracticeTime={formatTotalTime(totalRunningTime)}
         totalQuestions={totalAnswerCount}
         totalPracticeCount={totalInterviewCount}

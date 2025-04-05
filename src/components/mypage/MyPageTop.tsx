@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   EditIcon,
   MyPageEmail,
@@ -13,8 +13,14 @@ import {
 } from './MyPageTopStyle';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ChangeNickname } from './ChangeNickname';
+import { UserInfo } from '../../pages/MyPage';
 
-export const MyPageTop = () => {
+interface Props {
+  user: UserInfo;
+  setUser: React.Dispatch<React.SetStateAction<UserInfo>>;
+}
+
+export const MyPageTop = ({ user, setUser }: Props) => {
   const [isChange, setIsChange] = useState(false);
   const onChangeNickname = () => {
     setIsChange(true);
@@ -26,19 +32,19 @@ export const MyPageTop = () => {
       <MyPageInfo>
         <MyPageInfoTop>
           <Space></Space>
-          <MyPageName>김인픽</MyPageName>
+          <MyPageName>{user.nickname}</MyPageName>
           <EditIcon src="/images/Edit.svg" onClick={onChangeNickname} />
         </MyPageInfoTop>
 
         <MyPageInfoBottom>
           <MyPageKakaoTalk src="/images/KakaoTalkRound.svg" alt="kakaotalk" />
-          <MyPageEmail>inpeak1234@email.com</MyPageEmail>
+          <MyPageEmail>{user.kakaoEmail}</MyPageEmail>
         </MyPageInfoBottom>
       </MyPageInfo>
 
       {isChange && (
         <BlurBackground>
-          <ChangeNickname close={() => setIsChange(false)} />
+          <ChangeNickname close={() => setIsChange(false)} setUser={setUser} />
         </BlurBackground>
       )}
     </MyPageTopWrapper>

@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
+import { UserInfo } from '../../pages/MyPage';
 
 interface Props {
   close: () => void;
+  setUser: React.Dispatch<React.SetStateAction<UserInfo>>;
 }
 
-export const ChangeNickname = ({ close }: Props) => {
+export const ChangeNickname = ({ close, setUser }: Props) => {
   const [nickname, setNickname] = useState<string>('');
   const [error, setError] = useState<string>('');
 
@@ -14,7 +16,7 @@ export const ChangeNickname = ({ close }: Props) => {
     const value = e.target.value;
     setNickname(value);
 
-    if (value !== '' && value.length <= 2) {
+    if (value !== '' && value.length < 2) {
       setError('2글자 이상의 닉네임만 사용 가능합니다.');
     } else {
       setError('');
@@ -25,6 +27,18 @@ export const ChangeNickname = ({ close }: Props) => {
     if (!error && nickname.length !== 0) {
       const data = await SaveNicknameAPI(nickname);
       console.log(data);
+
+      setUser(prev => ({ ...prev, nickname: data }));
+
+      // ✅ 로컬스토리지도 같이 변경
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        parsed.nickname = data;
+        localStorage.setItem('user', JSON.stringify(parsed));
+      }
+
+      close();
     }
   };
 

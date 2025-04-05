@@ -10,7 +10,7 @@ import { TimeState } from '../../store/time/Time';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question/question';
 import { ResultState } from '../../store/result/ResultState';
-import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
+import { getFormattedDate } from '../../components/common/getFormattedDate';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
@@ -57,12 +57,19 @@ export const SessionPage = () => {
         resolveRecordingPromise = resolve;
       });
 
+      // mediaRecorder.ondataavailable = event => {
+      //   if (event.data.size > 0) {
+      //     videoChunks.push(event.data);
+      //     if (event.data.type.startsWith('audio')) {
+      //       audioChunks.push(event.data);
+      //     }
+      //   }
+      // };
+
       mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
           videoChunks.push(event.data);
-          if (event.data.type.startsWith('audio')) {
-            audioChunks.push(event.data);
-          }
+          audioChunks.push(event.data);
         }
       };
 
@@ -113,21 +120,20 @@ export const SessionPage = () => {
         // S3로 영상 업로드
         await uploadVideoToS3(videoBlob, presignedUrl.url);
       }
-      console.log(audioBase64);
+
+      // console.log(audioBase64);
       // 답변 완료 API 호출
+      console.log(300 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
       const data = await AnswerQuestion(
         audioBase64,
         300 - time,
         Questions[currentPage - 1].id,
         parseInt(id),
-        presignedUrl,
+        presignedUrl ? presignedUrl.url : presignedUrl,
       );
       console.log(data);
 
-      setResult(prev => [
-        ...prev,
-        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
-      ]);
+      setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
     }
 
     if (lastQuestion) {

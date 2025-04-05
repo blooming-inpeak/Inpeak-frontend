@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Divide, OpenLoginModalBottom, OpenLoginModalMenu, OpenLoginModalWrapper } from './OpenLoginModalStyle';
+import useLogout from '../../hooks/logout/useLogout';
 
 export const OpenLoginModal = () => {
   const navigate = useNavigate();
   const pathname = window.location.pathname;
-  console.log(pathname);
+  const logout = useLogout();
   return (
     <OpenLoginModalWrapper>
       <OpenLoginModalBottom>
@@ -21,7 +22,12 @@ export const OpenLoginModal = () => {
           문의하기
         </OpenLoginModalMenu>
         <Divide />
-        <OpenLoginModalMenu style={{ height: '100%' }}>로그아웃</OpenLoginModalMenu>
+        <OpenLoginModalMenu
+          style={{ height: '100%', cursor: 'pointer' }}
+          onClick={logout} // ✅ 로그아웃 실행
+        >
+          로그아웃
+        </OpenLoginModalMenu>
       </OpenLoginModalBottom>
     </OpenLoginModalWrapper>
   );

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { GetQuestion } from '../../api/question/question';
 import { useSetRecoilState } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
-import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
+import { getFormattedDate } from '../../components/common/getFormattedDate';
 
 export const IntroPage = () => {
   const navigate = useNavigate();
