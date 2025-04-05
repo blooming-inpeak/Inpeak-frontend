@@ -1,11 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, MenuItems, NavBar } from './HeaderStyle';
-// import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
 import { Login } from '../../login/LoginButton';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../store/auth/userState';
+import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
 
 export const Header = ({ isState }: { isState: string }) => {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
+  const isLoggedIn = !!user?.nickname;
 
   return (
     <>
@@ -36,12 +40,7 @@ export const Header = ({ isState }: { isState: string }) => {
               <Divider />
             </MenuItems>
           </HeaderRight>
-          <HeaderLeft>
-            {/* 로그인 */}
-            <Login />
-            {/* 로그인 드롭다운 */}
-            {/* <LoginDropdown /> */}
-          </HeaderLeft>
+          <HeaderLeft>{isLoggedIn ? <LoginDropdown /> : <Login />}</HeaderLeft>
         </NavBar>
       </HeaderContainer>
     </>

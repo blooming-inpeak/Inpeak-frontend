@@ -27,7 +27,17 @@ export const ChangeNickname = ({ close, setUser }: Props) => {
     if (!error && nickname.length !== 0) {
       const data = await SaveNicknameAPI(nickname);
       console.log(data);
+
       setUser(prev => ({ ...prev, nickname: data }));
+
+      // ✅ 로컬스토리지도 같이 변경
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        parsed.nickname = data;
+        localStorage.setItem('user', JSON.stringify(parsed));
+      }
+
       close();
     }
   };

@@ -13,10 +13,12 @@ import {
 import Layout from './pages/Layout';
 import { ResultPage } from './pages/interview/ResultPage';
 import { SelectStack } from './components/common/selectStack/SelectStack';
+import AppInitializer from './AppInitializer';
 
 function App() {
   return (
     <>
+      <AppInitializer />
       <SelectStack />
       <Routes>
         <Route element={<Layout />}>
