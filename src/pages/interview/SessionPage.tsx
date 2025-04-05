@@ -57,12 +57,19 @@ export const SessionPage = () => {
         resolveRecordingPromise = resolve;
       });
 
+      // mediaRecorder.ondataavailable = event => {
+      //   if (event.data.size > 0) {
+      //     videoChunks.push(event.data);
+      //     if (event.data.type.startsWith('audio')) {
+      //       audioChunks.push(event.data);
+      //     }
+      //   }
+      // };
+
       mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
           videoChunks.push(event.data);
-          if (event.data.type.startsWith('audio')) {
-            audioChunks.push(event.data);
-          }
+          audioChunks.push(event.data);
         }
       };
 
@@ -113,7 +120,8 @@ export const SessionPage = () => {
         // S3로 영상 업로드
         await uploadVideoToS3(videoBlob, presignedUrl.url);
       }
-      console.log(audioBase64);
+
+      // console.log(audioBase64);
       // 답변 완료 API 호출
       const data = await AnswerQuestion(
         audioBase64,

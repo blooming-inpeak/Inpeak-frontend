@@ -27,14 +27,11 @@ export const getVideoUrl = async (startDate: string) => {
         startDate,
         extension: 'webm',
       },
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
 
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.log('presigned-url 오류:', error);
   }
 };
 
@@ -47,7 +44,7 @@ export const uploadVideoToS3 = async (file: Blob, presignedURL: string) => {
     });
     console.log('S3에 영상 업로드 성공');
   } catch (error) {
-    console.log(error);
+    console.log('S3 영상 업로드 오류: ', error);
   }
 };
 
