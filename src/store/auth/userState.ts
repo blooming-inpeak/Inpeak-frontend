@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 export interface UserInfo {
   nickname: string;
-  kakaoemail: string;
+  kakaoEmail: string;
   interests: string[];
 }
 

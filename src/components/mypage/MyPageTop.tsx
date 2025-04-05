@@ -37,7 +37,7 @@ export const MyPageTop = () => {
 
         <MyPageInfoBottom>
           <MyPageKakaoTalk src="/images/KakaoTalkRound.svg" alt="kakaotalk" />
-          <MyPageEmail>{user.kakaoemail}</MyPageEmail>
+          <MyPageEmail>{user.kakaoEmail}</MyPageEmail>
         </MyPageInfoBottom>
       </MyPageInfo>
 
