@@ -61,8 +61,9 @@ export const AskHistory: React.FC = () => {
       <AskHistoryTitle>최근 질문 히스토리</AskHistoryTitle>
       {loading ? (
         <EmptyMessage>로딩 중...</EmptyMessage>
-      ) : historyItems.length > 0 ? (
+      ) : (
         <>
+          {/* ✅ 필터 버튼은 항상 표시 */}
           <AskHistoryClass>
             <ClassButton name="전체" isSelect={isSelect === '전체'} setIsSelect={setIsSelect} />
             <ClassButton name="정답" isSelect={isSelect === '정답'} setIsSelect={setIsSelect} />
@@ -70,23 +71,28 @@ export const AskHistory: React.FC = () => {
             <ClassButton name="포기" isSelect={isSelect === '포기'} setIsSelect={setIsSelect} />
           </AskHistoryClass>
 
-          {historyItems.map(item => (
-            <AskHistoryBox
-              key={item.answerId}
-              question={item.question}
-              answer={item.answer}
-              status={item.status}
-              detailUrl={item.detailUrl}
-            />
-          ))}
-
-          {historyItems.length >= 3 && <AskHistoryMore />}
+          {/* ✅ 데이터가 있을 때만 히스토리 리스트 렌더링 */}
+          {historyItems.length > 0 ? (
+            <>
+              {historyItems.map(item => (
+                <AskHistoryBox
+                  key={item.answerId}
+                  question={item.question}
+                  answer={item.answer}
+                  status={item.status}
+                  detailUrl={item.detailUrl}
+                />
+              ))}
+              {historyItems.length >= 3 && <AskHistoryMore />}
+            </>
+          ) : (
+            // ✅ 데이터 없을 때 안내 메시지
+            <EmptyMessage>
+              <h1>아직 진행된 면접이 없어요</h1>
+              <h2>모의면접 연습하고 히스토리를 쌓아나가 보세요!</h2>
+            </EmptyMessage>
+          )}
         </>
-      ) : (
-        <EmptyMessage>
-          <h1>아직 진행된 면접이 없어요</h1>
-          <h2>모의면접 연습하고 히스토리를 쌓아나가 보세요!</h2>
-        </EmptyMessage>
       )}
     </AskHistoryWrapper>
   );

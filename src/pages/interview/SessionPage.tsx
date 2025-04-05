@@ -10,7 +10,7 @@ import { TimeState } from '../../store/time/Time';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question/question';
 import { ResultState } from '../../store/result/ResultState';
-import { getFormattedDate } from '../../components/common/\bgetFormattedDate';
+import { getFormattedDate } from '../../components/common/getFormattedDate';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
