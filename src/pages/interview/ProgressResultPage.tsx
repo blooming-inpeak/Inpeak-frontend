@@ -68,7 +68,7 @@ export const ProgessResultPage: React.FC = () => {
   const handleFeedbackClick = () => {
     setIsLoading(true);
     setTimeout(() => {
-      navigate('/interview');
+      navigate('/interview/result');
     }, 5000);
   };
 
@@ -151,7 +151,9 @@ const ResultPageWrapper = styled.div`
 const ResultPageContainer = styled.div`
   width: 710px;
   border-radius: 24px;
-  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow:
+    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
+    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 `;
 

@@ -37,7 +37,7 @@ const EmptyImage = styled.img`
 const EmptyText = styled.p`
   margin-top: 12px;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 150%;
   color: #747474;
