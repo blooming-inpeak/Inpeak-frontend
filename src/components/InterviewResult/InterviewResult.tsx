@@ -14,19 +14,76 @@ import {
   Wrapper,
 } from '../../components/InterviewResult/ModalStyle';
 import { ToggleSwitch } from '../common/ToggleSwitch';
+import { getAnswerDetail } from '../../api/apiService';
+import { InterviewIdState } from '../../store/Interview/InterviewId';
+import { QuestionsState } from '../../store/question/Question';
+import { GetAnswerDetailResponse, AnswerStatus } from '../../api/types';
+import { useRecoilValue } from 'recoil';
+import dayjs from 'dayjs';
 
 export const InterviewResult = () => {
+  const interviewId = useRecoilValue(InterviewIdState);
+  const questions = useRecoilValue(QuestionsState);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
+  const [, setIsLoading] = useState(false);
+
   const [isChecked, setIsChecked] = useState(false);
   const [isMemoOpen, setIsMemoOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [status] = useState('포기');
-  const isCorrect = status == '정답';
+  const formatKoreanDate = (dateStr?: string) => {
+    if (!dateStr) return '';
+    return dayjs(dateStr).format('YYYY년 MM월 DD일');
+  };
+
+  const isCorrect = answerData?.answerStatus === 'CORRECT';
+  const getStatusLabel = (status: AnswerStatus): string => {
+    switch (status) {
+      case 'CORRECT':
+        return '정답';
+      case 'SKIPPED':
+        return '포기';
+      case 'INCORRECT':
+        return '오답';
+      default:
+        return '';
+    }
+  };
 
   const handleResizeHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'; // 높이 초기화
       textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'; // 스크롤 높이만큼 설정
+    }
+  };
+  useEffect(() => {
+    const fetchAnswer = async () => {
+      if (!interviewId || !questions.length) return;
+
+      setIsLoading(true);
+      try {
+        const questionId = questions[currentIndex].id;
+        const data = await getAnswerDetail({ interviewId, questionId });
+        setAnswerData(data);
+      } catch (err) {
+        console.error('답변 요청 실패', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAnswer();
+  }, [interviewId, questions, currentIndex]);
+  const handleNext = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
     }
   };
 
@@ -40,61 +97,51 @@ export const InterviewResult = () => {
     if (!isCorrect) return;
     setIsChecked(prev => !prev);
   };
-
-  const hasVideo = true;
+  if (!answerData) {
+    return <div>로딩 중...</div>;
+  }
   return (
     <ModalContainer>
       {/* 헤더: 날짜 및 이미지 */}
       <ModalHeader>
-        <span className="date">2025년 2월 13일</span>
+        <span className="date">{formatKoreanDate(answerData.dateTime)}</span>
         {isCorrect && isChecked && <span className="understood-badge">이해 완료</span>}
-        <StatusBadge status={status}>{status}</StatusBadge>
+
+        <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
       </ModalHeader>
 
       {/* 질문,답변 영역 */}
       <Wrapper>
         <div className="question-content">
-          <span className="question-mark">Q1</span>
-          <p className="question">사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?</p>
+          <span className="question-mark">Q{currentIndex + 1}</span>
+          <p className="question">{answerData.questionContent}</p>
         </div>
-        {status !== '포기' && (
+        {answerData.answerStatus !== 'SKIPPED' && (
           <div className="answer-content">
             <span className="answer-mark">A</span>
-            <p className="answer">
-              사용자 중심 디자인은 사용자의 요구와 목표를 깊이 이해하고 이를 제품에 반영하는 과정입니다. 제 접근 방식은
-              다음과 같습니다. 먼저, 사용자 인터뷰와 데이터 분석으로 문제를 정의하고, 페르소나와 공감 지도를 통해 사용자
-              관점을 구체화합니다. 이후 와이어프레임과 프로토타입을 제작해 사용자 테스트를 거치며, 피드백을 반영해
-              디자인을 개선합니다. 마지막으로 데이터를 지속적으로 모니터링하며 최적화와 반복을 통해 사용자 가치를
-              창출합니다. 저는 디자인이 단순히 문제 해결을 넘어, 감정적 연결과 긍정적 경험을 제공해야 한다고 믿습니다.
-            </p>
-            {hasVideo && (
+            <p className="answer">{answerData.userAnswer}</p>
+            {answerData.videoUrl && (
               <div className="video-container">
                 <video width="168" height="95" controls>
-                  <source src="video.mp4" type="video/mp4" />
-                  브라우저가 동영상을 지원하지 않습니다.
+                  <source src={answerData.videoUrl} type="video/mp4" />
                 </video>
-                <span className="video-time">03h 45s</span>
+                <span className="video-time">{answerData.runningTime}s</span>
               </div>
             )}
           </div>
         )}
       </Wrapper>
       <ToggleContainer>
-        <label className="toggle-label" style={{ color: status === '정답' ? '#212121' : '#AFAFAF' }}>
+        <label className="toggle-label" style={{ color: isCorrect ? '#212121' : '#AFAFAF' }}>
           이 질문은 완벽히 이해함
         </label>
-        <ToggleSwitch isChecked={isChecked} onClick={handleToggle} />
+        <ToggleSwitch isChecked={isChecked} onClick={handleToggle} disabled={!isCorrect} />
       </ToggleContainer>
 
       {/* 피드백 박스 */}
       <FeedbackBox>
-        <span className="feedback-title">이렇게 말해보세요!</span>
-        <p className="feedback-content">
-          예를 들어, 이전 프로젝트에서는 A라는 문제를 정의하고 사용자 테스트를 통해 B 솔루션을 도출했습니다. 결과적으로
-          사용자 만족도가 C% 향상되었습니다. 귀하의 답변은 사용자 중심 디자인에 대한 핵심 원칙과 접근 방식을 잘 설명하고
-          있습니다. 그러나 면접 답변으로는 약간 더 구체적이고 차별화된 요소를 포함하면 더 강렬한 인상을 남길 수
-          있습니다. 아래는 피드백과 개선 제안입니다.
-        </p>
+        <span className="feedback-title">{answerData.comment}</span>
+        <p className="feedback-content">{answerData.AIAnswer}</p>
       </FeedbackBox>
 
       {/* 메모 토글 */}
@@ -111,8 +158,12 @@ export const InterviewResult = () => {
 
       {/* 네비게이션 버튼 */}
       <Navigation>
-        <Button className="prev">이전으로</Button>
-        <Button className="next">다음으로</Button>
+        <Button className="prev" onClick={handlePrev} disabled={currentIndex === 0}>
+          이전으로
+        </Button>
+        <Button className="next" onClick={handleNext} disabled={currentIndex === questions.length - 1}>
+          다음으로
+        </Button>
       </Navigation>
     </ModalContainer>
   );

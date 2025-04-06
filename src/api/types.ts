@@ -3,12 +3,13 @@ export interface GetIncorrectAnswersParams {
   status: 'ALL' | 'INCORRECT' | 'SKIPPED';
   page: number;
 }
+export type AnswerStatus = 'CORRECT' | 'SKIPPED' | 'INCORRECT' | 'ALL';
 
 export interface AnswerResponse {
   dateTime: string;
   questionContent: string;
   runningTime: number | null;
-  answerStatus: 'ALL' | 'INCORRECT' | 'SKIPPED' | 'CORRECT';
+  answerStatus: AnswerStatus;
   isUnderstood: boolean;
 }
 
@@ -25,4 +26,20 @@ export interface GetAnsweredListParams {
 export interface GetAnsweredListResponse {
   AnswerResponseList: AnswerResponse[];
   hasNext: boolean;
+}
+export interface GetAnswerDetailParams {
+  interviewId: number;
+  questionId: number;
+}
+
+export interface GetAnswerDetailResponse {
+  dateTime: string;
+  questionContent: string;
+  runningTime: number;
+  answerStatus: AnswerStatus;
+  isUnderstood: boolean;
+  userAnswer: string;
+  comment?: string;
+  videoUrl?: string;
+  AIAnswer: string;
 }

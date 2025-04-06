@@ -9,7 +9,14 @@ export const ModalContainer = styled.div`
   max-width: 829px;
   min-height: 300px;
   height: auto;
+  max-height: 80vh;
   width: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const ModalHeader = styled.div`
@@ -75,8 +82,8 @@ export const StatusBadge = styled.span<{ status: string }>`
     status === '포기'
       ? `color: #85C000; border-color: #85C000; background: #F8FFEA;`
       : status === '정답'
-      ? `color: #0050D8; border-color: #0050D8; background: #F5F9FF;`
-      : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
+        ? `color: #0050D8; border-color: #0050D8; background: #F5F9FF;`
+        : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
 `;
 
 export const Wrapper = styled.div`
@@ -209,7 +216,9 @@ export const MemoToggle = styled.div`
   }
 
   .memo-toggle {
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
   }
 
   .memo-toggle.open {
