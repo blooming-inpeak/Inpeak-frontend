@@ -133,7 +133,10 @@ export const SessionPage = () => {
       );
       console.log(data);
 
-      setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
+      setResult(prev => [
+        ...prev,
+        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
+      ]);
     }
 
     if (lastQuestion) {
