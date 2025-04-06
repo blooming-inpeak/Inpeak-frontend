@@ -2,41 +2,105 @@ import styled from 'styled-components';
 
 import { SortDropdown } from '../common/SortDropdown';
 import { EmptyState } from './EmptyState';
+import { useEffect, useState } from 'react';
+import { getIncorrectAnswers } from '../../api/apiService.ts';
+import { AnswerResponse } from '../../api/types.ts';
 
 export const WrongNoteList = () => {
-  const notes = [
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    {
-      date: '2024/02/19',
-      question:
-        '컴포넌트 재사용성이 중요한 이유는?컴포넌트 재사용성이 중요한 이유는?컴포넌트 재사용성이 중요한 이유는?',
-      time: '16:45',
-      status: '오답',
-    },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-    { date: '2024/02/19', question: 'Styled-components의 장점은?', time: '14:20', status: '포기' },
-  ];
+  const [notes, setNotes] = useState<{ date: string; question: string; time: string; status: string }[]>([]);
+  const [sortType, setSortType] = useState<'DESC' | 'ASC'>('DESC');
+  const [status, setStatus] = useState<'ALL' | 'INCORRECT' | 'SKIPPED'>('ALL');
+  const [page, setPage] = useState(0);
+  const [hasNext, setHasNext] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const STATUS_LABELS: Record<string, string> = {
+    INCORRECT: '오답',
+    SKIPPED: '포기',
+  };
+
+  // API 요청 함수
+  const fetchNotes = async () => {
+    if (isFetching) return;
+    setIsFetching(true);
+
+    try {
+      const response = await getIncorrectAnswers({ sortType, status, page });
+      const data = response.data;
+
+      const answerList = data?.AnswerResponseList ?? [];
+      if (response.status === 204) {
+        setHasNext(false); // 더 이상 불러올 게 없다고 가정
+        return;
+      }
+      setNotes(prevNotes => [
+        ...prevNotes,
+        ...answerList.map((item: AnswerResponse) => ({
+          date: item.dateTime,
+          question: item.questionContent,
+          time: item.runningTime
+            ? `${Math.floor(item.runningTime / 60)}:${String(item.runningTime % 60).padStart(2, '0')}`
+            : '--:--',
+          status: STATUS_LABELS[item.answerStatus],
+        })),
+      ]);
+      setHasNext(data?.hasNext ?? false);
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  // `sortType`, `status` 변경 시 새롭게 데이터 로드
+  useEffect(() => {
+    setNotes([]); // 기존 데이터 초기화
+    setPage(0);
+    fetchNotes();
+  }, [sortType, status]);
+
+  // 페이지 변경될 때마다 새로운 데이터 요청
+  useEffect(() => {
+    if (page > 0) {
+      fetchNotes();
+    }
+  }, [page]);
+
+  //스크롤 이벤트 리스너 추가
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200 &&
+        hasNext &&
+        !isFetching
+      ) {
+        setPage(prevPage => prevPage + 1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasNext, isFetching]);
 
   return (
     <SectionContainer>
       <Header>
-        <TitleBox>오답노트</TitleBox>{' '}
+        <TitleBox>오답노트</TitleBox>
         <FiltersContainer>
-          <SortDropdown options={['최신순', '오래된 순']} defaultOption="최신순" />
-          <SortDropdown options={['전체보기', '오답', '포기']} defaultOption="전체보기" />
+          <SortDropdown
+            options={['최신순', '오래된 순']}
+            defaultOption="최신순"
+            onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
+          />
+          <SortDropdown
+            options={['전체보기', '오답', '포기']}
+            defaultOption="전체보기"
+            onChange={value => setStatus(value === '전체보기' ? 'ALL' : value === '오답' ? 'INCORRECT' : 'SKIPPED')}
+          />
         </FiltersContainer>
       </Header>
       {notes.length === 0 ? (
         <EmptyContainer>
-          {' '}
           <EmptyState type="wrong" />
         </EmptyContainer>
       ) : (
@@ -45,7 +109,6 @@ export const WrongNoteList = () => {
             <QuestionCard key={index}>
               <Date>{note.date}</Date>
               <Question>{note.question}</Question>
-
               <BottomRow>
                 <Time>{note.time}</Time>
                 <StatusBadge status={note.status}>{note.status}</StatusBadge>
@@ -53,7 +116,8 @@ export const WrongNoteList = () => {
             </QuestionCard>
           ))}
         </ListContainer>
-      )}
+      )}{' '}
+      {isFetching && <LoadingText>로딩 중...</LoadingText>}
     </SectionContainer>
   );
 };
@@ -175,6 +239,11 @@ const StatusBadge = styled.span<{ status: string }>`
     status === '포기'
       ? 'background: #F8FFEA; color: #85C000; border: 1px solid #85C000; '
       : status === '정답'
-      ? 'background: #F5F9FF; color: #0050D8; border: 1px solid #0050D8;'
-      : 'background: #FFF3F4; color: #F84883; border: 1px solid #F84883;'}
+        ? 'background: #F5F9FF; color: #0050D8; border: 1px solid #0050D8;'
+        : 'background: #FFF3F4; color: #F84883; border: 1px solid #F84883;'}
+`;
+const LoadingText = styled.div`
+  text-align: center;
+  margin-top: 10px;
+  color: #666;
 `;

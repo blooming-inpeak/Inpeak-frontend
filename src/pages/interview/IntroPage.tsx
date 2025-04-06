@@ -6,10 +6,12 @@ import { GetQuestion } from '../../api/question/question';
 import { useSetRecoilState } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
 import { getFormattedDate } from '../../components/common/getFormattedDate';
+import { InterviewIdState } from '../../store/Interview/InterviewId';
 
 export const IntroPage = () => {
   const navigate = useNavigate();
   const setQuestions = useSetRecoilState(QuestionsState);
+  const setInterviewId = useSetRecoilState(InterviewIdState);
 
   const onClickStart = async () => {
     const today = getFormattedDate();
@@ -17,6 +19,7 @@ export const IntroPage = () => {
     console.log(data);
     setQuestions(data.questions);
     const interviewId = data.interviewId;
+    setInterviewId(interviewId);
     navigate(`/interview/session/${interviewId}`);
   };
 
@@ -51,7 +54,9 @@ export const IntroBody = styled.div`
 
   border-radius: 24px;
   background-color: rgba(255, 255, 255, 0.6);
-  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow:
+    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
+    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 
   display: flex;
