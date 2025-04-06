@@ -5,6 +5,7 @@ import InterviewStatistics from './InterviewStatistics';
 import { fetchHistoryStatistics } from '../../api/historyStatistics/statisticsAPI';
 import InfoIcon from '../../assets/img/LevelIcon.svg';
 import SpeechBubbleImg from '../../assets/img/LevelMark.svg';
+import LevelModal from '../common/levelModal/LevelModal';
 
 interface LevelProps {
   level: number;
@@ -18,6 +19,7 @@ interface ProgressBarFillProps {
 
 export const Level: React.FC<LevelProps> = ({ level, progress, maxProgress }) => {
   const [stats, setStats] = useState<any | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -46,40 +48,43 @@ export const Level: React.FC<LevelProps> = ({ level, progress, maxProgress }) =>
   const progressPercentage = (progress / maxProgress) * 100;
 
   return (
-    <LevelWrapper>
-      <SpeechBubble src={SpeechBubbleImg} alt="레벨링 설명 보기" />
-      <LevelLeft>
-        <LevelStatisticsBox>
-          {stats && (
-            <InterviewStatistics
-              totalPracticeTime={stats.totalPracticeTime}
-              totalQuestions={stats.totalQuestions}
-              totalPracticeCount={stats.totalPracticeCount}
-              correctCount={stats.correctCount}
-              wrongCount={stats.wrongCount}
-              giveUpCount={stats.giveUpCount}
-            />
-          )}
-        </LevelStatisticsBox>
-      </LevelLeft>
-      <LevelRight>
-        <InfoIconImg src={InfoIcon} alt="info" />
-        <LevelRightBox>
-          <LevelContent>
-            <LevelText>Lv.</LevelText>
-            <LevelNumber data-content={String(level)}>{level}</LevelNumber>
-          </LevelContent>
-          <ProgressBarContainer>
-            <ProgressBar>
-              <ProgressBarFill width={progressPercentage} />
-            </ProgressBar>
-            <ProgressLabel>
-              {progress}/{maxProgress}
-            </ProgressLabel>
-          </ProgressBarContainer>
-        </LevelRightBox>
-      </LevelRight>
-    </LevelWrapper>
+    <>
+      {showModal && <LevelModal onClose={() => setShowModal(false)} />}
+      <LevelWrapper>
+        <SpeechBubble src={SpeechBubbleImg} alt="레벨링 설명 보기" />
+        <LevelLeft>
+          <LevelStatisticsBox>
+            {stats && (
+              <InterviewStatistics
+                totalPracticeTime={stats.totalPracticeTime}
+                totalQuestions={stats.totalQuestions}
+                totalPracticeCount={stats.totalPracticeCount}
+                correctCount={stats.correctCount}
+                wrongCount={stats.wrongCount}
+                giveUpCount={stats.giveUpCount}
+              />
+            )}
+          </LevelStatisticsBox>
+        </LevelLeft>
+        <LevelRight>
+          <InfoIconImg src={InfoIcon} alt="info" onClick={() => setShowModal(true)} />
+          <LevelRightBox>
+            <LevelContent>
+              <LevelText>Lv.</LevelText>
+              <LevelNumber data-content={String(level)}>{level}</LevelNumber>
+            </LevelContent>
+            <ProgressBarContainer>
+              <ProgressBar>
+                <ProgressBarFill width={progressPercentage} />
+              </ProgressBar>
+              <ProgressLabel>
+                {progress}/{maxProgress}
+              </ProgressLabel>
+            </ProgressBarContainer>
+          </LevelRightBox>
+        </LevelRight>
+      </LevelWrapper>
+    </>
   );
 };
 
@@ -132,6 +137,7 @@ export const InfoIconImg = styled.img`
   right: 16px;
   width: 24px;
   height: 24px;
+  cursor: pointer;
 `;
 
 const SpeechBubble = styled.img`

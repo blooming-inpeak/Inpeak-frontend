@@ -6,8 +6,17 @@ export const fetchAnswerDataByDate = async (date: string) => {
       params: { date },
     });
     return response.data;
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      return {
+        createdAt: '',
+        startDate: '',
+        answers: [],
+      };
+    }
+
     console.error('Answer data fetch failed:', error);
-    throw error;
+    return null;
   }
 };

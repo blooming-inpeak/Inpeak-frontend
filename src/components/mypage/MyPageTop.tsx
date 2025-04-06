@@ -1,3 +1,4 @@
+// src/components/mypage/MyPageTop.tsx
 import { useState } from 'react';
 import {
   EditIcon,
@@ -13,26 +14,30 @@ import {
 } from './MyPageTopStyle';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ChangeNickname } from './ChangeNickname';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/auth/userState';
 
 export const MyPageTop = () => {
+  const [user] = useRecoilState(userState);
   const [isChange, setIsChange] = useState(false);
-  const onChangeNickname = () => {
-    setIsChange(true);
-  };
+
+  if (!user) return null;
+
+  const onChangeNickname = () => setIsChange(true);
+
   return (
     <MyPageTopWrapper>
       <MyPageProfile src="/images/profile.png" alt="profile" />
-
       <MyPageInfo>
         <MyPageInfoTop>
-          <Space></Space>
-          <MyPageName>김인픽</MyPageName>
+          <Space />
+          <MyPageName>{user.nickname}</MyPageName>
           <EditIcon src="/images/Edit.svg" onClick={onChangeNickname} />
         </MyPageInfoTop>
 
         <MyPageInfoBottom>
           <MyPageKakaoTalk src="/images/KakaoTalkRound.svg" alt="kakaotalk" />
-          <MyPageEmail>inpeak1234@email.com</MyPageEmail>
+          <MyPageEmail>{user.kakaoEmail}</MyPageEmail>
         </MyPageInfoBottom>
       </MyPageInfo>
 

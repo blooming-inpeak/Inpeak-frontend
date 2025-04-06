@@ -19,7 +19,7 @@ import { WithdrawalModal } from './WithdrawalModal';
 import { SelectStack } from '../common/selectStack/SelectStack';
 import { PrivacyPolicyModal } from '../common/policy/Policy';
 
-export const MyPageBottom = () => {
+export const MyPageBottom = ({ interests }: { interests: string[] | undefined }) => {
   const [isWithdrawal, setIsWithdrawal] = useState(false);
   const [isSelectStack, setIsSelectStack] = useState(false);
   const [isPolicy, setIsPolicy] = useState('');
@@ -37,7 +37,7 @@ export const MyPageBottom = () => {
       <MyPageInterest>
         <MyPageIntersetTitle>관심분야</MyPageIntersetTitle>
         <MyPageInterestContent>
-          <MyPageField>React, Spring</MyPageField>
+          <MyPageField>{interests?.join(', ')}</MyPageField>
           <FieldChange>
             <FieldChangeTitle onClick={() => setIsSelectStack(true)}>변경하기</FieldChangeTitle>
             <FiledChangeIcon src="/images/chevron/Chevron_right.svg" alt="chevron_right" />

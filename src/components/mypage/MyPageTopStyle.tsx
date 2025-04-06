@@ -57,6 +57,7 @@ export const MyPageInfoBottom = styled.div`
 
   display: flex;
   align-items: center;
+  justify-content: center;
 
   gap: 4px;
 `;
