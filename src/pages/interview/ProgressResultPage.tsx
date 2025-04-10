@@ -5,65 +5,33 @@ import Lottie from 'lottie-react';
 import loadingAnimationData from '../../../public/images/loading/loading.json';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
-
-type ResultDataType = {
-  question: string;
-  time: string;
-  status: 'success' | 'giveup';
-};
-
-type ResultItemProps = {
-  index: number;
-  item: ResultDataType;
-};
+import { useRecoilValue } from 'recoil';
+import { ResultState } from '../../store/result/ResultState';
 
 export const ProgessResultPage: React.FC = () => {
+  const resultState = useRecoilValue(ResultState);
   const [resultData, setResultData] = useState<ResultDataType[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const mockData: ResultDataType[] = [
-        {
-          question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?',
-          time: '03:45',
-          status: 'success',
-        },
-        {
-          question: '귀하가 사용하는 디자인 툴과 그 툴을 사용해 진행한 프로젝트에 대해 이야기해 주세요.',
-          time: '02:10',
-          status: 'giveup',
-        },
-        {
-          question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?',
-          time: '03:05',
-          status: 'success',
-        },
-      ];
-      setResultData(mockData);
-    };
-    fetchData();
-  }, []);
+    const formatted: ResultDataType[] = resultState.map(item => ({
+      question: item.question,
+      time: formatSecondsToTime(item.time),
+      status: item.isAnswer ? 'success' : 'giveup',
+    }));
+    setResultData(formatted);
+  }, [resultState]);
 
   useEffect(() => {
     const calculateTotalTime = () => {
-      const totalSeconds = resultData.reduce((acc, curr) => {
-        const [minutes, seconds] = curr.time.split(':').map(Number);
-        return acc + minutes * 60 + seconds;
-      }, 0);
-
-      const minutes = Math.floor(totalSeconds / 60)
-        .toString()
-        .padStart(2, '0');
-      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-
-      return `${minutes}:${seconds}`;
+      const totalSeconds = resultState.reduce((acc, curr) => acc + curr.time, 0);
+      return formatSecondsToTime(totalSeconds);
     };
 
     setTotalTime(calculateTotalTime());
-  }, [resultData]);
+  }, [resultState]);
 
   const handleFeedbackClick = () => {
     setIsLoading(true);
@@ -119,8 +87,27 @@ export const ProgessResultPage: React.FC = () => {
   );
 };
 
+const formatSecondsToTime = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, '0');
+  const remaining = (seconds % 60).toString().padStart(2, '0');
+  return `${minutes}:${remaining}`;
+};
+
+export type ResultDataType = {
+  question: string;
+  time: string;
+  status: 'success' | 'giveup';
+};
+
+type ResultItemProps = {
+  index: number;
+  item: ResultDataType;
+};
+
 const ResultItem: React.FC<ResultItemProps> = ({ index, item }) => {
-  const getStampImage = (status: string) => {
+  const getStampImage = (status: 'success' | 'giveup') => {
     if (status === 'success') return SuccessStamp;
     if (status === 'giveup') return GiveupStamp;
     return '';
@@ -151,9 +138,7 @@ const ResultPageWrapper = styled.div`
 const ResultPageContainer = styled.div`
   width: 710px;
   border-radius: 24px;
-  box-shadow:
-    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
-    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 `;
 

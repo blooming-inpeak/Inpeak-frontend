@@ -12,7 +12,8 @@ import {
   SelectStackWrapper,
 } from './SelectStackStyle';
 import { BlurBackground } from '../background/BlurBackground';
-import { registerInterest } from '../../../api/interest/interestAPI'; // API 호출 함수 임포트
+import { registerInterest } from '../../../api/interest/interestAPI';
+import { GetMyPage } from '../../../api/getMyPage/GetMyPage';
 
 export const SelectStack = () => {
   const navigate = useNavigate();
@@ -21,14 +22,28 @@ export const SelectStack = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const status = params.get('status');
+    const checkUserInterests = async () => {
+      const params = new URLSearchParams(location.search);
+      const status = params.get('status');
 
-    if (status === 'NEED_MORE_INFO') {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
+      if (status === 'NEED_MORE_INFO') {
+        try {
+          const user = await GetMyPage();
+          if (!user.interests || user.interests.length === 0) {
+            setIsVisible(true); // interests 비어있으면 모달 띄움
+          } else {
+            setIsVisible(false); // interests 있으면 안 띄움
+          }
+        } catch (err) {
+          console.error('유저 정보 확인 실패:', err);
+          setIsVisible(false); // 에러일 땐 일단 모달 안 띄움
+        }
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    checkUserInterests();
   }, [location]);
 
   const handleComplete = async () => {

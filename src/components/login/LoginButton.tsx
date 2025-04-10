@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { BlurBackground } from '../common/background/BlurBackground';
 import { LoginModal } from './LoginModal';
 
 export const Login = () => {
@@ -9,11 +8,7 @@ export const Login = () => {
   return (
     <>
       <LoginButton onClick={() => setOpenLogin(true)}>3초만에 시작하기</LoginButton>
-      {openLogin && (
-        <BlurBackground>
-          <LoginModal setOpenLogin={setOpenLogin} />
-        </BlurBackground>
-      )}
+      {openLogin && <LoginModal setOpenLogin={setOpenLogin} />}
     </>
   );
 };

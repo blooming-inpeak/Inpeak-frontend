@@ -16,6 +16,12 @@ interface StatisticsRightProps {
   wrongCount: number;
   giveUpCount: number;
 }
+const getFontSizeByLength = (length: number) => {
+  if (length <= 3) return '20px';
+  if (length <= 5) return '19px';
+  if (length <= 8) return '18px';
+  return '14px';
+};
 
 const StatisticsRightComponent: React.FC<StatisticsRightProps> = ({
   userName,
@@ -28,7 +34,7 @@ const StatisticsRightComponent: React.FC<StatisticsRightProps> = ({
 }) => {
   return (
     <Container>
-      <Title>{userName}님의 히스토리 통계</Title>
+      <Title fontSize={getFontSizeByLength(userName.length)}>{userName}님의 히스토리 통계</Title>
       <StatsBox>
         <StatsRow>
           <StatsTitle>누적 연습시간</StatsTitle>
@@ -81,13 +87,15 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<{ fontSize: string }>`
+  font-size: ${({ fontSize }) => fontSize};
   color: #212121;
-  font-size: 20px;
   font-style: normal;
   font-weight: 600;
   line-height: 150%;
   margin: 0;
+  white-space: nowrap;
+  max-width: 200px;
 `;
 
 const StatsBox = styled.div`
