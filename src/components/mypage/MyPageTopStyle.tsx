@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const MyPageTopWrapper = styled.div`
-  width: 165px;
+  width: auto;
   height: 231px;
 
   gap: 20px;
@@ -18,9 +18,8 @@ export const MyPageProfile = styled.img`
 `;
 
 export const MyPageInfo = styled.div`
-  width: 165px;
+  width: auto;
   height: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
