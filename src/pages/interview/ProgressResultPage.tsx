@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import loadingAnimationData from '../../../public/images/loading/loading.json';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
-
+import { getAnswerDetail } from '../../api/apiService';
+import { InterviewIdState } from '../../store/Interview/InterviewId';
+import { QuestionsState } from '../../store/question/Question';
+import { useRecoilValue } from 'recoil';
+import { BlurBackground } from '../../components/common/background/BlurBackground';
+import { GetAnswerDetailResponse } from '../../api/types';
+import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 type ResultDataType = {
   question: string;
   time: string;
@@ -21,7 +26,11 @@ export const ProgessResultPage: React.FC = () => {
   const [resultData, setResultData] = useState<ResultDataType[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
+
+  const interviewId = useRecoilValue(InterviewIdState);
+  const questions = useRecoilValue(QuestionsState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,15 +74,45 @@ export const ProgessResultPage: React.FC = () => {
     setTotalTime(calculateTotalTime());
   }, [resultData]);
 
-  const handleFeedbackClick = () => {
+  const handleFeedbackClick = async () => {
+    if (!interviewId || questions.length === 0) return;
+    console.log('interviewId:', interviewId); // 인터뷰 ID 확인
+    console.log('questions:', questions); // 질문 리스트 확인
+    console.log('첫번째 questionId:', questions[0].id); // 첫번째 질문 id
+
     setIsLoading(true);
-    setTimeout(() => {
-      navigate('/interview/result');
-    }, 5000);
+
+    try {
+      const questionId = questions[0].id; // 첫번째 질문 id
+
+      const data = await getAnswerDetail({
+        interviewId: interviewId,
+        questionId: questionId,
+      });
+
+      setAnswerData(data);
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('AI 피드백 요청 실패', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
+      {isModalOpen && answerData && (
+        <>
+          <BlurBackground />
+          <InterviewResult
+            interviewId={interviewId}
+            questions={questions}
+            initialAnswerData={answerData}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </>
+      )}
+
       <ResultPageWrapper>
         <ResultPageContainer>
           <ResultTop />

@@ -5,15 +5,25 @@ import { EmptyState } from './EmptyState';
 import { useEffect, useState } from 'react';
 import { getIncorrectAnswers } from '../../api/apiService.ts';
 import { AnswerResponse } from '../../api/types.ts';
+import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
+import { BlurBackground } from '../../components/common/background/BlurBackground';
 
 export const WrongNoteList = () => {
-  const [notes, setNotes] = useState<{ date: string; question: string; time: string; status: string }[]>([]);
+  const [notes, setNotes] = useState<
+    { answerId: number; date: string; question: string; time: string; status: string }[]
+  >([]);
   const [sortType, setSortType] = useState<'DESC' | 'ASC'>('DESC');
   const [status, setStatus] = useState<'ALL' | 'INCORRECT' | 'SKIPPED'>('ALL');
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
+  const handleItemClick = (answerId: number) => {
+    setSelectedAnswerId(answerId);
+    setIsModalOpen(true);
+  };
   const STATUS_LABELS: Record<string, string> = {
     INCORRECT: '오답',
     SKIPPED: '포기',
@@ -36,6 +46,7 @@ export const WrongNoteList = () => {
       setNotes(prevNotes => [
         ...prevNotes,
         ...answerList.map((item: AnswerResponse) => ({
+          answerId: item.answerId,
           date: item.dateTime,
           question: item.questionContent,
           time: item.runningTime
@@ -83,42 +94,53 @@ export const WrongNoteList = () => {
   }, [hasNext, isFetching]);
 
   return (
-    <SectionContainer>
-      <Header>
-        <TitleBox>오답노트</TitleBox>
-        <FiltersContainer>
-          <SortDropdown
-            options={['최신순', '오래된 순']}
-            defaultOption="최신순"
-            onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
+    <>
+      {isModalOpen && selectedAnswerId && (
+        <BlurBackground>
+          <InterviewResult
+            answerId={selectedAnswerId}
+            showQuestionIndex={false}
+            onClose={() => setIsModalOpen(false)}
           />
-          <SortDropdown
-            options={['전체보기', '오답', '포기']}
-            defaultOption="전체보기"
-            onChange={value => setStatus(value === '전체보기' ? 'ALL' : value === '오답' ? 'INCORRECT' : 'SKIPPED')}
-          />
-        </FiltersContainer>
-      </Header>
-      {notes.length === 0 ? (
-        <EmptyContainer>
-          <EmptyState type="wrong" />
-        </EmptyContainer>
-      ) : (
-        <ListContainer>
-          {notes.map((note, index) => (
-            <QuestionCard key={index}>
-              <Date>{note.date}</Date>
-              <Question>{note.question}</Question>
-              <BottomRow>
-                <Time>{note.time}</Time>
-                <StatusBadge status={note.status}>{note.status}</StatusBadge>
-              </BottomRow>
-            </QuestionCard>
-          ))}
-        </ListContainer>
-      )}{' '}
-      {isFetching && <LoadingText>로딩 중...</LoadingText>}
-    </SectionContainer>
+        </BlurBackground>
+      )}
+      <SectionContainer>
+        <Header>
+          <TitleBox>오답노트</TitleBox>
+          <FiltersContainer>
+            <SortDropdown
+              options={['최신순', '오래된 순']}
+              defaultOption="최신순"
+              onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
+            />
+            <SortDropdown
+              options={['전체보기', '오답', '포기']}
+              defaultOption="전체보기"
+              onChange={value => setStatus(value === '전체보기' ? 'ALL' : value === '오답' ? 'INCORRECT' : 'SKIPPED')}
+            />
+          </FiltersContainer>
+        </Header>
+        {notes.length === 0 ? (
+          <EmptyContainer>
+            <EmptyState type="wrong" />
+          </EmptyContainer>
+        ) : (
+          <ListContainer>
+            {notes.map((note, index) => (
+              <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
+                <Date>{note.date}</Date>
+                <Question>{note.question}</Question>
+                <BottomRow>
+                  <Time>{note.time}</Time>
+                  <StatusBadge status={note.status}>{note.status}</StatusBadge>
+                </BottomRow>
+              </QuestionCard>
+            ))}
+          </ListContainer>
+        )}{' '}
+        {isFetching && <LoadingText>로딩 중...</LoadingText>}
+      </SectionContainer>
+    </>
   );
 };
 const EmptyContainer = styled.div`
@@ -222,8 +244,12 @@ const BottomRow = styled.div`
 `;
 
 const Time = styled.span`
-  color: #747474;
-  font-size: 14px;
+  color: var(--text-800, #afafaf);
+  font-family: 'Pretendard Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
 `;
 
 const StatusBadge = styled.span<{ status: string }>`
