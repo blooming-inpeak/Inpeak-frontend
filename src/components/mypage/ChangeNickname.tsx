@@ -1,4 +1,3 @@
-// src/components/mypage/ChangeNickname.tsx
 import { useState } from 'react';
 import styled from 'styled-components';
 import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
@@ -18,8 +17,23 @@ export const ChangeNickname = ({ close }: Props) => {
     const value = e.target.value;
     setNickname(value);
 
-    if (value && value.length < 2) {
+    if (value.length === 0) {
+      setError('');
+      return;
+    }
+
+    const isValidChar = /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(value);
+
+    if (!isValidChar) {
+      setError('한글 또는 영문만 입력 가능합니다.');
+      return;
+    }
+
+    // 자음/모음 단독 포함해도 길이로 판단
+    if (value.length < 2) {
       setError('2글자 이상의 닉네임만 사용 가능합니다.');
+    } else if (value.length > 8) {
+      setError('8글자 이하의 닉네임만 사용 가능합니다.');
     } else {
       setError('');
     }

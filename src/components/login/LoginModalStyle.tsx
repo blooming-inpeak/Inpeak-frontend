@@ -3,28 +3,21 @@ import styled from 'styled-components';
 export const LoginModalContainer = styled.div`
   position: relative;
   display: flex;
+  flex-direction: column;
   width: 400px;
   height: 463px;
   padding: 24px 24px 40px 24px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  aspect-ratio: 400/463;
   border-radius: 24px;
   background: #fff;
-  box-shadow: 0px 0px 24px 0px rgba(50, 59, 84, 0.24);
+  box-shadow: 0 0 24px rgba(50, 59, 84, 0.24);
+  box-sizing: border-box;
 `;
 
-export const CloseButton = styled.div`
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  width: 24px;
-  height: 24px;
+export const CloseButton = styled.button`
+  padding: 0%;
+  align-self: flex-start;
   cursor: pointer;
-
+  margin-bottom: 10px;
   img {
     width: 100%;
     height: 100%;
@@ -35,6 +28,7 @@ export const LoginHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 26.01px;
 `;
 
 export const LoginTitle = styled.img`
@@ -44,17 +38,14 @@ export const LoginTitle = styled.img`
 `;
 
 export const LoginBanner = styled.img`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: contain;
 `;
 
 export const LoginFooter = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
   width: 100%;
 `;
 
@@ -63,12 +54,12 @@ export const LoginKakaotalk = styled.button`
   align-items: center;
   justify-content: center;
   background-color: #fee500;
-  width: 330px;
+  width: 100%;
+  max-width: 330px;
   height: 40px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 16px;
 
   &:hover {
     opacity: 0.9;
@@ -82,10 +73,15 @@ export const KaKaoTalkTitle = styled.span`
   color: #000;
 `;
 
-export const LoginTerms = styled.p`
+export const LoginTerms = styled.div`
   font-size: 12px;
-  line-height: 1.4;
   text-align: center;
   color: #666;
   margin: 0;
+  line-height: 1.5;
+
+  span {
+    color: #0050d8;
+    cursor: pointer;
+  }
 `;

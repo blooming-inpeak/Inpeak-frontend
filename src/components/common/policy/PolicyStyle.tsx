@@ -5,14 +5,11 @@ export const PrivacyWrapper = styled.div`
   height: 415px;
   padding: 24px;
   background-color: #ffffff;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 24px;
-
   position: fixed;
-
   box-shadow: 0px 0px 24px 0px rgba(50, 59, 84, 0.24);
 `;
 
