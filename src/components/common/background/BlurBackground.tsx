@@ -1,13 +1,16 @@
 import styled from 'styled-components';
+import ReactDOM from 'react-dom';
 
 interface Props {
   children?: React.ReactNode;
 }
 
 export const BlurBackground = ({ children }: Props) => {
-  return <BlurBackgroundContainer>{children}</BlurBackgroundContainer>;
+  return ReactDOM.createPortal(
+    <BlurBackgroundContainer>{children}</BlurBackgroundContainer>,
+    document.getElementById('modal-root') as HTMLElement,
+  );
 };
-
 export const BlurBackgroundContainer = styled.div`
   display: flex;
   justify-content: center;

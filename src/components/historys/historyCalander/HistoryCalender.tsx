@@ -42,6 +42,8 @@ import {
   InterviewDot,
 } from './HistoryCalendarStyles';
 import { CaptionType } from '../../common/caption/CaptionType';
+import { BlurBackground } from '../../common/background/BlurBackground';
+import { InterviewResult } from '../../InterviewResult/InterviewResult';
 
 interface CalendarQuestion {
   id: number;
@@ -57,6 +59,7 @@ interface InterviewData {
 }
 
 interface Answer {
+  answerId: number;
   dateTime: string;
   questionContent: string;
   runningTime: number;
@@ -77,6 +80,9 @@ const HistoryCalendar = () => {
   const [interviewData, setInterviewData] = useState<InterviewData[]>([]);
   const [answerData, setAnswerData] = useState<AnswerResponse | null>(null);
   const [, setDataExists] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
+  const [clickedIndex, setClickedIndex] = useState<number | undefined>(undefined);
 
   const captionMapping: Record<'CORRECT' | 'INCORRECT' | 'SKIPPED', CaptionType> = {
     CORRECT: '정답-small',
@@ -141,6 +147,12 @@ const HistoryCalendar = () => {
 
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+
+  const handleQuestionClick = (answerId: number, index: number) => {
+    setSelectedAnswerId(answerId);
+    setClickedIndex(index);
+    setIsModalOpen(true);
+  };
 
   const renderHeader = () => (
     <>
@@ -211,54 +223,66 @@ const HistoryCalendar = () => {
   };
 
   return (
-    <Container>
-      <LeftSection>
-        <DateInfo>
-          {answerData && answerData.answers.length > 0 && (
-            <>
-              <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
-              <TimeText>{getTotalTime(answerData.answers)}</TimeText>
-            </>
-          )}
-        </DateInfo>
-        {answerData && answerData.answers.length > 0 ? (
-          <QuestionList>
-            {answerData.answers.map((answer, index) => (
-              <QuestionItem key={index}>
-                <QuestionTitle>
-                  <div>Q{index + 1}.</div>
-                  <QuestionText>{answer.questionContent}</QuestionText>
-                </QuestionTitle>
-                <QuestionFooter>
-                  <QuestionTime>{formatRunningTime(answer.runningTime)}</QuestionTime>
-                  <MultiCaption type={captionMapping[answer.answerStatus]} />
-                </QuestionFooter>
-              </QuestionItem>
-            ))}
-          </QuestionList>
-        ) : (
-          <NoResultMessage>
-            {getInterviewByDate(selectedDate) ? (
+    <>
+      {isModalOpen && selectedAnswerId && (
+        <BlurBackground>
+          <InterviewResult
+            answerId={selectedAnswerId}
+            showQuestionIndex={true}
+            currentIndex={clickedIndex}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </BlurBackground>
+      )}
+      <Container>
+        <LeftSection>
+          <DateInfo>
+            {answerData && answerData.answers.length > 0 && (
               <>
-                해당 날짜에 진행된
-                <br /> 모의면접 결과가 없습니다
-              </>
-            ) : (
-              <>
-                현재까지 진행된
-                <br /> 모의면접 결과가 없습니다
+                <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
+                <TimeText>{getTotalTime(answerData.answers)}</TimeText>
               </>
             )}
-          </NoResultMessage>
-        )}
-      </LeftSection>
+          </DateInfo>
+          {answerData && answerData.answers.length > 0 ? (
+            <QuestionList>
+              {answerData.answers.map((answer, index) => (
+                <QuestionItem key={index} onClick={() => handleQuestionClick(answer.answerId, index)}>
+                  <QuestionTitle>
+                    <div>Q{index + 1}.</div>
+                    <QuestionText>{answer.questionContent}</QuestionText>
+                  </QuestionTitle>
+                  <QuestionFooter>
+                    <QuestionTime>{formatRunningTime(answer.runningTime)}</QuestionTime>
+                    <MultiCaption type={captionMapping[answer.answerStatus]} />
+                  </QuestionFooter>
+                </QuestionItem>
+              ))}
+            </QuestionList>
+          ) : (
+            <NoResultMessage>
+              {getInterviewByDate(selectedDate) ? (
+                <>
+                  해당 날짜에 진행된
+                  <br /> 모의면접 결과가 없습니다
+                </>
+              ) : (
+                <>
+                  현재까지 진행된
+                  <br /> 모의면접 결과가 없습니다
+                </>
+              )}
+            </NoResultMessage>
+          )}
+        </LeftSection>
 
-      <RightSection>
-        {renderHeader()}
-        {renderDays()}
-        {renderCells()}
-      </RightSection>
-    </Container>
+        <RightSection>
+          {renderHeader()}
+          {renderDays()}
+          {renderCells()}
+        </RightSection>
+      </Container>
+    </>
   );
 };
 
