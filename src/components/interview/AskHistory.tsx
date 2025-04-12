@@ -38,9 +38,9 @@ export const AskHistory: React.FC = () => {
         status: (item.answerStatus === 'CORRECT'
           ? '정답-small'
           : item.answerStatus === 'INCORRECT'
-          ? '오답-small'
-          : '포기-small') as CaptionType,
-        detailUrl: `/detail/${item.answerId}`,
+            ? '오답-small'
+            : '포기-small') as CaptionType,
+        detailUrl: `history/detail/${item.answerId}`,
       }));
 
       setHistoryItems(formattedData);
