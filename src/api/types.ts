@@ -6,6 +6,7 @@ export interface GetIncorrectAnswersParams {
 export type AnswerStatus = 'CORRECT' | 'SKIPPED' | 'INCORRECT' | 'ALL';
 
 export interface AnswerResponse {
+  answerId: number;
   dateTime: string;
   questionContent: string;
   runningTime: number | null;

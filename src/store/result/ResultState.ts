@@ -4,6 +4,7 @@ export interface Result {
   question: string;
   time: number;
   isAnswer: boolean;
+  answerId: number;
 }
 
 export const ResultState = atom<Result[]>({

@@ -4,15 +4,24 @@ import { EmptyState } from './EmptyState';
 import { useEffect, useState } from 'react';
 import { getAnsweredList } from '../../api/apiService';
 import { AnswerResponse } from '../../api/types';
+import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
+import { BlurBackground } from '../../components/common/background/BlurBackground';
 
 export const AnsweredList = () => {
-  const [notes, setNotes] = useState<{ date: string; question: string; time: string; badges: string[] }[]>([]);
-
+  const [notes, setNotes] = useState<
+    { answerId: number; date: string; question: string; time: string; badges: string[] }[]
+  >([]);
+  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortType, setSortType] = useState<'DESC' | 'ASC'>('DESC');
   const [isUnderstood, setIsUnderstood] = useState<boolean | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
+  const handleItemClick = (answerId: number) => {
+    setSelectedAnswerId(answerId);
+    setIsModalOpen(true);
+  };
 
   const fetchAnswers = async () => {
     if (isFetching) return;
@@ -37,11 +46,13 @@ export const AnsweredList = () => {
           }
 
           return {
+            answerId: item.answerId,
             date: item.dateTime,
             question: item.questionContent,
             time: item.runningTime
-              ? `${Math.floor(item.runningTime / 60)}:${String(item.runningTime % 60).padStart(2, '0')}`
+              ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
               : '--:--',
+
             badges,
           };
         }),
@@ -76,53 +87,65 @@ export const AnsweredList = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasNext, isFetching]);
   return (
-    <SectionContainer>
-      <Header>
-        <TitleBox>답변완료</TitleBox>{' '}
-        <FiltersContainer>
-          <SortDropdown
-            options={['최신순', '오래된 순']}
-            defaultOption="최신순"
-            onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
+    <>
+      {isModalOpen && selectedAnswerId && (
+        <BlurBackground>
+          <InterviewResult
+            answerId={selectedAnswerId}
+            showQuestionIndex={false}
+            onClose={() => setIsModalOpen(false)}
           />
-          <SortDropdown
-            options={['전체보기', '정답', '이해완료']}
-            defaultOption="전체보기"
-            onChange={value => {
-              if (value === '전체보기') setIsUnderstood(undefined);
-              else if (value === '이해완료') setIsUnderstood(true);
-              else setIsUnderstood(false);
-            }}
-          />
-        </FiltersContainer>
-      </Header>{' '}
-      {notes.length === 0 ? (
-        <EmptyContainer>
-          {' '}
-          <EmptyState type="answered" />
-        </EmptyContainer>
-      ) : (
-        <ListContainer>
-          {notes.map((note, index) => (
-            <QuestionCard key={index}>
-              <Date>{note.date}</Date>
-              <Question>{note.question}</Question>
-              <BottomRow>
-                <Time>{note.time}</Time>
-                <BadgeContainer>
-                  {note.badges.map((badge, i) => (
-                    <StatusBadge key={i} status={badge}>
-                      {badge}
-                    </StatusBadge>
-                  ))}
-                </BadgeContainer>
-              </BottomRow>
-            </QuestionCard>
-          ))}
-        </ListContainer>
+        </BlurBackground>
       )}
-      {isFetching && <LoadingText>로딩 중...</LoadingText>}
-    </SectionContainer>
+
+      <SectionContainer>
+        <Header>
+          <TitleBox>답변완료</TitleBox>{' '}
+          <FiltersContainer>
+            <SortDropdown
+              options={['최신순', '오래된 순']}
+              defaultOption="최신순"
+              onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
+            />
+            <SortDropdown
+              options={['전체보기', '정답', '이해완료']}
+              defaultOption="전체보기"
+              onChange={value => {
+                if (value === '전체보기') setIsUnderstood(undefined);
+                else if (value === '이해완료') setIsUnderstood(true);
+                else setIsUnderstood(false);
+              }}
+            />
+          </FiltersContainer>
+        </Header>{' '}
+        {notes.length === 0 ? (
+          <EmptyContainer>
+            {' '}
+            <EmptyState type="answered" />
+          </EmptyContainer>
+        ) : (
+          <ListContainer>
+            {notes.map((note, index) => (
+              <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
+                <Date>{note.date}</Date>
+                <Question>{note.question}</Question>
+                <BottomRow>
+                  <Time>{note.time}</Time>
+                  <BadgeContainer>
+                    {note.badges.map((badge, i) => (
+                      <StatusBadge key={i} status={badge}>
+                        {badge}
+                      </StatusBadge>
+                    ))}
+                  </BadgeContainer>
+                </BottomRow>
+              </QuestionCard>
+            ))}
+          </ListContainer>
+        )}
+        {isFetching && <LoadingText>로딩 중...</LoadingText>}
+      </SectionContainer>
+    </>
   );
 };
 const EmptyContainer = styled.div`
@@ -226,8 +249,12 @@ const BottomRow = styled.div`
 `;
 
 const Time = styled.span`
-  color: #747474;
-  font-size: 14px;
+  color: var(--text-800, #afafaf);
+  font-family: 'Pretendard Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
 `;
 
 const StatusBadge = styled.span<{ status: string }>`

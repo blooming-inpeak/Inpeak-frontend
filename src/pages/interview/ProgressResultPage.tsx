@@ -1,79 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import loadingAnimationData from '../../../public/images/loading/loading.json';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
-
-type ResultDataType = {
-  question: string;
-  time: string;
-  status: 'success' | 'giveup';
-};
-
-type ResultItemProps = {
-  index: number;
-  item: ResultDataType;
-};
+import { useRecoilValue } from 'recoil';
+import { ResultState } from '../../store/result/ResultState';
+import { getAnswerDetail } from '../../api/apiService';
+import { InterviewIdState } from '../../store/Interview/InterviewId';
+import { QuestionsState } from '../../store/question/Question';
+import { BlurBackground } from '../../components/common/background/BlurBackground';
+import { GetAnswerDetailResponse } from '../../api/types';
+import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 
 export const ProgessResultPage: React.FC = () => {
+  const resultState = useRecoilValue(ResultState);
   const [resultData, setResultData] = useState<ResultDataType[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
+
+  const interviewId = useRecoilValue(InterviewIdState);
+  const questions = useRecoilValue(QuestionsState);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const mockData: ResultDataType[] = [
-        {
-          question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?',
-          time: '03:45',
-          status: 'success',
-        },
-        {
-          question: '귀하가 사용하는 디자인 툴과 그 툴을 사용해 진행한 프로젝트에 대해 이야기해 주세요.',
-          time: '02:10',
-          status: 'giveup',
-        },
-        {
-          question: '사용자 중심 디자인에 대한 귀하의 접근 방식을 설명해 주시겠어요?',
-          time: '03:05',
-          status: 'success',
-        },
-      ];
-      setResultData(mockData);
-    };
-    fetchData();
-  }, []);
+    const formatted: ResultDataType[] = resultState.map(item => ({
+      question: item.question,
+      time: formatSecondsToTime(item.time),
+      status: item.isAnswer ? 'success' : 'giveup',
+    }));
+    setResultData(formatted);
+  }, [resultState]);
 
   useEffect(() => {
     const calculateTotalTime = () => {
-      const totalSeconds = resultData.reduce((acc, curr) => {
-        const [minutes, seconds] = curr.time.split(':').map(Number);
-        return acc + minutes * 60 + seconds;
-      }, 0);
-
-      const minutes = Math.floor(totalSeconds / 60)
-        .toString()
-        .padStart(2, '0');
-      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-
-      return `${minutes}:${seconds}`;
+      const totalSeconds = resultState.reduce((acc, curr) => acc + curr.time, 0);
+      return formatSecondsToTime(totalSeconds);
     };
 
     setTotalTime(calculateTotalTime());
-  }, [resultData]);
+  }, [resultState]);
 
-  const handleFeedbackClick = () => {
+  const handleFeedbackClick = async () => {
+    if (!interviewId || questions.length === 0) return;
+    console.log('interviewId:', interviewId); // 인터뷰 ID 확인
+    console.log('questions:', questions); // 질문 리스트 확인
+    console.log('첫번째 questionId:', questions[0].id); // 첫번째 질문 id
+
     setIsLoading(true);
-    setTimeout(() => {
-      navigate('/interview/result');
-    }, 5000);
+
+    try {
+      const questionId = questions[0].id; // 첫번째 질문 id
+
+      const data = await getAnswerDetail({
+        interviewId: interviewId,
+        questionId: questionId,
+      });
+
+      setAnswerData(data);
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('AI 피드백 요청 실패', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
+      {isModalOpen && answerData && (
+        <>
+          <BlurBackground />
+          <InterviewResult
+            interviewId={interviewId}
+            questions={questions}
+            initialAnswerData={answerData}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </>
+      )}
+
       <ResultPageWrapper>
         <ResultPageContainer>
           <ResultTop />
@@ -119,8 +126,27 @@ export const ProgessResultPage: React.FC = () => {
   );
 };
 
+const formatSecondsToTime = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, '0');
+  const remaining = (seconds % 60).toString().padStart(2, '0');
+  return `${minutes}:${remaining}`;
+};
+
+export type ResultDataType = {
+  question: string;
+  time: string;
+  status: 'success' | 'giveup';
+};
+
+type ResultItemProps = {
+  index: number;
+  item: ResultDataType;
+};
+
 const ResultItem: React.FC<ResultItemProps> = ({ index, item }) => {
-  const getStampImage = (status: string) => {
+  const getStampImage = (status: 'success' | 'giveup') => {
     if (status === 'success') return SuccessStamp;
     if (status === 'giveup') return GiveupStamp;
     return '';

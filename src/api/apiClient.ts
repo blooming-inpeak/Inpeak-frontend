@@ -1,4 +1,4 @@
-// 테스트용으로 작성된 axios API 클라이언트 코드
+// 테스트용으로 작성된 axios API 클라이언트 코드 1
 // import axios from 'axios';
 
 // const baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -77,6 +77,7 @@
 
 // export default api;
 
+// 테스트용으로 작성된 axios API 클라이언트 코드 2
 // import axios from 'axios';
 
 // const baseURL = import.meta.env.VITE_API_BASE_URL;

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const ModalContainer = styled.div`
+  position: relative;
   background: white;
   border-radius: 24px;
   padding: 40px 60px 60px 60px;
@@ -79,9 +80,9 @@ export const StatusBadge = styled.span<{ status: string }>`
   letter-spacing: -0.3px;
 
   ${({ status }) =>
-    status === '포기'
+    status === 'SKIPPED'
       ? `color: #85C000; border-color: #85C000; background: #F8FFEA;`
-      : status === '정답'
+      : status === 'CORRECT'
         ? `color: #0050D8; border-color: #0050D8; background: #F5F9FF;`
         : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
 `;
@@ -265,5 +266,31 @@ export const Button = styled.button`
   &.next {
     background: #3277ed;
     color: #ffffff;
+  }
+`;
+export const CloseButton = styled.div`
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+export const BackButton = styled.div`
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
   }
 `;

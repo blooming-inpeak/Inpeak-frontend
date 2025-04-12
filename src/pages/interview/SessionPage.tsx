@@ -133,7 +133,10 @@ export const SessionPage = () => {
       );
       console.log(data);
 
-      setResult(prev => [...prev, { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true }]);
+      setResult(prev => [
+        ...prev,
+        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
+      ]);
     }
 
     if (lastQuestion) {
@@ -285,7 +288,9 @@ export const SessionBody = styled.div`
 
   display: flex;
   flex-direction: column;
-  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow:
+    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
+    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 `;
 
