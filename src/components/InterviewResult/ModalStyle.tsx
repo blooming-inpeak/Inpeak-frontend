@@ -281,3 +281,16 @@ export const CloseButton = styled.div`
     height: 100%;
   }
 `;
+export const BackButton = styled.div`
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
