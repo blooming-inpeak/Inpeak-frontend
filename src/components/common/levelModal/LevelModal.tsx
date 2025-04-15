@@ -11,19 +11,21 @@ export const LevelModal: React.FC<Props> = ({ onClose }) => {
   return (
     <Overlay>
       <ModalWrapper>
-        <CloseButton onClick={onClose}>
-          <img src={LevelModalClose} alt="닫기" />
-        </CloseButton>
-        <Image src={LevelImage} alt="레벨 설명 이미지" />
-        <TextBox>
-          <ul>
-            <li>본 서비스는 0레벨(0 XP)부터 10레벨(1350 XP)까지의 경험치 기반 레벨링 시스템을 적용합니다.</li>
-            <li>정답을 맞출 경우 10점 및 해당 점수에 비례한 경험치가 부여됩니다.</li>
-            <li>오답을 제출할 경우 5점 및 해당 점수에 비례한 경험치가 부여됩니다.</li>
-            <li>포기(답변 미제출) 시 점수 및 경험치가 부여되지 않습니다.</li>
-            <li>최대 레벨 10 도달 이후에는 경험치가 누적됩니다.</li>
-          </ul>
-        </TextBox>
+        <ModalBox>
+          <CloseButton onClick={onClose}>
+            <img src={LevelModalClose} alt="닫기" />
+          </CloseButton>
+          <Image src={LevelImage} alt="레벨 설명 이미지" />
+          <TextBox>
+            <ul>
+              <li>본 서비스는 0레벨(0 XP)부터 10레벨(1350 XP)까지의 경험치 기반 레벨링 시스템을 적용합니다.</li>
+              <li>정답을 맞출 경우 10점 및 해당 점수에 비례한 경험치가 부여됩니다.</li>
+              <li>오답을 제출할 경우 5점 및 해당 점수에 비례한 경험치가 부여됩니다.</li>
+              <li>포기(답변 미제출) 시 점수 및 경험치가 부여되지 않습니다.</li>
+              <li>최대 레벨 10 도달 이후에는 경험치가 누적됩니다.</li>
+            </ul>
+          </TextBox>
+        </ModalBox>
       </ModalWrapper>
     </Overlay>
   );
@@ -47,7 +49,6 @@ const ModalWrapper = styled.div`
   width: 500px;
   height: 340.59px;
   padding: 24px;
-  flex-direction: column;
   background: #fff;
   border-radius: 24px;
   box-shadow: 0px 0px 24px 0px rgba(50, 59, 84, 0.24);
@@ -55,20 +56,24 @@ const ModalWrapper = styled.div`
   box-sizing: border-box;
 `;
 
-const CloseButton = styled.button`
-  cursor: pointer;
+const ModalBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0px 12px;
+  box-sizing: border-box;
+  position: relative;
 `;
 
 const Image = styled.img`
-  width: 400px;
-  height: 157px;
-  align-self: center;
-  padding-top: 12px;
-  box-sizing: border-box;
+  margin-bottom: 20px;
 `;
 
 const TextBox = styled.div`
-  margin-top: 20px;
+  width: 100%;
+
   ul {
     padding-left: 12px;
     margin: 0;
@@ -77,9 +82,14 @@ const TextBox = styled.div`
   li {
     color: var(--text-100, #212121);
     font-size: 10px;
-    font-style: normal;
     font-weight: 500;
     line-height: 150%;
     letter-spacing: -0.25px;
   }
+`;
+
+const CloseButton = styled.button`
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 2.59px;
 `;

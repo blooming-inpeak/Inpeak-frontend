@@ -38,8 +38,8 @@ export const AskHistory: React.FC = () => {
         status: (item.answerStatus === 'CORRECT'
           ? '정답-small'
           : item.answerStatus === 'INCORRECT'
-            ? '오답-small'
-            : '포기-small') as CaptionType,
+          ? '오답-small'
+          : '포기-small') as CaptionType,
         detailUrl: `history/detail/${item.answerId}`,
       }));
 
@@ -83,7 +83,7 @@ export const AskHistory: React.FC = () => {
                   detailUrl={item.detailUrl}
                 />
               ))}
-              {historyItems.length >= 3 && <AskHistoryMore />}
+              <AskHistoryMore historyLength={historyItems.length} />
             </>
           ) : (
             // ✅ 데이터 없을 때 안내 메시지
