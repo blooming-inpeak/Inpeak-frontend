@@ -72,7 +72,9 @@
 //         alert('로그인이 필요합니다.');
 //         break;
 //       case 488:
-//         window.location.href = '/?status=NEED_MORE_INFO';
+//         if (!window.location.search.includes('status=NEED_MORE_INFO')) {
+//           window.location.href = '/?status=NEED_MORE_INFO';
+//         }
 //         break;
 //       case 500:
 //         alert('서버 오류가 발생했습니다.');
@@ -162,8 +164,10 @@
 //         console.error('🔥 서버 오류 발생');
 //         break;
 //       case 488:
-//         window.location.href = '/?status=NEED_MORE_INFO';
-//         break;
+//         if (!window.location.search.includes('status=NEED_MORE_INFO')) {
+//           window.location.href = '/?status=NEED_MORE_INFO';
+//         }
+//        break;
 //       default:
 //         console.warn(`📦 처리되지 않은 상태 코드(${status})`, error.response.data);
 //         break;
@@ -232,7 +236,10 @@ api.interceptors.response.use(
         console.error('🔥 서버 오류 발생');
         break;
       case 488:
-        window.location.href = '/?status=NEED_MORE_INFO';
+        if (!window.location.search.includes('status=NEED_MORE_INFO')) {
+          window.location.href = '/?status=NEED_MORE_INFO';
+        }
+        break;
         break;
       default:
         console.warn(`📦 처리되지 않은 상태 코드(${status})`, error.response.data);
