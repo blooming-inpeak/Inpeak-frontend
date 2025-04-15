@@ -36,7 +36,8 @@ function App() {
     <>
       <AppInitializer />
       {isLoginModalOpen && !user && <LoginModal setOpenLogin={setLoginModalOpen} />}
-      <SelectStack />
+      {/* ✅ NEED_MORE_INFO 상태일 때만 자동 렌더링 */}
+      {location.search.includes('status=NEED_MORE_INFO') && <SelectStack autoVisible method="post" />}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />

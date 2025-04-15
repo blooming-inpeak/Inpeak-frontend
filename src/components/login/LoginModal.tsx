@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CloseButton,
   KaKaoTalkTitle,
@@ -23,7 +23,6 @@ const OAUTH_URL = 'https://api.inpeak.kr/oauth2/authorization/kakao';
 export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const navigate = useNavigate();
-  const location = useLocation();
 
   const onClickClose = () => {
     setOpenLogin(false);
@@ -35,16 +34,6 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const handleKakaoLogin = () => {
     window.location.href = `${OAUTH_URL}`;
   };
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const status = params.get('status');
-
-    if (status === 'NEED_MORE_INFO') {
-      navigate('/?status=NEED_MORE_INFO');
-      setOpenLogin(false);
-    }
-  }, [location.search, navigate, setOpenLogin]);
 
   return (
     <>

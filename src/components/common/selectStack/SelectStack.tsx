@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './Button';
 import {
@@ -13,38 +13,29 @@ import {
 } from './SelectStackStyle';
 import { BlurBackground } from '../background/BlurBackground';
 import { registerInterest } from '../../../api/interest/interestAPI';
-import { GetMyPage } from '../../../api/getMyPage/GetMyPage';
+import { updateInterest } from '../../../api/interest/updateInterestAPI';
 
-export const SelectStack = () => {
+interface Props {
+  method?: 'post' | 'put';
+  autoVisible?: boolean; // 쿼리 기반 자동 오픈 여부
+}
+
+export const SelectStack = ({ method = 'post', autoVisible = false }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [select, setSelect] = useState<string[]>([]);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(!autoVisible);
 
   useEffect(() => {
-    const checkUserInterests = async () => {
-      const params = new URLSearchParams(location.search);
-      const status = params.get('status');
+    if (!autoVisible) return;
 
-      if (status === 'NEED_MORE_INFO') {
-        try {
-          const user = await GetMyPage();
-          if (!user.interests || user.interests.length === 0) {
-            setIsVisible(true); // interests 비어있으면 모달 띄움
-          } else {
-            setIsVisible(false); // interests 있으면 안 띄움
-          }
-        } catch (err) {
-          console.error('유저 정보 확인 실패:', err);
-          setIsVisible(false); // 에러일 땐 일단 모달 안 띄움
-        }
-      } else {
-        setIsVisible(false);
-      }
-    };
+    const params = new URLSearchParams(location.search);
+    const status = params.get('status');
 
-    checkUserInterests();
-  }, [location]);
+    if (status === 'NEED_MORE_INFO') {
+      setIsVisible(true);
+    }
+  }, [location, autoVisible]);
 
   const handleComplete = async () => {
     if (select.length === 0) {
@@ -53,14 +44,18 @@ export const SelectStack = () => {
     }
 
     const interestTypes = select.map(item => item.toUpperCase());
-    const result = await registerInterest(interestTypes);
+    // method에 따라 API 호출 분기
+    const result = method === 'put' ? await updateInterest(interestTypes) : await registerInterest(interestTypes);
 
     if (result.success) {
       setIsVisible(false);
-      navigate('/');
-      window.history.replaceState({}, '', '/');
-    } else {
-      alert(result.message);
+
+      if (method === 'put') {
+        window.location.href = '/mypage';
+      } else {
+        navigate('/');
+        window.history.replaceState({}, '', '/');
+      }
     }
   };
 
