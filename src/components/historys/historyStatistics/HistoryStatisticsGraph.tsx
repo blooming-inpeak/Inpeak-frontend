@@ -166,7 +166,7 @@ const SvgDefs = () => (
 
 const BackgroundCircle = styled.circle<{ zero?: boolean }>`
   fill: none;
-  stroke: ${({ zero }) => (zero ? '#F5F9FF' : '#e6e6e6')};
+  stroke: ${({ zero }) => (zero ? '#F5F9FF' : '#F5F9FF')};
 `;
 
 const Arc = styled.circle.attrs((props: Partial<ArcProps>) => ({

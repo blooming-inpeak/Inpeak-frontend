@@ -165,7 +165,7 @@ const HistoryCalendar = () => {
       <Container>
         <LeftSection>
           <DateInfo>
-            {answerData && (
+            {interviewExists && answerData && (
               <>
                 <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
                 {answerData.answers.length > 0 && <TimeText>{getTotalTime(answerData.answers)}</TimeText>}
@@ -173,6 +173,7 @@ const HistoryCalendar = () => {
             )}
           </DateInfo>
 
+          {/* 답변이 있는 경우 */}
           {answerData && answerData.answers.length > 0 ? (
             <QuestionList>
               {answerData.answers.map((answer, index) => (
@@ -192,26 +193,25 @@ const HistoryCalendar = () => {
               ))}
             </QuestionList>
           ) : (
-            <>
-              {answerData?.status === 409 && (
-                <NoResultMessage>
-                  진행한 <br /> 인터뷰의 답변이 없습니다
-                </NoResultMessage>
-              )}
-              {answerData?.status === 404 && (
-                <NoResultMessage>
-                  해당 날짜에 진행된 <br /> 모의면접 결과가 없습니다
-                </NoResultMessage>
-              )}
-            </>
-          )}
-
-          {!interviewExists && (
+            // 답변 없을 경우 메시지 분기
             <NoResultMessage>
-              현재까지 진행된 <br /> 모의면접 결과가 없습니다
+              {!interviewExists ? (
+                <>
+                  현재까지 진행된 <br /> 모의면접 결과가 없습니다
+                </>
+              ) : answerData?.status === 404 ? (
+                <>
+                  해당 날짜에 진행된 <br /> 모의면접 결과가 없습니다
+                </>
+              ) : answerData?.status === 409 ? (
+                <>
+                  진행한 <br /> 인터뷰의 답변이 없습니다
+                </>
+              ) : null}
             </NoResultMessage>
           )}
         </LeftSection>
+
         <RightSection>
           <CalendarHeader>
             <span>{format(currentDate, 'yyyy. MM')}</span>
