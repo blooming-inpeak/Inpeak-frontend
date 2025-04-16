@@ -1,11 +1,18 @@
 import styled from 'styled-components';
 import ReactDOM from 'react-dom';
+import { useEffect } from 'react';
 
 interface Props {
   children?: React.ReactNode;
 }
 
 export const BlurBackground = ({ children }: Props) => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
   return ReactDOM.createPortal(
     <BlurBackgroundContainer>{children}</BlurBackgroundContainer>,
     document.getElementById('modal-root') as HTMLElement,

@@ -231,6 +231,7 @@ const HistoryCalendar = () => {
             showQuestionIndex={true}
             currentIndex={clickedIndex}
             onClose={() => setIsModalOpen(false)}
+            isCalendar
           />
         </BlurBackground>
       )}

@@ -13,7 +13,7 @@ import {
   ToggleContainer,
   Wrapper,
   CloseButton,
-  BackButton,
+  ButtonGroup,
 } from '../../components/InterviewResult/ModalStyle';
 import { ToggleSwitch } from '../common/ToggleSwitch';
 import {
@@ -40,7 +40,10 @@ interface InterviewResultProps {
   showQuestionIndex?: boolean;
   currentIndex?: number;
   onClose?: () => void;
-  isInterviewPage?: boolean;
+
+  isAfterInterview?: boolean; // 면접 직후 단일 조회 (index O, 이전/다음 버튼 O)
+  isCalendar?: boolean; // 히스토리 캘린더 모달 (index O, 이전/다음 버튼 X)
+  isList?: boolean; // 답변완료 / 오답노트 리스트 모달 (index X, 이전/다음 버튼 X)
 }
 
 export const InterviewResult = ({
@@ -48,9 +51,10 @@ export const InterviewResult = ({
   interviewId = 0,
   questions = [],
   onClose,
-  showQuestionIndex,
   currentIndex = 0,
-  isInterviewPage = false,
+
+  isCalendar,
+  isAfterInterview,
 }: InterviewResultProps) => {
   const navigate = useNavigate();
   const [, setIsLoading] = useState(false);
@@ -65,13 +69,22 @@ export const InterviewResult = ({
   const resultData = useRecoilValue(ResultState);
   const interviewIdState = useRecoilValue(InterviewIdState);
   const questionsState = useRecoilValue(QuestionsState);
-  const [currentIndexState, setCurrentIndexState] = useState(currentIndex);
 
   const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
+  const [currentIndexState, setCurrentIndexState] = useState(currentIndex || 0);
   const answerIdForRequest = answerId ?? resultData?.[currentIndexState]?.answerId;
   const interviewIdForRequest = interviewId ?? interviewIdState;
   const questionsForRequest = questions.length > 0 ? questions : questionsState;
 
+  const isShowQuestionIndex = isAfterInterview || isCalendar;
+
+  const isShowNavigation = isAfterInterview;
+
+  useEffect(() => {
+    if (currentIndex !== undefined) {
+      setCurrentIndexState(currentIndex);
+    }
+  }, [currentIndex]);
   const formatRunningTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -83,12 +96,6 @@ export const InterviewResult = ({
 
     return `${hour}${minute}${second}`;
   };
-
-  useEffect(() => {
-    if (showQuestionIndex) {
-      setCurrentIndexState(currentIndex);
-    }
-  }, [currentIndex, showQuestionIndex]);
 
   const formatKoreanDate = (dateStr?: string) => {
     if (!dateStr) return '';
@@ -211,18 +218,19 @@ export const InterviewResult = ({
   }
   return (
     <>
-      {isInterviewPage && (
-        <BackButton onClick={() => navigate(-1)}>
-          <img src="/images/chevron/Chevron_left.svg" alt="back" />
-        </BackButton>
-      )}
-
       <ModalContainer>
-        {!isInterviewPage && (
-          <CloseButton onClick={onClose}>
-            <img src="/images/Close.svg" alt="close" />
-          </CloseButton>
-        )}
+        <CloseButton
+          onClick={() => {
+            if (isAfterInterview) {
+              navigate('/history');
+            } else {
+              onClose?.();
+            }
+          }}
+        >
+          <img src="/images/Close.svg" alt="close" />
+        </CloseButton>
+
         {/* 헤더: 날짜 및 이미지 */}
         <ModalHeader>
           <span className="date">{formatKoreanDate(answerData.dateTime)}</span>
@@ -234,8 +242,8 @@ export const InterviewResult = ({
         {/* 질문,답변 영역 */}
         <Wrapper>
           <div className="question-content">
-            {showQuestionIndex ? (
-              <span className="question-mark">Q{currentIndexState !== undefined ? currentIndexState + 1 : ''}</span>
+            {isShowQuestionIndex ? (
+              <span className="question-mark">Q{currentIndexState + 1}</span>
             ) : (
               <span className="question-mark">Q</span>
             )}
@@ -287,20 +295,29 @@ export const InterviewResult = ({
             onChange={handleMemoChange}
           />
         )}
+        {isShowNavigation && (
+          <Navigation>
+            <ButtonGroup position="left">
+              {currentIndexState > 0 && (
+                <Button className="prev" onClick={handlePrev}>
+                  이전으로
+                </Button>
+              )}
+            </ButtonGroup>
 
-        {/* 네비게이션 버튼 */}
-        <Navigation>
-          {questions.length > 0 && (
-            <>
-              <Button className="prev" onClick={handlePrev} disabled={currentIndex === 0}>
-                이전으로
-              </Button>
-              <Button className="next" onClick={handleNext} disabled={currentIndex === questions.length - 1}>
-                다음으로
-              </Button>
-            </>
-          )}
-        </Navigation>
+            <ButtonGroup position="right">
+              {currentIndexState < questions.length - 1 ? (
+                <Button className="next" onClick={handleNext}>
+                  다음으로
+                </Button>
+              ) : (
+                <Button className="next" onClick={() => navigate('/history')}>
+                  완료
+                </Button>
+              )}
+            </ButtonGroup>
+          </Navigation>
+        )}
       </ModalContainer>
     </>
   );

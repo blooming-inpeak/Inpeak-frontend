@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ModalContainer = styled.div`
+export const ModalContainer = styled.div<{ isInterviewPage?: boolean }>`
   position: relative;
   background: white;
   border-radius: 24px;
@@ -18,6 +18,12 @@ export const ModalContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+  ${({ isInterviewPage }) =>
+    isInterviewPage &&
+    `box-shadow: 
+      100px 100px 100px 0px rgba(0, 0, 0, 0.02),
+      2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+      0px 0px 100px 0px rgba(0, 80, 216, 0.08);`}
 `;
 
 export const ModalHeader = styled.div`
@@ -248,10 +254,18 @@ export const Navigation = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  width: 100%;
+  position: relative;
 `;
 
+export const ButtonGroup = styled.div<{ position: 'left' | 'right' }>`
+  display: flex;
+  ${({ position }) => (position === 'left' ? 'justify-content: flex-start;' : 'justify-content: flex-end;')}
+  width: 100%;
+`;
 export const Button = styled.button`
-  width: 100px;
+  padding: 6px 18px;
+  white-space: nowrap;
   height: 36px;
   border: none;
   border-radius: 100px;
