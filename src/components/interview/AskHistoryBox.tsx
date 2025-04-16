@@ -7,14 +7,12 @@ interface AskHistoryBoxProps {
   question: string;
   answer: string;
   status: CaptionType;
-  detailUrl?: string;
+  onClick?: () => void;
 }
 
-export const AskHistoryBox: React.FC<AskHistoryBoxProps> = ({ question, answer, status, detailUrl }) => {
-  const handleDetailClick = () => (window.location.href = detailUrl!);
-
+export const AskHistoryBox: React.FC<AskHistoryBoxProps> = ({ question, answer, status, onClick }) => {
   return (
-    <AskHistoryBoxWrapper>
+    <AskHistoryBoxWrapper onClick={onClick}>
       <AskHistoryContent>
         <div style={{ display: 'flex' }}>
           <AskHistoryQuestion>{question}</AskHistoryQuestion>
@@ -22,23 +20,21 @@ export const AskHistoryBox: React.FC<AskHistoryBoxProps> = ({ question, answer, 
         </div>
         <AskHistoryAnswer>{answer}</AskHistoryAnswer>
       </AskHistoryContent>
-      <DetailButton onClick={handleDetailClick}>
-        <img src="/images/chevron/Chevron_right_black.svg" alt="chevron right" style={{ cursor: 'pointer' }} />
-      </DetailButton>
     </AskHistoryBoxWrapper>
   );
 };
 
 export const AskHistoryBoxWrapper = styled.div`
   width: 100%;
+  box-sizing: border-box;
+  height: 103px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-bottom: 24px;
-
-  & + & {
-    padding-top: 24px;
-    border-top: 1px solid #f1f1f1;
+  padding: 20px;
+  cursor: pointer;
+  border-radius: 12px;
+  &:hover {
+    background-color: #eff5ff;
   }
 `;
 
@@ -59,8 +55,4 @@ export const AskHistoryAnswer = styled.div`
   font-size: 12px;
   font-weight: 400;
   letter-spacing: -0.3px;
-`;
-
-export const DetailButton = styled.div`
-  cursor: pointer;
 `;
