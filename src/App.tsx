@@ -20,6 +20,7 @@ import { loginModalState } from './store/loginModal/loginModalState';
 import { LoginModal } from './components/login/LoginModal';
 import { useEffect } from 'react';
 import { userState } from './store/auth/userState';
+import { HistoryDetailPage } from './pages/HistoryDetailPage';
 
 function App() {
   const location = useLocation();
@@ -57,6 +58,8 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/history/detail/:answerId" element={<HistoryDetailPage />} />
+
           <Route
             path="/mypage"
             element={

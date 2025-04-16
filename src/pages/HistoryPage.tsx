@@ -3,20 +3,25 @@ import { AnsweredList } from '../components/historys/AnsweredList';
 import { WrongNoteList } from '../components/historys/WrongNoteList';
 import { HistoryStatistics } from '../components/historys/historyStatistics/HistoryStatistics';
 import HistoryCalendar from '../components/historys/historyCalander/HistoryCalender';
+import Footer from '../components/common/Footer/Footer';
 export const HistoryPage = () => {
   return (
-    <HistoryWrapper>
-      <HistoryTop>
-        <HistoryStatistics />
-        <HistoryCalendar />
-      </HistoryTop>
-      <HistoryBackground>
-        <HistoryBody>
-          <AnsweredList />
-          <WrongNoteList />
-        </HistoryBody>
-      </HistoryBackground>
-    </HistoryWrapper>
+    <>
+      {' '}
+      <HistoryWrapper>
+        <HistoryTop>
+          <HistoryStatistics />
+          <HistoryCalendar />
+        </HistoryTop>
+        <HistoryBackground>
+          <HistoryBody>
+            <AnsweredList />
+            <WrongNoteList />
+          </HistoryBody>
+        </HistoryBackground>
+      </HistoryWrapper>
+      <Footer variant="white" />
+    </>
   );
 };
 
