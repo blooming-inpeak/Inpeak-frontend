@@ -40,6 +40,7 @@ import {
   DateCell,
   DateContent,
   InterviewDot,
+  CaptionBox,
 } from './HistoryCalendarStyles';
 import { CaptionType } from '../../common/caption/CaptionType';
 import { BlurBackground } from '../../common/background/BlurBackground';
@@ -71,6 +72,7 @@ interface AnswerResponse {
   createdAt: string;
   startDate: string;
   answers: Answer[];
+  status?: number;
 }
 
 const HistoryCalendar = () => {
@@ -79,10 +81,10 @@ const HistoryCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [interviewData, setInterviewData] = useState<InterviewData[]>([]);
   const [answerData, setAnswerData] = useState<AnswerResponse | null>(null);
-  const [, setDataExists] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
   const [clickedIndex, setClickedIndex] = useState<number | undefined>(undefined);
+  const [interviewExists, setInterviewExists] = useState<boolean>(true);
 
   const captionMapping: Record<'CORRECT' | 'INCORRECT' | 'SKIPPED', CaptionType> = {
     CORRECT: '정답-small',
@@ -96,18 +98,12 @@ const HistoryCalendar = () => {
       const year = format(currentDate, 'yyyy');
       try {
         const data = await fetchInterviewCalendarData(month, year);
-
-        if (data && data.calendarList) {
-          setInterviewData(data.calendarList);
-          setDataExists(data.calendarList.length > 0);
-        } else {
-          setInterviewData([]);
-          setDataExists(false);
-        }
+        setInterviewData(data.calendarList);
+        setInterviewExists(data.exists !== false);
       } catch (error) {
         console.error('인터뷰 캘린더 데이터를 불러오는데 실패했습니다.', error);
         setInterviewData([]);
-        setDataExists(false);
+        setInterviewExists(false);
       }
     };
     fetchData();
@@ -154,74 +150,6 @@ const HistoryCalendar = () => {
     setIsModalOpen(true);
   };
 
-  const renderHeader = () => (
-    <>
-      <CalendarHeader>
-        <span>{format(currentDate, 'yyyy. MM')}</span>
-        <div id="button-container">
-          <NavButton onClick={prevMonth}>
-            <img src={LeftArrow} alt="전월로 돌아가기" />
-          </NavButton>
-          <NavButton onClick={nextMonth}>
-            <img src={RightArrow} alt="다음 월로 넘어가기" />
-          </NavButton>
-        </div>
-      </CalendarHeader>
-      <CalendarStroke />
-    </>
-  );
-
-  const renderDays = () => {
-    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    return (
-      <DaysRow>
-        {days.map((day, index) => (
-          <Day key={index} isSunday={index === 0} isSaturday={index === 6}>
-            {day}
-          </Day>
-        ))}
-      </DaysRow>
-    );
-  };
-
-  const renderCells = () => {
-    const monthStart = startOfMonth(currentDate);
-    const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(monthEnd);
-
-    const rows = [];
-    let days = [];
-    let day = startDate;
-
-    while (day <= endDate) {
-      for (let i = 0; i < 7; i++) {
-        const formattedDate = format(day, 'd');
-        const cloneDay = day;
-        const interviewForDate = getInterviewByDate(cloneDay);
-
-        days.push(
-          <DateCell
-            key={day.toString()}
-            isToday={isSameDay(day, new Date())}
-            isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
-            isSameMonth={isSameMonth(day, monthStart)}
-            onClick={() => setSelectedDate(cloneDay)}
-          >
-            <DateContent>
-              <span>{formattedDate}</span>
-            </DateContent>
-            {interviewForDate && <InterviewDot />}
-          </DateCell>,
-        );
-        day = addDays(day, 1);
-      }
-      rows.push(<Row key={day.toString()}>{days}</Row>);
-      days = [];
-    }
-    return <Body>{rows}</Body>;
-  };
-
   return (
     <>
       {isModalOpen && selectedAnswerId && (
@@ -231,19 +159,22 @@ const HistoryCalendar = () => {
             showQuestionIndex={true}
             currentIndex={clickedIndex}
             onClose={() => setIsModalOpen(false)}
+            isCalendar
           />
         </BlurBackground>
       )}
       <Container>
         <LeftSection>
           <DateInfo>
-            {answerData && answerData.answers.length > 0 && (
+            {interviewExists && answerData && (
               <>
                 <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
-                <TimeText>{getTotalTime(answerData.answers)}</TimeText>
+                {answerData.answers.length > 0 && <TimeText>{getTotalTime(answerData.answers)}</TimeText>}
               </>
             )}
           </DateInfo>
+
+          {/* 답변이 있는 경우 */}
           {answerData && answerData.answers.length > 0 ? (
             <QuestionList>
               {answerData.answers.map((answer, index) => (
@@ -254,32 +185,94 @@ const HistoryCalendar = () => {
                   </QuestionTitle>
                   <QuestionFooter>
                     <QuestionTime>{formatRunningTime(answer.runningTime)}</QuestionTime>
-                    <MultiCaption type={captionMapping[answer.answerStatus]} />
+                    <CaptionBox>
+                      {answer.isUnderstood && <MultiCaption type="이해완료-small" />}
+                      <MultiCaption type={captionMapping[answer.answerStatus]} />
+                    </CaptionBox>
                   </QuestionFooter>
                 </QuestionItem>
               ))}
             </QuestionList>
           ) : (
+            // 답변 없을 경우 메시지 분기
             <NoResultMessage>
-              {getInterviewByDate(selectedDate) ? (
+              {!interviewExists ? (
                 <>
-                  해당 날짜에 진행된
-                  <br /> 모의면접 결과가 없습니다
+                  현재까지 진행된 <br /> 모의면접 결과가 없습니다
                 </>
-              ) : (
+              ) : answerData?.status === 404 ? (
                 <>
-                  현재까지 진행된
-                  <br /> 모의면접 결과가 없습니다
+                  해당 날짜에 진행된 <br /> 모의면접 결과가 없습니다
                 </>
-              )}
+              ) : answerData?.status === 409 ? (
+                <>
+                  진행한 <br /> 인터뷰의 답변이 없습니다
+                </>
+              ) : null}
             </NoResultMessage>
           )}
         </LeftSection>
 
         <RightSection>
-          {renderHeader()}
-          {renderDays()}
-          {renderCells()}
+          <CalendarHeader>
+            <span>{format(currentDate, 'yyyy. MM')}</span>
+            <div id="button-container">
+              <NavButton onClick={prevMonth}>
+                <img src={LeftArrow} alt="전월로 돌아가기" />
+              </NavButton>
+              <NavButton onClick={nextMonth}>
+                <img src={RightArrow} alt="다음 월로 넘어가기" />
+              </NavButton>
+            </div>
+          </CalendarHeader>
+          <CalendarStroke />
+          <DaysRow>
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+              <Day key={index} isSunday={index === 0} isSaturday={index === 6}>
+                {day}
+              </Day>
+            ))}
+          </DaysRow>
+          <Body>
+            {/* 날짜 셀 렌더링 */}
+            {(() => {
+              const monthStart = startOfMonth(currentDate);
+              const monthEnd = endOfMonth(monthStart);
+              const startDate = startOfWeek(monthStart);
+              const endDate = endOfWeek(monthEnd);
+
+              const rows = [];
+              let days = [];
+              let day = startDate;
+
+              while (day <= endDate) {
+                for (let i = 0; i < 7; i++) {
+                  const formattedDate = format(day, 'd');
+                  const cloneDay = day;
+                  const interviewForDate = getInterviewByDate(cloneDay);
+
+                  days.push(
+                    <DateCell
+                      key={day.toString()}
+                      isToday={isSameDay(day, new Date())}
+                      isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
+                      isSameMonth={isSameMonth(day, monthStart)}
+                      onClick={() => setSelectedDate(cloneDay)}
+                    >
+                      <DateContent>
+                        <span>{formattedDate}</span>
+                      </DateContent>
+                      {interviewForDate && <InterviewDot />}
+                    </DateCell>,
+                  );
+                  day = addDays(day, 1);
+                }
+                rows.push(<Row key={day.toString()}>{days}</Row>);
+                days = [];
+              }
+              return rows;
+            })()}
+          </Body>
         </RightSection>
       </Container>
     </>

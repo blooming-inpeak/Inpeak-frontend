@@ -67,6 +67,16 @@ export const QuestionItem = styled.div`
   justify-content: space-between;
   padding: 16px 30px;
   box-sizing: border-box;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--sementic-standard-400, #fbfdff);
+  }
+
+  &:active {
+    background: var(--sementic-standard-200, #eff5ff);
+  }
+
   &:last-child {
     border-bottom: none;
   }
@@ -104,6 +114,12 @@ export const QuestionTime = styled.div`
   font-weight: 500;
   line-height: 150%;
   letter-spacing: -0.3px;
+`;
+
+export const CaptionBox = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `;
 
 export const NoResultMessage = styled.div`

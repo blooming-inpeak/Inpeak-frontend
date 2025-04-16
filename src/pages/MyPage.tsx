@@ -3,6 +3,7 @@ import { MyPageTop } from '../components/mypage/MyPageTop';
 import { MyPageBottom } from '../components/mypage/MyPageBottom';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/auth/userState';
+import Footer from '../components/common/Footer/Footer';
 
 export const MyPage = () => {
   const user = useRecoilValue(userState);
@@ -15,25 +16,27 @@ export const MyPage = () => {
         <MyPageTop />
         <MyPageBottom interests={user.interests} />
       </MyPageContent>
+      <Footer />
     </MyPageWrapper>
   );
 };
 
 export const MyPageWrapper = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   padding-top: 100px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
+  flex-direction: column;
 `;
 
 export const MyPageContent = styled.div`
   width: 400px;
-  height: 603px;
+  min-height: 1014px;
   gap: 100px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
   align-items: center;
 `;

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
+import Footer from '../components/common/Footer/Footer';
 
 const Container = styled.div`
   width: 550px;
@@ -37,7 +38,8 @@ const Answer = styled.p`
   font-weight: 400;
   line-height: 150%;
   letter-spacing: -0.35px;
-  margin: 0;
+
+  margin: 0 0 0 18px;
 `;
 
 const Divider = styled.div`
@@ -48,25 +50,15 @@ const Divider = styled.div`
 `;
 
 const EmailSection = styled.div`
-  margin-top: 110px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 `;
 
-const EmailTitle = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 150%;
-  letter-spacing: -0.4px;
-  margin: 0 0 8px 0;
-  color: #4386f8;
-`;
-
-const EmailAddress = styled.div`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 150%;
+const EmailAddress = styled.button`
+  all: unset;
+  cursor: pointer;
   margin: 0;
   display: flex;
   padding: 6px 18px;
@@ -78,6 +70,12 @@ const EmailAddress = styled.div`
   color: white;
   width: 94px;
   height: 24px;
+  color: var(--text-1700, #fff);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+  letter-spacing: -0.35px;
 `;
 
 export const ContactPage = () => {
@@ -88,25 +86,28 @@ export const ContactPage = () => {
   });
 
   return (
-    <Container>
-      <QuestionSection>
-        <Title>자주 묻는 질문</Title>
+    <>
+      {' '}
+      <Container>
+        <QuestionSection>
+          <Title>자주 묻는 질문</Title>
 
-        {faqData.map((faq, index) => (
-          <React.Fragment key={index}>
-            <QuestionContainer>
-              <Question>{faq.question}</Question>
-              <Answer>{faq.answer}</Answer>
-            </QuestionContainer>
-            {index < faqData.length - 1 && <Divider />}
-          </React.Fragment>
-        ))}
-      </QuestionSection>
+          {faqData.map((faq, index) => (
+            <React.Fragment key={index}>
+              <QuestionContainer>
+                <Question>{`${index + 1}. ${faq.question}`}</Question>
+                <Answer>{faq.answer}</Answer>
+              </QuestionContainer>
+              {index < faqData.length - 1 && <Divider />}
+            </React.Fragment>
+          ))}
+        </QuestionSection>
 
-      <EmailSection>
-        <EmailTitle>구글폼으로 이동합니다</EmailTitle>
-        <EmailAddress>직접 문의하기</EmailAddress>
-      </EmailSection>
-    </Container>
+        <EmailSection>
+          <EmailAddress>직접 문의하기</EmailAddress>
+        </EmailSection>
+      </Container>
+      <Footer />
+    </>
   );
 };

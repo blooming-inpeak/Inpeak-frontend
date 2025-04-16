@@ -125,7 +125,7 @@ export const CorrectAnswerWrapper = styled.div<CorrectAnswerWrapperProps>`
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
   backdrop-filter: blur(10px);
   box-sizing: border-box;
-  padding: 20px 35px 20px 45px;
+  padding: ${props => (props.onlyAverage ? '20px 40px' : '20px 35px 20px 45px')};
 `;
 
 export const MyCorrectAnswer = styled.div`

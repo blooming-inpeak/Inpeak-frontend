@@ -108,11 +108,15 @@ export const AnsweredList = () => {
               onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
             />
             <SortDropdown
-              options={['전체보기', '정답', '이해완료']}
+              options={['전체보기', '정답만 보기', '이해완료만 보기']}
+              displayMap={{
+                '정답만 보기': '정답',
+                '이해완료만 보기': '이해완료',
+              }}
               defaultOption="전체보기"
               onChange={value => {
                 if (value === '전체보기') setIsUnderstood(undefined);
-                else if (value === '이해완료') setIsUnderstood(true);
+                else if (value === '이해완료만 보기') setIsUnderstood(true);
                 else setIsUnderstood(false);
               }}
             />

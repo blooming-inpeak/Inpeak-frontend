@@ -5,6 +5,8 @@ import { AskHistoryBox } from './AskHistoryBox';
 import { AskHistoryMore } from './AskHistoryMore';
 import { fetchRecentAnswers } from '../../api/interview/recentInterviewAPI';
 import { CaptionType } from '../common/caption/CaptionType';
+import { BlurBackground } from '../common/background/BlurBackground';
+import { InterviewResult } from '../InterviewResult/InterviewResult';
 
 interface HistoryItem {
   interviewId: number;
@@ -20,6 +22,14 @@ export const AskHistory: React.FC = () => {
   const [isSelect, setIsSelect] = useState<'전체' | '정답' | '오답' | '포기'>('전체');
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClickHistoryItem = (answerId: number) => {
+    setSelectedAnswerId(answerId);
+    setShowModal(true);
+  };
 
   const fetchHistory = async () => {
     setLoading(true);
@@ -38,8 +48,8 @@ export const AskHistory: React.FC = () => {
         status: (item.answerStatus === 'CORRECT'
           ? '정답-small'
           : item.answerStatus === 'INCORRECT'
-            ? '오답-small'
-            : '포기-small') as CaptionType,
+          ? '오답-small'
+          : '포기-small') as CaptionType,
         detailUrl: `history/detail/${item.answerId}`,
       }));
 
@@ -58,6 +68,11 @@ export const AskHistory: React.FC = () => {
 
   return (
     <AskHistoryWrapper>
+      {showModal && selectedAnswerId && (
+        <BlurBackground>
+          <InterviewResult answerId={selectedAnswerId} onClose={() => setShowModal(false)} isList />
+        </BlurBackground>
+      )}
       <AskHistoryTitle>최근 질문 히스토리</AskHistoryTitle>
       {loading ? (
         <EmptyMessage>로딩 중...</EmptyMessage>
@@ -74,16 +89,18 @@ export const AskHistory: React.FC = () => {
           {/* ✅ 데이터가 있을 때만 히스토리 리스트 렌더링 */}
           {historyItems.length > 0 ? (
             <>
-              {historyItems.map(item => (
-                <AskHistoryBox
-                  key={item.answerId}
-                  question={item.question}
-                  answer={item.answer}
-                  status={item.status}
-                  detailUrl={item.detailUrl}
-                />
+              {historyItems.map((item, index) => (
+                <React.Fragment key={item.answerId}>
+                  <AskHistoryBox
+                    question={item.question}
+                    answer={item.answer}
+                    status={item.status}
+                    onClick={() => handleClickHistoryItem(item.answerId)}
+                  />
+                  {index < historyItems.length - 1 && <Divider />}
+                </React.Fragment>
               ))}
-              {historyItems.length >= 3 && <AskHistoryMore />}
+              <AskHistoryMore historyLength={historyItems.length} />
             </>
           ) : (
             // ✅ 데이터 없을 때 안내 메시지
@@ -141,4 +158,10 @@ export const EmptyMessage = styled.div`
     letter-spacing: -0.35px;
     margin: 0;
   }
+`;
+const Divider = styled.div`
+  width: 400px;
+  height: 1px;
+  background: var(--sementic-light-100, #e6e6e6);
+  margin: 0 auto;
 `;

@@ -9,20 +9,22 @@ import { ResultState } from '../../store/result/ResultState';
 import { getAnswerDetail } from '../../api/apiService';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { QuestionsState } from '../../store/question/Question';
+
 import { BlurBackground } from '../../components/common/background/BlurBackground';
-import { GetAnswerDetailResponse } from '../../api/types';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
+import { GetAnswerDetailResponse } from '../../api/types';
 
 export const ProgessResultPage: React.FC = () => {
   const resultState = useRecoilValue(ResultState);
   const [resultData, setResultData] = useState<ResultDataType[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
 
   const interviewId = useRecoilValue(InterviewIdState);
   const questions = useRecoilValue(QuestionsState);
+
+  const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
+  const [showResultModal, setShowResultModal] = useState<boolean>(false);
 
   useEffect(() => {
     const formatted: ResultDataType[] = resultState.map(item => ({
@@ -44,41 +46,42 @@ export const ProgessResultPage: React.FC = () => {
 
   const handleFeedbackClick = async () => {
     if (!interviewId || questions.length === 0) return;
-    console.log('interviewId:', interviewId); // 인터뷰 ID 확인
-    console.log('questions:', questions); // 질문 리스트 확인
-    console.log('첫번째 questionId:', questions[0].id); // 첫번째 질문 id
 
     setIsLoading(true);
-
     try {
-      const questionId = questions[0].id; // 첫번째 질문 id
+      const questionId = questions[0].id;
+      const delay = new Promise(resolve => setTimeout(resolve, 1500));
+      const dataPromise = getAnswerDetail({ interviewId, questionId });
 
-      const data = await getAnswerDetail({
-        interviewId: interviewId,
-        questionId: questionId,
-      });
-
+      const [data] = await Promise.all([dataPromise, delay]); // 동시에 기다림
       setAnswerData(data);
-      setIsModalOpen(true);
     } catch (err) {
       console.error('AI 피드백 요청 실패', err);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // 로딩 먼저 끝냄
     }
   };
 
+  useEffect(() => {
+    if (!isLoading && answerData) {
+      setTimeout(() => {
+        setShowResultModal(true);
+      }, 300); // 살짝 딜레이 줘서 자연스럽게
+    }
+  }, [isLoading, answerData]);
+
   return (
     <>
-      {isModalOpen && answerData && (
-        <>
-          <BlurBackground />
+      {showResultModal && answerData && (
+        <BlurBackground>
           <InterviewResult
             interviewId={interviewId}
             questions={questions}
             initialAnswerData={answerData}
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => setShowResultModal(false)} // 모달 닫기
+            isAfterInterview
           />
-        </>
+        </BlurBackground>
       )}
 
       <ResultPageWrapper>

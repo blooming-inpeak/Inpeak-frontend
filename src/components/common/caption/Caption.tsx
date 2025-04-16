@@ -65,6 +65,15 @@ function getCaptionStyle(type: CaptionType) {
         color: '#747474',
         border: '1px solid #747474',
       };
+    case '이해완료-small':
+      return {
+        label: '이해완료',
+        width: 42,
+        height: 17,
+        fontsize: 10,
+        background: '#FAFAFA',
+        color: '#747474',
+      };
     case '오답-small':
       return {
         label: '오답',

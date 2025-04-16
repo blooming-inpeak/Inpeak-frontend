@@ -1,19 +1,27 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const AskHistoryMore = () => {
+interface Props {
+  historyLength: number;
+}
+
+export const AskHistoryMore = ({ historyLength }: Props) => {
   const navigate = useNavigate();
 
   const onClickHistory = () => {
     navigate('/history');
   };
+
   return (
     <AskHistoryMoreWrapper>
-      <AskHistoryMoreIcon>
-        <img src="/images/More.svg" alt="more icon" />
-        <img src="/images/More.svg" alt="more icon" />
-        <img src="/images/More.svg" alt="more icon" />
-      </AskHistoryMoreIcon>
+      {/* ✅ 아이템이 3개 이상일 때만 아이콘 표시 */}
+      {historyLength >= 3 && (
+        <AskHistoryMoreIcon>
+          <img src="/images/More.svg" alt="more icon" />
+          <img src="/images/More.svg" alt="more icon" />
+          <img src="/images/More.svg" alt="more icon" />
+        </AskHistoryMoreIcon>
+      )}
 
       <AskHistroyMoreButton onClick={onClickHistory}>전체 히스토리 보러가기</AskHistroyMoreButton>
     </AskHistoryMoreWrapper>
@@ -36,9 +44,11 @@ export const AskHistoryMoreIcon = styled.div`
 `;
 
 export const AskHistroyMoreButton = styled.div`
-  width: 100%;
   display: flex;
   justify-content: flex-end;
+  position: absolute;
+  right: 50px;
+  bottom: 40px;
 
   color: #747474;
   font-size: 12px;

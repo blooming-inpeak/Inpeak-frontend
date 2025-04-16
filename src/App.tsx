@@ -20,6 +20,7 @@ import { loginModalState } from './store/loginModal/loginModalState';
 import { LoginModal } from './components/login/LoginModal';
 import { useEffect } from 'react';
 import { userState } from './store/auth/userState';
+import { HistoryDetailPage } from './pages/HistoryDetailPage';
 
 function App() {
   const location = useLocation();
@@ -36,7 +37,8 @@ function App() {
     <>
       <AppInitializer />
       {isLoginModalOpen && !user && <LoginModal setOpenLogin={setLoginModalOpen} />}
-      <SelectStack />
+      {/* ✅ NEED_MORE_INFO 상태일 때만 자동 렌더링 */}
+      {location.search.includes('status=NEED_MORE_INFO') && <SelectStack autoVisible method="post" />}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
@@ -56,6 +58,8 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/history/detail/:answerId" element={<HistoryDetailPage />} />
+
           <Route
             path="/mypage"
             element={

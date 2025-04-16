@@ -25,18 +25,14 @@ export const HistoryStatistics = () => {
     fetchData();
   }, []);
 
-  if (!stats) {
-    return <div>Loading...</div>;
-  }
-
   const {
-    totalAnswerCount,
-    correctAnswerCount,
-    incorrectAnswerCount,
-    skippedAnswerCount,
-    totalInterviewCount,
-    totalRunningTime,
-  } = stats;
+    totalAnswerCount = 0,
+    correctAnswerCount = 0,
+    incorrectAnswerCount = 0,
+    skippedAnswerCount = 0,
+    totalInterviewCount = 0,
+    totalRunningTime = 0,
+  } = stats || {}; // <-- stats가 null이면 기본값 사용
 
   // totalRunningTime(초)를 시간과 분으로 변환하는 함수
   const formatTotalTime = (totalSeconds: number) => {
