@@ -114,9 +114,15 @@ export const WrongNoteList = () => {
               onChange={value => setSortType(value === '최신순' ? 'DESC' : 'ASC')}
             />
             <SortDropdown
-              options={['전체보기', '오답', '포기']}
+              options={['전체보기', '오답만 보기', '포기만 보기']}
               defaultOption="전체보기"
-              onChange={value => setStatus(value === '전체보기' ? 'ALL' : value === '오답' ? 'INCORRECT' : 'SKIPPED')}
+              displayMap={{
+                '오답만 보기': '오답',
+                '포기만 보기': '포기',
+              }}
+              onChange={value =>
+                setStatus(value === '전체보기' ? 'ALL' : value === '오답만 보기' ? 'INCORRECT' : 'SKIPPED')
+              }
             />
           </FiltersContainer>
         </Header>

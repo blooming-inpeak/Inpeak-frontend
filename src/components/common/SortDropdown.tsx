@@ -6,9 +6,15 @@ interface SortDropdownProps {
   options: string[];
   defaultOption?: string;
   onChange?: (selectedOption: string) => void;
+  displayMap?: Record<string, string>;
 }
 
-export const SortDropdown: React.FC<SortDropdownProps> = ({ options, defaultOption = '최신순', onChange }) => {
+export const SortDropdown: React.FC<SortDropdownProps> = ({
+  options,
+  defaultOption = '최신순',
+  onChange,
+  displayMap,
+}) => {
   const [selected, setSelected] = useState(defaultOption);
   const [isOpen, setIsOpen] = useState(false);
   const handleToggle = () => {
@@ -24,7 +30,8 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({ options, defaultOpti
   return (
     <DropdownContainer>
       <DropdownButton isOpen={isOpen} onClick={handleToggle}>
-        <span>{selected}</span>
+        <span>{displayMap?.[selected] || selected}</span>
+
         <ArrowIconWrapper isOpen={isOpen}>
           <img src={ArrowIcon} alt="arrow icon" />
         </ArrowIconWrapper>

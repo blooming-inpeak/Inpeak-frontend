@@ -28,7 +28,7 @@ const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   padding: 15px;
-
+  z-index: 9999;
   img {
     width: 100%;
     height: 100%;
