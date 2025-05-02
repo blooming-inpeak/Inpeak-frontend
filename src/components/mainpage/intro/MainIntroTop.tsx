@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const MainIntroTop = () => {
+  const navigate = useNavigate();
   return (
     <MainIntroTopWrapper>
       <MainIntroTopBox>개발자 기술면접도 실전연습 할 수 없을까..?</MainIntroTopBox>
@@ -11,7 +13,7 @@ export const MainIntroTop = () => {
         인픽에서 기술면접 완벽 대비
       </MainIntroTopContent>
 
-      <MainIntroTopButton>
+      <MainIntroTopButton onClick={() => navigate('/interview')}>
         <div></div>
         <MainIntroTopButtonText>나의 기술면접 실력 체크하기</MainIntroTopButtonText>
         <img src="/images/chevron/Chevron_right_white.svg" alt="Chevron_right_white" />
@@ -24,6 +26,8 @@ export const MainIntroTopWrapper = styled.div`
   width: 100%;
   height: auto;
   padding-top: 40px;
+  z-index: 2;
+
   display: flex;
   flex-direction: column;
   align-items: center;
