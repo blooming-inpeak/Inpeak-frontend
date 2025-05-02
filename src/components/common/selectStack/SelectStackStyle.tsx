@@ -94,4 +94,5 @@ export const BackButtonWrapper = styled.div`
 
 export const BackButton = styled.img`
   width: 24px;
+  cursor: pointer;
 `;

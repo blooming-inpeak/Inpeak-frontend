@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './Button';
 import {
@@ -20,9 +20,10 @@ import { updateInterest } from '../../../api/interest/updateInterestAPI';
 interface Props {
   method?: 'post' | 'put';
   autoVisible?: boolean; // 쿼리 기반 자동 오픈 여부
+  setIsSelectStack?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const SelectStack = ({ method = 'post', autoVisible = false }: Props) => {
+export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectStack }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [select, setSelect] = useState<string[]>([]);
@@ -66,9 +67,13 @@ export const SelectStack = ({ method = 'post', autoVisible = false }: Props) => 
   return (
     <BlurBackground>
       <SelectStackWrapper>
-        {location.pathname === '/mypage' ? (
+        {location.pathname === '/mypage' && setIsSelectStack ? (
           <BackButtonWrapper>
-            <BackButton src={'/images/chevron/Chevron_left.svg'} alt="chevron_left" />
+            <BackButton
+              src={'/images/chevron/Chevron_left.svg'}
+              alt="chevron_left"
+              onClick={() => setIsSelectStack(false)}
+            />
           </BackButtonWrapper>
         ) : (
           <></>
