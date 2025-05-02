@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './Button';
 import {
+  BackButton,
+  BackButtonWrapper,
   SelectStackBody,
   SelectStackButton,
   SelectStackContent,
@@ -64,11 +66,22 @@ export const SelectStack = ({ method = 'post', autoVisible = false }: Props) => 
   return (
     <BlurBackground>
       <SelectStackWrapper>
+        {location.pathname === '/mypage' ? (
+          <BackButtonWrapper>
+            <BackButton src={'/images/chevron/Chevron_left.svg'} alt="chevron_left" />
+          </BackButtonWrapper>
+        ) : (
+          <></>
+        )}
         <SelectStackBody>
           <SelectStackContent>
             <SelectStackContentTop>
               <SelectStackTitle>관심 분야를 선택해주세요</SelectStackTitle>
-              <SelectStackSubTitle>가입완료 후 마이페이지에서 변경가능합니다</SelectStackSubTitle>
+              <SelectStackSubTitle>
+                {location.pathname === '/mypage'
+                  ? '선택한 관심분야에 따라 제공되는 면접 질문이 달라집니다'
+                  : '가입완료 후 마이페이지에서 변경가능합니다'}
+              </SelectStackSubTitle>
             </SelectStackContentTop>
 
             <SelectStackContentBottom>
