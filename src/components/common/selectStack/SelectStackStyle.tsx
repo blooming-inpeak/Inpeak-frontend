@@ -85,3 +85,14 @@ export const SelectStackButton = styled.div`
   }
   cursor: pointer;
 `;
+
+export const BackButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+`;
+
+export const BackButton = styled.img`
+  width: 24px;
+  cursor: pointer;
+`;

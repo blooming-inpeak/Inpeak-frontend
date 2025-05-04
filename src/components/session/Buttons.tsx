@@ -5,6 +5,8 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
 import { ResultState } from '../../store/result/ResultState';
 import { useState } from 'react';
+import { BlurBackground } from '../common/background/BlurBackground';
+import { PassModal } from './PassModal';
 
 interface Props {
   start: boolean;
@@ -21,6 +23,7 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
   const [isSubmitting, setIsSubmitting] = useState(false);
   const Question = useRecoilValue(QuestionsState);
   const [result, setResult] = useRecoilState(ResultState);
+  const [isPassModal, setIsPassModal] = useState(false);
   const { id } = useParams();
 
   // 잘 모르겠어요
@@ -34,8 +37,10 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
       console.log(data);
       if (lastQuestion) {
         localStorage.setItem('result', JSON.stringify(result));
+        setIsPassModal(false);
         navigate('/interview/progressresult');
       } else {
+        setIsPassModal(false);
         nextPage();
       }
     }
@@ -64,7 +69,7 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
             </SkipButtonModal>
           )}
           <SkipButton
-            onClick={onPassQuestion}
+            onClick={() => setIsPassModal(true)}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
           >
@@ -72,6 +77,11 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
           </SkipButton>
           <AnswerButton onClick={startRecording}>답변시작</AnswerButton>
         </ButtonsWrapper>
+      )}
+      {isPassModal && (
+        <BlurBackground>
+          <PassModal onPassQuestion={onPassQuestion} setIsPassModal={setIsPassModal} />
+        </BlurBackground>
       )}
     </>
   );

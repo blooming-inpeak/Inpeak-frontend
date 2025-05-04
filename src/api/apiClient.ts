@@ -116,9 +116,9 @@
 // api.interceptors.request.use(
 //   config => {
 //     // 필요시 Authorization 헤더 동적 주입 가능
-//     // if (accessToken) {
-//     //   config.headers.Authorization = `Bearer ${accessToken}`;
-//     // }
+//     if (accessToken) {
+//       config.headers.Authorization = `Bearer ${accessToken}`;
+//     }
 //     return config;
 //   },
 //   error => Promise.reject(error),
@@ -167,7 +167,7 @@
 //         if (!window.location.search.includes('status=NEED_MORE_INFO')) {
 //           window.location.href = '/?status=NEED_MORE_INFO';
 //         }
-//        break;
+//         break;
 //       default:
 //         console.warn(`📦 처리되지 않은 상태 코드(${status})`, error.response.data);
 //         break;
