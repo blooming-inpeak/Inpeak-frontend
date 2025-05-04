@@ -31,7 +31,6 @@ export const Buttons = ({
   const [ishover, setIsHover] = useState(false);
   const Question = useRecoilValue(QuestionsState);
   const [result, setResult] = useRecoilState(ResultState);
-  const [isPassModal, setIsPassModal] = useState(false);
   const { id } = useParams();
 
   // 잘 모르겠어요
@@ -45,10 +44,8 @@ export const Buttons = ({
       console.log(data);
       if (lastQuestion) {
         localStorage.setItem('result', JSON.stringify(result));
-        setIsPassModal(false);
         navigate('/interview/progressresult');
       } else {
-        setIsPassModal(false);
         nextPage();
       }
     }
