@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { ExitInterview } from './ExitInterview';
@@ -8,23 +8,28 @@ import { TimeState } from '../../store/time/Time';
 interface Props {
   start: boolean;
   setStart: (check: boolean) => void;
-  stopRecording: () => void;
+  stopRecording: () => Promise<void>;
+  isSubmitting: boolean;
+  setIsSubmitting: Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SessionTop = ({ start, setStart, stopRecording }: Props) => {
+export const SessionTop = ({ start, setStart, stopRecording, isSubmitting, setIsSubmitting }: Props) => {
   const [time, setTime] = useRecoilState(TimeState);
   const [isClick, setIsClick] = useState(false);
 
   useEffect(() => {
     let interval: number | undefined = undefined;
 
-    if (start) {
+    if (start && !isSubmitting) {
       interval = setInterval(() => {
         setTime(prevTime => {
           if (prevTime <= 0) {
-            stopRecording();
             clearInterval(interval); // 타이머 종료
+            setIsSubmitting(true);
             setStart(false);
+            (async () => {
+              await stopRecording();
+            })();
             return 0;
           }
           return prevTime - 1;
@@ -38,7 +43,7 @@ export const SessionTop = ({ start, setStart, stopRecording }: Props) => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [start]);
+  }, [start, isSubmitting]);
 
   // 시간 포맷팅 함수
   const formatTime = (seconds: number) => {
