@@ -155,7 +155,7 @@ const QuestionLabel = styled.h3`
 `;
 
 const QuestionValue = styled.h4`
-  color: #212121;
+  color: rgba(0, 0, 0, 0.9);
   font-size: 14px;
   font-weight: 500;
   margin: 0;

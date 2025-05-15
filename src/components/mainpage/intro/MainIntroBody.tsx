@@ -1,8 +1,44 @@
 import styled from 'styled-components';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
+import mainTopAnimation from '../lottie/mainTopAnimation.json';
+import { useEffect, useRef } from 'react';
 
 export const MainIntroBody = () => {
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lottieRef.current?.play();
+          } else {
+            lottieRef.current?.stop();
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+      },
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
   return (
     <MainIntroBodyWrapper>
+      <MainTopLottie>
+        <Lottie animationData={mainTopAnimation} lottieRef={lottieRef} />
+      </MainTopLottie>
       <MainIntroBodyTop>
         <TopContent>
           <HeaderBubbleSection>
@@ -67,11 +103,12 @@ export const MainIntroBody = () => {
 export const MainIntroBodyWrapper = styled.div`
   width: 1232px;
   height: 1207px;
+  position: relative;
 
   border-radius: 24px;
   box-shadow: 0px 80px 32px 0px rgba(32, 42, 67, 0.04), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
-  overflow: hidden;
+  overflow: visible;
 
   display: flex;
   flex-direction: column;
@@ -209,4 +246,9 @@ export const FooterSubTitle = styled.div`
   font-weight: 400;
   line-height: 150%;
   letter-spacing: -0.45px;
+`;
+
+export const MainTopLottie = styled.div`
+  position: absolute;
+  bottom: 100%;
 `;

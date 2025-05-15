@@ -7,7 +7,8 @@ export const HistoryDetailPage = () => {
 
   return (
     <HistoryWrapper>
-      <InterviewResult answerId={Number(answerId)} isInterviewPage />
+      {/* <InterviewResult answerId={Number(answerId)} isInterviewPage /> */}
+      <InterviewResult answerId={Number(answerId)} />
     </HistoryWrapper>
   );
 };

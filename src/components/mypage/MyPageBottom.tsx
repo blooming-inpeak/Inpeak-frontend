@@ -66,7 +66,7 @@ export const MyPageBottom = ({ interests }: { interests: string[] | undefined })
           <WithdrawalModal onClose={() => setIsWithdrawal(false)} />
         </BlurBackground>
       )}
-      {isSelectStack && <SelectStack method="put" />}
+      {isSelectStack && <SelectStack method="put" setIsSelectStack={setIsSelectStack} />}
       {isPolicy && (
         <BlurBackground>
           <PrivacyPolicyModal isPolicy={isPolicy} onClose={() => setIsPolicy('')} />

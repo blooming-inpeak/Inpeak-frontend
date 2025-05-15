@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const MainInterviewStart = () => {
+  const navigate = useNavigate();
   return (
     <MainInterviewStartWrapper>
       <MainInterviewStartContainer>
@@ -11,7 +13,7 @@ export const MainInterviewStart = () => {
         </MainInterviewStartContent>
 
         <StartButton>
-          <StartButtonText>모의면접 바로시작</StartButtonText>
+          <StartButtonText onClick={() => navigate('/')}>모의면접 바로시작</StartButtonText>
           <StartButtonImg src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
         </StartButton>
       </MainInterviewStartContainer>
@@ -72,6 +74,7 @@ export const StartButtonText = styled.div`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.4px;
+  cursor: pointer;
 `;
 
 export const StartButtonImg = styled.img``;
