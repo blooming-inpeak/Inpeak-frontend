@@ -85,3 +85,8 @@ export const LoginTerms = styled.div`
     cursor: pointer;
   }
 `;
+
+export const PolicyLink = styled.span`
+  color: #0050d8;
+  cursor: pointer;
+`;
