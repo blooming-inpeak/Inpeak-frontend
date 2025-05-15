@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CloseButton,
@@ -10,6 +10,7 @@ import {
   LoginModalContainer,
   LoginTerms,
   LoginTitle,
+  PolicyLink,
 } from './LoginModalStyle';
 import { PrivacyPolicyModal } from '../common/policy/Policy';
 import { BlurBackground } from '../common/background/BlurBackground';
@@ -24,50 +25,41 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const navigate = useNavigate();
 
-  const onClickClose = () => {
+  const onClickClose = useCallback(() => {
     setOpenLogin(false);
     navigate('/');
-  };
-  const onClickPrivacy = () => setIsPolicy('privacy');
-  const onClickService = () => setIsPolicy('service');
+  }, [setOpenLogin, navigate]);
 
-  const handleKakaoLogin = () => {
-    window.location.href = `${OAUTH_URL}`;
-  };
+  const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
+  const onClickService = useCallback(() => setIsPolicy('service'), []);
+  const handleKakaoLogin = useCallback(() => {
+    window.location.href = OAUTH_URL;
+  }, []);
 
   return (
-    <>
-      <BlurBackground>
-        <LoginModalContainer>
-          <CloseButton onClick={onClickClose}>
-            <img src="/images/Close.svg" alt="close" />
-          </CloseButton>
-          <LoginHeader>
-            <LoginTitle src="/images/Logo.svg" alt="logo" />
-            <LoginBanner src="/images/login/illustration_login.svg" alt="로그인 이미지" />
-          </LoginHeader>
-          <LoginFooter>
-            <LoginKakaotalk onClick={handleKakaoLogin}>
-              <img src="/images/KakaoTalk.svg" alt="kakaotalk" style={{ width: '17px' }} />
-              <KaKaoTalkTitle>카카오로 로그인/회원가입</KaKaoTalkTitle>
-            </LoginKakaotalk>
-            <LoginTerms>
-              로그인 시{' '}
-              <span style={{ color: '#0050d8', cursor: 'pointer' }} onClick={onClickPrivacy}>
-                개인정보처리방침
-              </span>{' '}
-              및{' '}
-              <span style={{ color: '#0050d8', cursor: 'pointer' }} onClick={onClickService}>
-                서비스 약관
-              </span>
-              을 준수하고
-              <br /> 동의하는 것으로 간주합니다.
-            </LoginTerms>
-          </LoginFooter>
-        </LoginModalContainer>
+    <BlurBackground>
+      <LoginModalContainer>
+        <CloseButton onClick={onClickClose}>
+          <img src="/images/Close.svg" alt="close" />
+        </CloseButton>
+        <LoginHeader>
+          <LoginTitle src="/images/Logo.svg" alt="logo" />
+          <LoginBanner src="/images/login/illustration_login.svg" alt="로그인 이미지" />
+        </LoginHeader>
+        <LoginFooter>
+          <LoginKakaotalk onClick={handleKakaoLogin}>
+            <img src="/images/KakaoTalk.svg" alt="kakaotalk" width={17} />
+            <KaKaoTalkTitle>카카오로 로그인/회원가입</KaKaoTalkTitle>
+          </LoginKakaotalk>
+          <LoginTerms>
+            로그인 시 <PolicyLink onClick={onClickPrivacy}>개인정보처리방침 </PolicyLink> 및{' '}
+            <PolicyLink onClick={onClickService}>서비스 약관</PolicyLink>을 준수하고
+            <br /> 동의하는 것으로 간주합니다.
+          </LoginTerms>
+        </LoginFooter>
+      </LoginModalContainer>
 
-        {isPolicy && <PrivacyPolicyModal onClose={() => setIsPolicy('')} isPolicy={isPolicy} />}
-      </BlurBackground>
-    </>
+      {isPolicy && <PrivacyPolicyModal onClose={() => setIsPolicy('')} isPolicy={isPolicy} />}
+    </BlurBackground>
   );
 };

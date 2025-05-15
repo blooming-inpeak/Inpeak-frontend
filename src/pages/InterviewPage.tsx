@@ -182,12 +182,21 @@ export const InterviewBottom = styled.div`
   justify-content: center;
   gap: 23px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 export const InterviewBottomLeft = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const InterviewBottomAd = styled.div`
@@ -202,6 +211,11 @@ export const InterviewBottomAd = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 export const InterviewBottomAdImage = styled.img`
