@@ -36,7 +36,7 @@ export const SessionTop = ({ start, setStart, stopRecording, isSubmitting, setIs
         });
       }, 1000);
     } else {
-      setTime(300);
+      setTime(180);
     }
 
     // 클린업 함수로 interval 해제
@@ -61,7 +61,7 @@ export const SessionTop = ({ start, setStart, stopRecording, isSubmitting, setIs
         onClick={() => setIsClick(true)}
       />
       <SessionTimer>
-        <PassingTime style={{ width: `${((300 - time) / 300) * 100}%` }} />
+        <PassingTime style={{ width: `${((180 - time) / 180) * 100}%` }} />
       </SessionTimer>
       <SessionTime>{formatTime(time)}</SessionTime>
       {isClick && (

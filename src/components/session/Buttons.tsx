@@ -61,7 +61,7 @@ export const Buttons = ({
       {start || isSubmitting ? (
         <>
           <StopButton onClick={!isSubmitting ? handleStopClick : undefined} disabled={isSubmitting}>
-            {isSubmitting ? '답변 제출 중' : '답변 끝내기'}
+            답변 끝내기
           </StopButton>
         </>
       ) : (

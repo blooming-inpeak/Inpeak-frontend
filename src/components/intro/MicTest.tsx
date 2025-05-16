@@ -13,7 +13,6 @@ interface Props {
 
 export const MicTest = ({ volume, handleVolumeChange, analyser, closeMicTest, setVolume }: Props) => {
   const [audioLevel, setAudioLevel] = useState(0);
-  console.log(audioLevel);
 
   useEffect(() => {
     console.log(analyser);

@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question/question';
 import { ResultState } from '../../store/result/ResultState';
 import { getFormattedDate } from '../../components/common/getFormattedDate';
+import { LoadingModal } from '../../components/common/loading/LoadingModal';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
@@ -250,35 +251,39 @@ export const SessionPage = () => {
   }, [isRecording, start]);
 
   return (
-    <SessionWrapper>
-      <SessionBody>
-        <SessionTop
-          start={start}
-          setStart={setStart}
-          stopRecording={stopRecording}
-          isSubmitting={isSubmitting}
-          setIsSubmitting={setIsSubmitting}
-        />
-        <SessionContent
-          start={start}
-          currentPage={currentPage}
-          page={page}
-          startRecording={startRecording}
-          stopRecording={stopRecording}
-          nextPage={() => setCurrentPage(prev => prev + 1)}
-          isSubmitting={isSubmitting}
-          setIsSubmitting={setIsSubmitting}
-        />
-      </SessionBody>
+    <>
+      <SessionWrapper>
+        <SessionBody>
+          <SessionTop
+            start={start}
+            setStart={setStart}
+            stopRecording={stopRecording}
+            isSubmitting={isSubmitting}
+            setIsSubmitting={setIsSubmitting}
+          />
+          <SessionContent
+            start={start}
+            currentPage={currentPage}
+            page={page}
+            startRecording={startRecording}
+            stopRecording={stopRecording}
+            nextPage={() => setCurrentPage(prev => prev + 1)}
+            isSubmitting={isSubmitting}
+            setIsSubmitting={setIsSubmitting}
+          />
+        </SessionBody>
 
-      {toasts && (
-        <InterviewToastWrapper>
-          {toasts.map((message, index) => (
-            <Toast key={index} index={index} message={message} moveUp={index === 0 && toasts.length === 2} />
-          ))}
-        </InterviewToastWrapper>
-      )}
-    </SessionWrapper>
+        {toasts && (
+          <InterviewToastWrapper>
+            {toasts.map((message, index) => (
+              <Toast key={index} index={index} message={message} moveUp={index === 0 && toasts.length === 2} />
+            ))}
+          </InterviewToastWrapper>
+        )}
+      </SessionWrapper>
+
+      {isSubmitting && <LoadingModal />}
+    </>
   );
 };
 
