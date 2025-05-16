@@ -26,7 +26,7 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   justify-content: center;
   align-items: center;
   z-index: 999;
@@ -44,7 +44,7 @@ const ProgressBarContainer = styled.div`
 const ProgressBar = styled.div`
   background: #85b2ff;
   height: 100%;
-  animation: progressAnimation 5s linear forwards;
+  animation: progressAnimation 10s linear forwards;
 
   @keyframes progressAnimation {
     from {
