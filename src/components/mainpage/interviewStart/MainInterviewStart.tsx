@@ -1,8 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const MainInterviewStart = () => {
-  const navigate = useNavigate();
   return (
     <MainInterviewStartWrapper>
       <MainInterviewStartContainer>
@@ -12,8 +10,12 @@ export const MainInterviewStart = () => {
           취업까지 10발자국 다가가자
         </MainInterviewStartContent>
 
-        <StartButton>
-          <StartButtonText onClick={() => navigate('/')}>모의면접 바로시작</StartButtonText>
+        <StartButton
+          onClick={() => {
+            window.location.href = '/interview';
+          }}
+        >
+          <StartButtonText>모의면접 바로시작</StartButtonText>
           <StartButtonImg src="/images/chevron/Chevron_right_white.svg" alt="chevron right" />
         </StartButton>
       </MainInterviewStartContainer>

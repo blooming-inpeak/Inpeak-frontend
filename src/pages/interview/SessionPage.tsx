@@ -11,10 +11,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question/question';
 import { ResultState } from '../../store/result/ResultState';
 import { getFormattedDate } from '../../components/common/getFormattedDate';
+import { LoadingModal } from '../../components/common/loading/LoadingModal';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
   const [toasts, setToasts] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isRecording = useRecoilValue(isRecordingState);
   const currentMic = useRecoilValue(currentMicState);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -146,6 +148,7 @@ export const SessionPage = () => {
       setCurrentPage(prev => prev + 1);
       setStart(false);
     }
+    setIsSubmitting(false);
   };
 
   /**
@@ -248,27 +251,39 @@ export const SessionPage = () => {
   }, [isRecording, start]);
 
   return (
-    <SessionWrapper>
-      <SessionBody>
-        <SessionTop start={start} setStart={setStart} stopRecording={stopRecording} />
-        <SessionContent
-          start={start}
-          currentPage={currentPage}
-          page={page}
-          startRecording={startRecording}
-          stopRecording={stopRecording}
-          nextPage={() => setCurrentPage(prev => prev + 1)}
-        />
-      </SessionBody>
+    <>
+      <SessionWrapper>
+        <SessionBody>
+          <SessionTop
+            start={start}
+            setStart={setStart}
+            stopRecording={stopRecording}
+            isSubmitting={isSubmitting}
+            setIsSubmitting={setIsSubmitting}
+          />
+          <SessionContent
+            start={start}
+            currentPage={currentPage}
+            page={page}
+            startRecording={startRecording}
+            stopRecording={stopRecording}
+            nextPage={() => setCurrentPage(prev => prev + 1)}
+            isSubmitting={isSubmitting}
+            setIsSubmitting={setIsSubmitting}
+          />
+        </SessionBody>
 
-      {toasts && (
-        <InterviewToastWrapper>
-          {toasts.map((message, index) => (
-            <Toast key={index} index={index} message={message} moveUp={index === 0 && toasts.length === 2} />
-          ))}
-        </InterviewToastWrapper>
-      )}
-    </SessionWrapper>
+        {toasts && (
+          <InterviewToastWrapper>
+            {toasts.map((message, index) => (
+              <Toast key={index} index={index} message={message} moveUp={index === 0 && toasts.length === 2} />
+            ))}
+          </InterviewToastWrapper>
+        )}
+      </SessionWrapper>
+
+      {isSubmitting && <LoadingModal />}
+    </>
   );
 };
 
@@ -288,9 +303,7 @@ export const SessionBody = styled.div`
 
   display: flex;
   flex-direction: column;
-  box-shadow:
-    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
-    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 `;
 

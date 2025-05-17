@@ -1,8 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const MainHelp = () => {
-  const navigate = useNavigate();
   return (
     <MainHelpWrapper>
       <MainHelpImg src="/images/mainpage/HelpImg.svg" alt="help image" />
@@ -12,7 +10,7 @@ export const MainHelp = () => {
         <MainHelpSubTitle>
           인픽은 언제나 더 나은 서비스를 위해 노력합니다. <br /> 서비스 개선을 위해 고객의 목소리를 들려주세요.
         </MainHelpSubTitle>
-        <MainHelpButton onClick={() => navigate('/contact')}>접수하기</MainHelpButton>
+        <MainHelpButton onClick={() => (window.location.href = '/contact')}>접수하기</MainHelpButton>
       </MainHelpContent>
     </MainHelpWrapper>
   );

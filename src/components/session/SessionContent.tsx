@@ -14,6 +14,7 @@ import {
 import { useRecoilValue } from 'recoil';
 import { isRecordingState } from '../../store/record/Record';
 import { QuestionsState } from '../../store/question/Question';
+import { Dispatch } from 'react';
 
 interface Props {
   start: boolean;
@@ -22,9 +23,20 @@ interface Props {
   startRecording: () => void;
   stopRecording: () => void;
   nextPage: () => void;
+  isSubmitting: boolean;
+  setIsSubmitting: Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SessionContent = ({ start, currentPage, page, startRecording, stopRecording, nextPage }: Props) => {
+export const SessionContent = ({
+  start,
+  currentPage,
+  page,
+  startRecording,
+  stopRecording,
+  nextPage,
+  isSubmitting,
+  setIsSubmitting,
+}: Props) => {
   const isRecording = useRecoilValue(isRecordingState);
   const Questions = useRecoilValue(QuestionsState);
   const lastQuestion = page === currentPage;
@@ -57,6 +69,8 @@ export const SessionContent = ({ start, currentPage, page, startRecording, stopR
           nextPage={nextPage}
           currentPage={currentPage}
           lastQuestion={lastQuestion}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
         />
       </SessionContentBody>
     </SessionContentWrapper>
