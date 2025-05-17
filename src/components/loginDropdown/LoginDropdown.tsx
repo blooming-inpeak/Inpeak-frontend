@@ -39,7 +39,7 @@ export const LoginDropdown = () => {
         />
       </LoginDropdownTop>
 
-      {openModal && <OpenLoginModal />}
+      {openModal && <OpenLoginModal onClose={() => setOpenModal(false)} />}
     </LoginDropdownWrapper>
   );
 };

@@ -37,8 +37,9 @@ export const SessionContentNumber = styled.div`
 `;
 
 export const Record = styled.div<{ $isRecord: boolean }>`
-  width: 22px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
   padding: 5px 3px;
   border-radius: 5px;
   display: flex;
@@ -50,6 +51,7 @@ export const Record = styled.div<{ $isRecord: boolean }>`
 export const RecordContent = styled.div<{ $isRecord: boolean }>`
   width: 22px;
   height: 18px;
+  box-sizing: border-box;
   border: 2px solid #ffffff;
   border-radius: 5px;
 
@@ -61,6 +63,7 @@ export const RecordContent = styled.div<{ $isRecord: boolean }>`
   font-size: ${({ $isRecord }) => ($isRecord ? '11px' : '9px')};
   font-weight: 700;
   letter-spacing: ${({ $isRecord }) => ($isRecord ? '-0.275px' : '-0.225px')};
+  line-height: 18px;
 `;
 
 export const SessionContentBody = styled.div`

@@ -4,9 +4,7 @@ import { PassQuestion } from '../../api/question/question';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
 import { ResultState } from '../../store/result/ResultState';
-import { useState } from 'react';
-import { BlurBackground } from '../common/background/BlurBackground';
-import { PassModal } from './PassModal';
+import { Dispatch, useState } from 'react';
 
 interface Props {
   start: boolean;
@@ -15,15 +13,24 @@ interface Props {
   nextPage: () => void;
   currentPage: number;
   lastQuestion: boolean;
+  isSubmitting: boolean;
+  setIsSubmitting: Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Buttons = ({ start, startRecording, stopRecording, nextPage, currentPage, lastQuestion }: Props) => {
+export const Buttons = ({
+  start,
+  startRecording,
+  stopRecording,
+  nextPage,
+  currentPage,
+  lastQuestion,
+  isSubmitting,
+  setIsSubmitting,
+}: Props) => {
   const navigate = useNavigate();
   const [ishover, setIsHover] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const Question = useRecoilValue(QuestionsState);
   const [result, setResult] = useRecoilState(ResultState);
-  const [isPassModal, setIsPassModal] = useState(false);
   const { id } = useParams();
 
   // 잘 모르겠어요
@@ -37,10 +44,8 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
       console.log(data);
       if (lastQuestion) {
         localStorage.setItem('result', JSON.stringify(result));
-        setIsPassModal(false);
         navigate('/interview/progressresult');
       } else {
-        setIsPassModal(false);
         nextPage();
       }
     }
@@ -49,15 +54,14 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
   const handleStopClick = async () => {
     setIsSubmitting(true);
     await stopRecording();
-    setIsSubmitting(false);
   };
 
   return (
     <>
-      {start ? (
+      {start || isSubmitting ? (
         <>
           <StopButton onClick={!isSubmitting ? handleStopClick : undefined} disabled={isSubmitting}>
-            {isSubmitting ? '답변 제출 중' : '답변 끝내기'}
+            답변 끝내기
           </StopButton>
         </>
       ) : (
@@ -69,7 +73,7 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
             </SkipButtonModal>
           )}
           <SkipButton
-            onClick={() => setIsPassModal(true)}
+            onClick={onPassQuestion}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
           >
@@ -77,11 +81,6 @@ export const Buttons = ({ start, startRecording, stopRecording, nextPage, curren
           </SkipButton>
           <AnswerButton onClick={startRecording}>답변시작</AnswerButton>
         </ButtonsWrapper>
-      )}
-      {isPassModal && (
-        <BlurBackground>
-          <PassModal onPassQuestion={onPassQuestion} setIsPassModal={setIsPassModal} />
-        </BlurBackground>
       )}
     </>
   );
