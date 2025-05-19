@@ -10,27 +10,46 @@ import AdImage from '../assets/img/LevelCharacter.svg';
 import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
+import LoadingPage from './LoadingPage';
 
 import { fetchTodayInterviewSummary, InterviewSummaryResponse } from '../api/interview/interviewAPI';
 
 export const InterviewPage = () => {
   const [summary, setSummary] = useState<InterviewSummaryResponse | null>(null);
+  const [prevSummary, setPrevSummary] = useState<InterviewSummaryResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadData = async () => {
+    const fetchData = async () => {
+      const startTime = Date.now(); // 시작 시간
+
       try {
         const today = new Date().toISOString().split('T')[0];
         const data = await fetchTodayInterviewSummary(today);
         setSummary(data);
+        setPrevSummary(data);
       } catch (error) {
-        console.error('면접 요약 불러오기 실패:', error);
+        console.error('면접 요약 실패:', error);
+      } finally {
+        const elapsed = Date.now() - startTime; // 경과 시간
+        const MIN_LOADING_TIME = 500; // 최소 로딩 시간 0.5초
+        const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsed);
+
+        setTimeout(() => {
+          setIsLoading(false); // 최소 시간 후 로딩 종료
+        }, remainingTime);
       }
     };
 
-    loadData();
+    fetchData();
   }, []);
 
+  const visibleSummary = summary ?? prevSummary;
   const chance = summary?.remainingInterviews.count ?? 0;
+
+  if (isLoading || !visibleSummary) return <LoadingPage />;
+
+  // 이제는 깜빡임 없이 자연스럽게 출력
 
   return (
     <>
