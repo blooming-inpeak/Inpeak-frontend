@@ -144,7 +144,7 @@ export const WrongNoteList = () => {
             ))}
           </ListContainer>
         )}{' '}
-        {isFetching && <LoadingText>로딩 중...</LoadingText>}
+        {isFetching && <LoadingText></LoadingText>}
       </SectionContainer>
     </>
   );
