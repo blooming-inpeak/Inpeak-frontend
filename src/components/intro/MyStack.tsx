@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import api from '../../api/apiClient';
 
 export const MyStack = () => {
   const [myInterest, setMyInterest] = useState<string[]>([]);
 
-  // 일단 오류나서 해놨습니다.
   useEffect(() => {
-    setMyInterest(['React', 'Spring']);
+    const getStack = async () => {
+      try {
+        const { data } = await api.get('/interest/list');
+        setMyInterest(data.interests);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getStack();
   }, []);
 
   return (
