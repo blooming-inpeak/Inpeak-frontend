@@ -125,10 +125,10 @@ export const SessionPage = () => {
 
       // console.log(audioBase64);
       // 답변 완료 API 호출
-      console.log(300 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
+      console.log(180 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
       const data = await AnswerQuestion(
         audioBase64,
-        300 - time,
+        180 - time,
         Questions[currentPage - 1].id,
         parseInt(id),
         presignedUrl ? presignedUrl.url : presignedUrl,
@@ -137,7 +137,7 @@ export const SessionPage = () => {
 
       setResult(prev => [
         ...prev,
-        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
+        { question: Questions[currentPage - 1].content, time: 180 - time, isAnswer: true, answerId: data.answerId },
       ]);
     }
 
