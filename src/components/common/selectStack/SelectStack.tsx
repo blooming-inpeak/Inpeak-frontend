@@ -21,12 +21,13 @@ interface Props {
   method?: 'post' | 'put';
   autoVisible?: boolean; // 쿼리 기반 자동 오픈 여부
   setIsSelectStack?: Dispatch<SetStateAction<boolean>>;
+  interests?: string[] | undefined;
 }
 
-export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectStack }: Props) => {
+export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectStack, interests }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [select, setSelect] = useState<string[]>([]);
+  const [select, setSelect] = useState<string[]>(interests ?? []);
   const [isVisible, setIsVisible] = useState(!autoVisible);
 
   useEffect(() => {
@@ -90,9 +91,27 @@ export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectS
             </SelectStackContentTop>
 
             <SelectStackContentBottom>
-              <Button name={'React'} color={'#1BC0E7'} setSelect={setSelect} select={select} />
-              <Button name={'Spring'} color={'#ffffff'} setSelect={setSelect} select={select} />
-              <Button name={'Database'} color={'#FFC813'} setSelect={setSelect} select={select} />
+              <Button
+                name={'React'}
+                color={'#1BC0E7'}
+                setSelect={setSelect}
+                select={select}
+                isSelect={interests?.includes('React')}
+              />
+              <Button
+                name={'Spring'}
+                color={'#ffffff'}
+                setSelect={setSelect}
+                select={select}
+                isSelect={interests?.includes('Spring')}
+              />
+              <Button
+                name={'Database'}
+                color={'#FFC813'}
+                setSelect={setSelect}
+                select={select}
+                isSelect={interests?.includes('Database')}
+              />
             </SelectStackContentBottom>
           </SelectStackContent>
 

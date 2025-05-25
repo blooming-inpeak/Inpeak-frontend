@@ -1,15 +1,11 @@
-import axios from 'axios';
+import api from '../apiClient';
 
 export const WithdrawalUser = async () => {
   try {
-    const response = await axios.delete('/member', {
-      headers: {
-        Authorization: '',
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await api.delete('/member');
 
     console.log(response);
+
     return response.data;
   } catch (error) {
     console.log(error);
