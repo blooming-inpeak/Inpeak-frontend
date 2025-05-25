@@ -14,7 +14,7 @@ export const AskHistoryBox: React.FC<AskHistoryBoxProps> = ({ question, answer, 
   return (
     <AskHistoryBoxWrapper onClick={onClick}>
       <AskHistoryContent>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <AskHistoryQuestion>{question}</AskHistoryQuestion>
           <MultiCaption type={status} />
         </div>
