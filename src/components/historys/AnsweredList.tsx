@@ -147,14 +147,12 @@ export const AnsweredList = () => {
             ))}
           </ListContainer>
         )}
-        {isFetching && <LoadingText>로딩 중...</LoadingText>}
+        {isFetching && <LoadingText></LoadingText>}
       </SectionContainer>
     </>
   );
 };
 const EmptyContainer = styled.div`
-  width: 264px;
-  height: 674px;
   display: flex;
   justify-content: center;
   align-items: center;

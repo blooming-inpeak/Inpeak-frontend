@@ -10,7 +10,7 @@ export const EmptyState = ({ type }: EmptyStateProps) => {
     naviagte('/interview/intro');
   };
   return (
-    <Container>
+    <Container $type={type}>
       <EmptyImage src="/images/empty.svg" alt="빈 리스트" />
       <EmptyText>
         {type === 'wrong'
@@ -22,11 +22,13 @@ export const EmptyState = ({ type }: EmptyStateProps) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<{ $type: 'wrong' | 'answered' }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: ${({ $type }) => ($type === 'wrong' ? '552px' : '264px')};
+  height: 674px;
 `;
 
 const EmptyImage = styled.img`

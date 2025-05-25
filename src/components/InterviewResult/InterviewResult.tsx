@@ -57,8 +57,7 @@ export const InterviewResult = ({
   isAfterInterview,
 }: InterviewResultProps) => {
   const navigate = useNavigate();
-  const [, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const [isMemoOpen, setIsMemoOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -173,11 +172,6 @@ export const InterviewResult = ({
       setCurrentIndexState(prev => prev - 1);
     }
   };
-  useEffect(() => {
-    if (answerData) {
-      setIsChecked(answerData.isUnderstood); // 이해완료면 true, 아니면 false 초기값 셋팅
-    }
-  }, [answerData]);
 
   useEffect(() => {
     if (isMemoOpen && textareaRef.current) {
@@ -213,9 +207,10 @@ export const InterviewResult = ({
     }
   };
 
-  if (!answerData) {
-    return <div>로딩 중...</div>;
+  if (isLoading) {
+    return <div></div>; //로딩
   }
+  if (!answerData) return null;
   return (
     <>
       <ModalContainer>
