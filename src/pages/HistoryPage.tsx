@@ -48,7 +48,7 @@ const HistoryTop = styled.div`
 const HistoryBackground = styled.div`
   background: #e6efff;
   width: 100%;
-  height: 1474px;
+  height: 1000px;
   position: relative;
   z-index: 1;
   margin-top: -48px;
