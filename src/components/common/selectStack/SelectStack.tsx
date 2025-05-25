@@ -27,7 +27,7 @@ interface Props {
 export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectStack, interests }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [select, setSelect] = useState<string[]>([]);
+  const [select, setSelect] = useState<string[]>(interests ?? []);
   const [isVisible, setIsVisible] = useState(!autoVisible);
 
   useEffect(() => {
