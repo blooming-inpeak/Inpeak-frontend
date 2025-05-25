@@ -114,11 +114,22 @@ export const SessionPage = () => {
       console.log(formData);
 
       const data = await AnswerQuestion(formData);
+      console.log(data);
 
-      setResult(prev => [
-        ...prev,
-        { question: Questions[currentPage - 1].content, time: 180 - time, isAnswer: true, answerId: data.answerId },
-      ]);
+      const answerResult = {
+        question: Questions[currentPage - 1].content,
+        questionId: Questions[currentPage - 1].id,
+        time: 180 - time,
+        interviewId: id,
+        isAnswer: true,
+        answerId: data.answerId,
+      };
+
+      setResult(prev => [...prev, answerResult]);
+
+      // localStorage에 저장
+      const prevStored = JSON.parse(localStorage.getItem('result') || '[]');
+      localStorage.setItem('result', JSON.stringify([...prevStored, answerResult]));
     }
 
     if (lastQuestion) {

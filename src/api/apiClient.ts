@@ -9,9 +9,6 @@ let refreshToken = import.meta.env.VITE_REFRESH_TOKEN;
 
 const api = axios.create({
   baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   withCredentials: true,
 });
 

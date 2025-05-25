@@ -48,7 +48,7 @@ export const uploadVideoToS3 = async (file: Blob, presignedURL: string) => {
 
 export const AnswerQuestion = async (formData: FormData) => {
   try {
-    const response = await axios.post('/answer/create', formData);
+    const response = await api.post('/answer/create', formData);
 
     return response.data;
   } catch (error) {

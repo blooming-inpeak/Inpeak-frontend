@@ -20,6 +20,7 @@ export const IntroPage = () => {
     setQuestions(data.questions);
     const interviewId = data.interviewId;
     setInterviewId(interviewId);
+    localStorage.removeItem('result');
     navigate(`/interview/session/${interviewId}`);
   };
 
@@ -54,9 +55,7 @@ export const IntroBody = styled.div`
 
   border-radius: 24px;
   background-color: rgba(255, 255, 255, 0.6);
-  box-shadow:
-    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
-    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 
   display: flex;
