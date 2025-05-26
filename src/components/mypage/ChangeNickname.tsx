@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../../store/auth/userState';
+import axios from 'axios';
 
 interface Props {
   close: () => void;
@@ -41,15 +42,23 @@ export const ChangeNickname = ({ close }: Props) => {
 
   const saveNickname = async () => {
     if (!error && nickname.length > 0) {
-      const data = await SaveNicknameAPI(nickname);
-      setUser(prev => (prev ? { ...prev, nickname: data } : prev));
-      const cachedUser = localStorage.getItem('user');
-      if (cachedUser) {
-        const parsed = JSON.parse(cachedUser);
-        parsed.nickname = data;
-        localStorage.setItem('user', JSON.stringify(parsed));
+      try {
+        const data = await SaveNicknameAPI(nickname);
+        setUser(prev => (prev ? { ...prev, nickname: data } : prev));
+        const cachedUser = localStorage.getItem('user');
+        if (cachedUser) {
+          const parsed = JSON.parse(cachedUser);
+          parsed.nickname = data;
+          localStorage.setItem('user', JSON.stringify(parsed));
+        }
+        close();
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 400) {
+            setError('중복된 닉네임입니다.');
+          }
+        }
       }
-      close();
     }
   };
 
