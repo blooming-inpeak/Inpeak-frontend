@@ -23,7 +23,7 @@ export const SessionPage = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
-  const time = useRecoilValue(TimeState);
+  const [time, setTime] = useRecoilState(TimeState);
   const [result, setResult] = useRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
@@ -81,7 +81,9 @@ export const SessionPage = () => {
   };
 
   // 녹화 종료 및 API 요청
-  const stopRecording = async () => {
+  const stopRecording = async (elapsedTime?: number) => {
+    const currentTime = elapsedTime ?? 180 - time;
+    console.log('time: ', currentTime);
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
@@ -103,10 +105,10 @@ export const SessionPage = () => {
       }
 
       // multipart/form-data 구성 및 전송
-      console.log(180 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
+      console.log(currentTime, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
       const formData = new FormData();
       formData.append('audioFile', audioBlob, 'audio.wav');
-      formData.append('time', String(180 - time));
+      formData.append('time', String(currentTime));
       formData.append('questionId', String(Questions[currentPage - 1].id));
       formData.append('interviewId', id);
       formData.append('videoURL', presignedUrl ? presignedUrl.url : presignedUrl);
@@ -119,7 +121,7 @@ export const SessionPage = () => {
       const answerResult = {
         question: Questions[currentPage - 1].content,
         questionId: Questions[currentPage - 1].id,
-        time: 180 - time,
+        time: currentTime,
         interviewId: id,
         isAnswer: true,
         answerId: data.answerId,
@@ -132,6 +134,9 @@ export const SessionPage = () => {
       localStorage.setItem('result', JSON.stringify([...prevStored, answerResult]));
     }
 
+    setTime(180);
+    setIsSubmitting(false);
+
     if (lastQuestion) {
       localStorage.setItem('result', JSON.stringify(result));
       navigate('/interview/progressresult');
@@ -139,7 +144,6 @@ export const SessionPage = () => {
       setCurrentPage(prev => prev + 1);
       setStart(false);
     }
-    setIsSubmitting(false);
   };
 
   /**

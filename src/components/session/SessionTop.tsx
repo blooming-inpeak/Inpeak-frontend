@@ -8,7 +8,7 @@ import { TimeState } from '../../store/time/Time';
 interface Props {
   start: boolean;
   setStart: (check: boolean) => void;
-  stopRecording: () => Promise<void>;
+  stopRecording: (time?: number) => Promise<void>;
   isSubmitting: boolean;
   setIsSubmitting: Dispatch<React.SetStateAction<boolean>>;
 }
@@ -28,15 +28,13 @@ export const SessionTop = ({ start, setStart, stopRecording, isSubmitting, setIs
             setIsSubmitting(true);
             setStart(false);
             (async () => {
-              await stopRecording();
+              await stopRecording(180);
             })();
             return 0;
           }
           return prevTime - 1;
         });
       }, 1000);
-    } else {
-      setTime(180);
     }
 
     // 클린업 함수로 interval 해제
