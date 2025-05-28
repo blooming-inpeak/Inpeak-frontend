@@ -131,14 +131,14 @@ export const SessionPage = () => {
 
       // localStorage에 저장
       const prevStored = JSON.parse(localStorage.getItem('result') || '[]');
-      localStorage.setItem('result', JSON.stringify([...prevStored, answerResult]));
+      const updatedStored = [...prevStored, answerResult];
+      localStorage.setItem('result', JSON.stringify(updatedStored));
     }
 
     setTime(180);
     setIsSubmitting(false);
 
     if (lastQuestion) {
-      localStorage.setItem('result', JSON.stringify(result));
       navigate('/interview/progressresult');
     } else {
       setCurrentPage(prev => prev + 1);
