@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { SessionTop } from '../../components/session/SessionTop';
 import { SessionContent } from '../../components/session/SessionContent';
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentMicState, isRecordingState } from '../../store/record/Record';
 import { Toast } from '../../components/session/Toast';
 import { QuestionsState } from '../../store/question/Question';
@@ -24,7 +24,7 @@ export const SessionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
   const [time, setTime] = useRecoilState(TimeState);
-  const [result, setResult] = useRecoilState(ResultState);
+  const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
