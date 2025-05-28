@@ -9,9 +9,6 @@
 
 // const api = axios.create({
 //   baseURL,
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
 //   withCredentials: true,
 // });
 
@@ -66,7 +63,7 @@
 //     // 상태 코드별 처리
 //     switch (status) {
 //       case 400:
-//         alert(error.response.data?.message || '잘못된 요청입니다.');
+//         console.warn('⚠️ 잘못된 요청:', error.response.data?.message || 'Bad Request');
 //         break;
 //       case 401:
 //         alert('로그인이 필요합니다.');

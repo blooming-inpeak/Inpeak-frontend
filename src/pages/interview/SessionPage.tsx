@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { SessionTop } from '../../components/session/SessionTop';
 import { SessionContent } from '../../components/session/SessionContent';
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentMicState, isRecordingState } from '../../store/record/Record';
 import { Toast } from '../../components/session/Toast';
 import { QuestionsState } from '../../store/question/Question';
@@ -21,20 +21,18 @@ export const SessionPage = () => {
   const currentMic = useRecoilValue(currentMicState);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  // const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
-  // const [audioBase64, setAudioBase64] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
-  const time = useRecoilValue(TimeState);
-  const [result, setResult] = useRecoilState(ResultState);
+  const [time, setTime] = useRecoilState(TimeState);
+  const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
   const navigate = useNavigate();
 
-  // 녹화 데이터 처리가 완료되면 resolve하는 Promise를 저장할 Ref
-  const recordingPromiseRef = useRef<Promise<{ videoBlob: Blob; audioBase64: string }>>(null);
-  let resolveRecordingPromise: (value: { videoBlob: Blob; audioBase64: string }) => void;
+  // audioBlob 반환용 Promise
+  const recordingPromiseRef = useRef<Promise<{ videoBlob: Blob; audioBlob: Blob }>>(null);
+  let resolveRecordingPromise: (value: { videoBlob: Blob; audioBlob: Blob }) => void;
 
   // 녹화 시작
   const startRecording = async () => {
@@ -59,15 +57,6 @@ export const SessionPage = () => {
         resolveRecordingPromise = resolve;
       });
 
-      // mediaRecorder.ondataavailable = event => {
-      //   if (event.data.size > 0) {
-      //     videoChunks.push(event.data);
-      //     if (event.data.type.startsWith('audio')) {
-      //       audioChunks.push(event.data);
-      //     }
-      //   }
-      // };
-
       mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
           videoChunks.push(event.data);
@@ -76,23 +65,13 @@ export const SessionPage = () => {
       };
 
       mediaRecorder.onstop = async () => {
-        // 영상 Blob 생성 및 상태 업데이트
-        console.log(videoChunks);
+        // 영상, 오디오 Blob 생성 및 상태 업데이트
         const webmBlob = new Blob(videoChunks, { type: 'video/webm' });
-        // setVideoBlob(webmBlob);
-
-        // 오디오 Blob 생성 및 Base64 변환
-        console.log(audioChunks);
         const webmAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        let newAudioBase64 = '';
-        console.log(webmAudioBlob);
-        if (webmAudioBlob) {
-          const wavBlob = await convertWebMBlobToWav(webmAudioBlob);
-          newAudioBase64 = await ConvertBlobToBase64(wavBlob);
-          // setAudioBase64(newAudioBase64);
-        }
+
+        const wavBlob = await convertWebMBlobToWav(webmAudioBlob);
         // Promise resolve: 녹화 데이터 처리 완료
-        resolveRecordingPromise({ videoBlob: webmBlob, audioBase64: newAudioBase64 });
+        resolveRecordingPromise({ videoBlob: webmBlob, audioBlob: wavBlob });
       };
 
       mediaRecorder.start();
@@ -102,7 +81,9 @@ export const SessionPage = () => {
   };
 
   // 녹화 종료 및 API 요청
-  const stopRecording = async () => {
+  const stopRecording = async (elapsedTime?: number) => {
+    const currentTime = elapsedTime ?? 180 - time;
+    console.log('time: ', currentTime);
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
@@ -111,7 +92,7 @@ export const SessionPage = () => {
     }
 
     // onstop 이벤트에서 데이터 처리가 완료될 때까지 대기
-    const { videoBlob, audioBase64 } = await recordingPromiseRef.current!;
+    const { videoBlob, audioBlob } = await recordingPromiseRef.current!;
 
     if (id) {
       let presignedUrl;
@@ -123,32 +104,46 @@ export const SessionPage = () => {
         await uploadVideoToS3(videoBlob, presignedUrl.url);
       }
 
-      // console.log(audioBase64);
-      // 답변 완료 API 호출
-      console.log(300 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
-      const data = await AnswerQuestion(
-        audioBase64,
-        300 - time,
-        Questions[currentPage - 1].id,
-        parseInt(id),
-        presignedUrl ? presignedUrl.url : presignedUrl,
-      );
+      // multipart/form-data 구성 및 전송
+      console.log(currentTime, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
+      const formData = new FormData();
+      formData.append('audioFile', audioBlob, 'audio.wav');
+      formData.append('time', String(currentTime));
+      formData.append('questionId', String(Questions[currentPage - 1].id));
+      formData.append('interviewId', id);
+      formData.append('videoURL', presignedUrl ? presignedUrl.url : presignedUrl);
+
+      console.log(formData);
+
+      const data = await AnswerQuestion(formData);
       console.log(data);
 
-      setResult(prev => [
-        ...prev,
-        { question: Questions[currentPage - 1].content, time: 300 - time, isAnswer: true, answerId: data.answerId },
-      ]);
+      const answerResult = {
+        question: Questions[currentPage - 1].content,
+        questionId: Questions[currentPage - 1].id,
+        time: currentTime,
+        interviewId: id,
+        isAnswer: true,
+        answerId: data.answerId,
+      };
+
+      setResult(prev => [...prev, answerResult]);
+
+      // localStorage에 저장
+      const prevStored = JSON.parse(localStorage.getItem('result') || '[]');
+      const updatedStored = [...prevStored, answerResult];
+      localStorage.setItem('result', JSON.stringify(updatedStored));
     }
 
+    setTime(180);
+    setIsSubmitting(false);
+
     if (lastQuestion) {
-      localStorage.setItem('result', JSON.stringify(result));
       navigate('/interview/progressresult');
     } else {
       setCurrentPage(prev => prev + 1);
       setStart(false);
     }
-    setIsSubmitting(false);
   };
 
   /**
@@ -224,18 +219,6 @@ export const SessionPage = () => {
     // 4. WAV ArrayBuffer를 Blob으로 변환
     return new Blob([wavArrayBuffer], { type: 'audio/wav' });
   }
-
-  // Blob을 Base64 문자열로 변환하는 함수
-  const ConvertBlobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = () => {
-        if (reader.result) resolve(reader.result.toString().split(',')[1]);
-        else reject('Failed to convert Blob to Base64');
-      };
-    });
-  };
 
   useEffect(() => {
     if (start) {

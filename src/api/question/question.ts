@@ -46,25 +46,9 @@ export const uploadVideoToS3 = async (file: Blob, presignedURL: string) => {
   }
 };
 
-export const AnswerQuestion = async (
-  audioFile: string,
-  time: number,
-  questionId: number,
-  interviewId: number,
-  videoURL: string,
-) => {
+export const AnswerQuestion = async (formData: FormData) => {
   try {
-    const response = await api.post(
-      '/answer/create',
-      {
-        audioFile,
-        time,
-        questionId,
-        interviewId,
-        videoURL,
-      },
-      {},
-    );
+    const response = await api.post('/answer/create', formData);
 
     return response.data;
   } catch (error) {

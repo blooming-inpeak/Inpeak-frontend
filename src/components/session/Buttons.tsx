@@ -37,13 +37,14 @@ export const Buttons = ({
   const onPassQuestion = async () => {
     if (id) {
       const data = await PassQuestion(String(Question[currentPage - 1].id), id);
-      setResult(prev => [
-        ...prev,
+      const newResult = [
+        ...result,
         { question: Question[currentPage - 1].content, time: 0, isAnswer: false, answerId: data.answerId },
-      ]);
+      ];
+      setResult(newResult);
+      localStorage.setItem('result', JSON.stringify(newResult));
       console.log(data);
       if (lastQuestion) {
-        localStorage.setItem('result', JSON.stringify(result));
         navigate('/interview/progressresult');
       } else {
         nextPage();

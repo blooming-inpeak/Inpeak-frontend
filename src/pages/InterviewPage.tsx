@@ -222,14 +222,9 @@ export const InterviewBottomAd = styled.div`
   width: 456px;
   height: 258px;
   border-radius: 24px;
-  border: 1px solid #ffffff;
   box-shadow: 0px 8px 24px 0px rgba(0, 80, 216, 0.04);
   backdrop-filter: blur(10px);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -244,6 +239,6 @@ export const InterviewBottomAdImage = styled.img`
   top: 0;
   left: 0;
   border-radius: 24px;
-  display: block;
   z-index: -1;
+  object-fit: contain;
 `;

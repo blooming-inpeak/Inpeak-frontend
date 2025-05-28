@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { WithdrawalUser } from '../../api/withdrawalUser/WithdrawalUser';
 import {
   CloseButton,
@@ -12,10 +13,11 @@ import {
 } from './WithdrawalModalStyle';
 
 export const WithdrawalModal = ({ onClose }: { onClose: () => void }) => {
+  const navigate = useNavigate();
   const onClickWithdrawal = async () => {
     const data = await WithdrawalUser();
     console.log(data);
-    // 성공하면 쿠키에서 토큰 삭제
+    navigate('/');
   };
 
   return (

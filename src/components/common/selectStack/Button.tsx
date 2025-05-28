@@ -6,10 +6,11 @@ interface Props {
   color: string;
   setSelect: React.Dispatch<React.SetStateAction<string[]>>;
   select: string[];
+  isSelect?: boolean;
 }
 
-export const Button = ({ name, color, setSelect, select }: Props) => {
-  const [isClick, setIsClick] = useState(false);
+export const Button = ({ name, color, setSelect, select, isSelect }: Props) => {
+  const [isClick, setIsClick] = useState<boolean>(isSelect ?? false);
 
   const onClickButton = () => {
     const nextClick = !isClick;
