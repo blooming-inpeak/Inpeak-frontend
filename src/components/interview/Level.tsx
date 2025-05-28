@@ -6,11 +6,11 @@ import { fetchHistoryStatistics } from '../../api/historyStatistics/statisticsAP
 import InfoIcon from '../../assets/img/LevelIcon.svg';
 import SpeechBubbleImg from '../../assets/img/LevelMark.svg';
 import LevelModal from '../common/levelModal/LevelModal';
-import Grade0 from '../../assets/img/level/grade0.svg';
-import Grade1 from '../../assets/img/level/grade1.png';
-import Grade2 from '../../assets/img/level/grade2.png';
-import Grade3 from '../../assets/img/level/grade3.png';
-import Grade4 from '../../assets/img/level/grade4.png';
+import Grade0 from '../../assets/img/level/Lv.0.png';
+import Grade1 from '../../assets/img/level/Lv.1~2.png';
+import Grade2 from '../../assets/img/level/Lv.3~4.png';
+import Grade3 from '../../assets/img/level/Lv.5~7.png';
+import Grade4 from '../../assets/img/level/Lv.8~10.png';
 
 interface LevelProps {
   level: number;
@@ -208,6 +208,9 @@ export const LevelLeft = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: white;
+  border-radius: 24px 0px 0px 24px;
+  border: none;
 
   @media (max-width: 768px) {
     width: 100%;

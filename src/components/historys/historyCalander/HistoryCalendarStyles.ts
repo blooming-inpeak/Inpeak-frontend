@@ -9,6 +9,7 @@ export const Container = styled.div`
   box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
   display: flex;
+  box-sizing: border-box;
 `;
 
 export const LeftSection = styled.div`
