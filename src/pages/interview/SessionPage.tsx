@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { SessionTop } from '../../components/session/SessionTop';
 import { SessionContent } from '../../components/session/SessionContent';
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentMicState, isRecordingState } from '../../store/record/Record';
 import { Toast } from '../../components/session/Toast';
 import { QuestionsState } from '../../store/question/Question';
@@ -23,8 +23,8 @@ export const SessionPage = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
-  const time = useRecoilValue(TimeState);
-  const [result, setResult] = useRecoilState(ResultState);
+  const [time, setTime] = useRecoilState(TimeState);
+  const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
@@ -81,7 +81,9 @@ export const SessionPage = () => {
   };
 
   // 녹화 종료 및 API 요청
-  const stopRecording = async () => {
+  const stopRecording = async (elapsedTime?: number) => {
+    const currentTime = elapsedTime ?? 180 - time;
+    console.log('time: ', currentTime);
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
@@ -103,10 +105,10 @@ export const SessionPage = () => {
       }
 
       // multipart/form-data 구성 및 전송
-      console.log(180 - time, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
+      console.log(currentTime, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
       const formData = new FormData();
       formData.append('audioFile', audioBlob, 'audio.wav');
-      formData.append('time', String(180 - time));
+      formData.append('time', String(currentTime));
       formData.append('questionId', String(Questions[currentPage - 1].id));
       formData.append('interviewId', id);
       formData.append('videoURL', presignedUrl ? presignedUrl.url : presignedUrl);
@@ -119,7 +121,7 @@ export const SessionPage = () => {
       const answerResult = {
         question: Questions[currentPage - 1].content,
         questionId: Questions[currentPage - 1].id,
-        time: 180 - time,
+        time: currentTime,
         interviewId: id,
         isAnswer: true,
         answerId: data.answerId,
@@ -129,17 +131,19 @@ export const SessionPage = () => {
 
       // localStorage에 저장
       const prevStored = JSON.parse(localStorage.getItem('result') || '[]');
-      localStorage.setItem('result', JSON.stringify([...prevStored, answerResult]));
+      const updatedStored = [...prevStored, answerResult];
+      localStorage.setItem('result', JSON.stringify(updatedStored));
     }
 
+    setTime(180);
+    setIsSubmitting(false);
+
     if (lastQuestion) {
-      localStorage.setItem('result', JSON.stringify(result));
       navigate('/interview/progressresult');
     } else {
       setCurrentPage(prev => prev + 1);
       setStart(false);
     }
-    setIsSubmitting(false);
   };
 
   /**
