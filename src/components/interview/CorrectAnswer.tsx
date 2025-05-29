@@ -159,8 +159,8 @@ export const MyCorrectAnswerPercent = styled.div<AdjustedProps>`
           ? '8px #9a9a9a'
           : '11px #9a9a9a'
         : props.adjusted === 'small'
-        ? '8px #3277ed'
-        : '11px #3277ed'};
+        ? '6px #3277ed'
+        : '6px #3277ed'};
   }
 `;
 
@@ -200,11 +200,11 @@ export const OtherCorrectAnswerPercent = styled.div<AdjustedProps>`
       props.isOnlyAverage
         ? `
           color: transparent;
-          -webkit-text-stroke: 11px #9A9A9A;
+          -webkit-text-stroke: 6px #9A9A9A;
         `
         : props.heading || props.strokeGray
         ? `
-          -webkit-text-stroke: 11px #9A9A9A;
+          -webkit-text-stroke: 6px #9A9A9A;
           -webkit-text-fill-color: transparent;
         `
         : ''}
