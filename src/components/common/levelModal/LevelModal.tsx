@@ -1,11 +1,70 @@
 import React from 'react';
 import styled from 'styled-components';
 import LevelModalClose from '../../../assets/img/LevelModalClose.svg';
-import LevelImage from '../../../assets/img/LevelExplanation.svg';
+
+// 레벨 데이터 정의
+const levelImages = [
+  {
+    src: '/src/assets/img/level/level_mono/Lv.0.png',
+    prefix: 'Lv.',
+    suffix: '0',
+    height: 6,
+    platformColor: '#FFE6E8',
+  },
+  {
+    src: '/src/assets/img/level/level_mono/Lv.1~2.png',
+    prefix: 'Lv.',
+    suffix: '1~2',
+    height: 18,
+    platformColor: '#FFD0D4',
+  },
+  {
+    src: '/src/assets/img/level/level_mono/Lv.3~4.png',
+    prefix: 'Lv.',
+    suffix: '3~4',
+    height: 30,
+    platformColor: '#FFBAC8',
+  },
+  {
+    src: '/src/assets/img/level/level_mono/Lv.5~7.png',
+    prefix: 'Lv.',
+    suffix: '5~7',
+    height: 42,
+    platformColor: '#FFA1B9',
+  },
+  {
+    src: '/src/assets/img/level/level_mono/Lv.8~10.png',
+    prefix: 'Lv.',
+    suffix: '8~10',
+    height: 54,
+    platformColor: '#FF90B3',
+  },
+];
 
 interface Props {
   onClose: () => void;
 }
+
+interface LevelItemProps {
+  src: string;
+  prefix: string;
+  suffix: string;
+  height: number;
+  platformColor: string;
+}
+
+const LevelItem: React.FC<LevelItemProps> = ({ src, prefix, suffix, height, platformColor }) => {
+  return (
+    <LevelItemWrapper>
+      <Character src={src} alt={`${prefix} ${suffix}`} loading="eager" />
+      <Platform height={height} platformColor={platformColor}></Platform>
+      <LevelLabel>
+        <Blue>{prefix}</Blue>
+        <Black>{suffix}</Black>
+      </LevelLabel>
+    </LevelItemWrapper>
+  );
+};
 
 export const LevelModal: React.FC<Props> = ({ onClose }) => {
   return (
@@ -15,7 +74,20 @@ export const LevelModal: React.FC<Props> = ({ onClose }) => {
           <CloseButton onClick={onClose}>
             <img src={LevelModalClose} alt="닫기" />
           </CloseButton>
-          <Image src={LevelImage} alt="레벨 설명 이미지" />
+
+          <LevelsWrapper>
+            {levelImages.map((item, idx) => (
+              <LevelItem
+                key={idx}
+                src={item.src}
+                prefix={item.prefix}
+                suffix={item.suffix}
+                height={item.height}
+                platformColor={item.platformColor}
+              />
+            ))}
+          </LevelsWrapper>
+
           <TextBox>
             <ul>
               <li>본 서비스는 0레벨(0 XP)부터 10레벨(1350 XP)까지의 경험치 기반 레벨링 시스템을 적용합니다.</li>
@@ -60,19 +132,54 @@ const ModalBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   flex: 1;
-  padding: 0px 12px;
   box-sizing: border-box;
   position: relative;
 `;
 
-const Image = styled.img`
-  margin-bottom: 20px;
+const LevelsWrapper = styled.div`
+  display: flex;
+  margin-bottom: 8px;
+`;
+
+const LevelItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+const Character = styled.img`
+  width: 80px;
+  height: auto;
+`;
+
+const Platform = styled.div<{ height: number; platformColor: string }>`
+  width: 80px;
+  height: ${({ height }) => height}px;
+  background: ${({ platformColor }) => platformColor};
+`;
+
+const LevelLabel = styled.div`
+  font-weight: 500;
+  margin-top: 8px;
+`;
+
+const Blue = styled.span`
+  font-size: 10px;
+  color: #1e4ce9;
+`;
+
+const Black = styled.span`
+  font-size: 14px;
+  color: #212121;
 `;
 
 const TextBox = styled.div`
+  display: flex;
   width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
 
   ul {
     padding-left: 12px;
