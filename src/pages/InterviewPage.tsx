@@ -6,7 +6,7 @@ import { Level } from '../components/interview/Level';
 import { AskHistory } from '../components/interview/AskHistory';
 import BackgroundImage from '../assets/img/banner/footprint_1280.png';
 import ResponsiveBackgroundImage from '../assets/img/banner/footprint_1024.png';
-import AdImage from '../assets/img/LevelCharacter.svg';
+import AdImage from '../assets/img/ad/adBannerImg.png';
 import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
@@ -219,6 +219,9 @@ export const InterviewBottomLeft = styled.div`
 `;
 
 export const InterviewBottomAd = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 456px;
   height: 258px;
   border-radius: 24px;
@@ -234,11 +237,9 @@ export const InterviewBottomAd = styled.div`
 
 export const InterviewBottomAdImage = styled.img`
   width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 24px;
+  height: 309.6px; // 임의로 높이 재설정 이미지 재수급 받아야 함
   z-index: -1;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 24px;
+  transform: translateY(7px); // 임의로 이미지 위치 조정
 `;

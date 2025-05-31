@@ -206,7 +206,9 @@ const HistoryCalendar = () => {
                 </>
               ) : answerData?.status === 409 ? (
                 <>
-                  진행한 <br /> 인터뷰의 답변이 없습니다
+                  해당 날짜에 진행된
+                  <br />
+                  인터뷰의 답변이 없습니다
                 </>
               ) : null}
             </NoResultMessage>
