@@ -1,44 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import LevelModalClose from '../../../assets/img/LevelModalClose.svg';
+import Lv0 from '../../../assets/img/level/level_mono/Lv.0.png';
+import Lv1_2 from '../../../assets/img/level/level_mono/Lv.1~2.png';
+import Lv3_4 from '../../../assets/img/level/level_mono/Lv.3~4.png';
+import Lv5_7 from '../../../assets/img/level/level_mono/Lv.5~7.png';
+import Lv8_10 from '../../../assets/img/level/level_mono/Lv.8~10.png';
 
-// 레벨 데이터 정의
 const levelImages = [
-  {
-    src: '/src/assets/img/level/level_mono/Lv.0.png',
-    prefix: 'Lv.',
-    suffix: '0',
-    height: 6,
-    platformColor: '#FFE6E8',
-  },
-  {
-    src: '/src/assets/img/level/level_mono/Lv.1~2.png',
-    prefix: 'Lv.',
-    suffix: '1~2',
-    height: 18,
-    platformColor: '#FFD0D4',
-  },
-  {
-    src: '/src/assets/img/level/level_mono/Lv.3~4.png',
-    prefix: 'Lv.',
-    suffix: '3~4',
-    height: 30,
-    platformColor: '#FFBAC8',
-  },
-  {
-    src: '/src/assets/img/level/level_mono/Lv.5~7.png',
-    prefix: 'Lv.',
-    suffix: '5~7',
-    height: 42,
-    platformColor: '#FFA1B9',
-  },
-  {
-    src: '/src/assets/img/level/level_mono/Lv.8~10.png',
-    prefix: 'Lv.',
-    suffix: '8~10',
-    height: 54,
-    platformColor: '#FF90B3',
-  },
+  { src: Lv0, prefix: 'Lv.', suffix: '0', height: 6, platformColor: '#FFE6E8' },
+  { src: Lv1_2, prefix: 'Lv.', suffix: '1~2', height: 18, platformColor: '#FFD0D4' },
+  { src: Lv3_4, prefix: 'Lv.', suffix: '3~4', height: 30, platformColor: '#FFBAC8' },
+  { src: Lv5_7, prefix: 'Lv.', suffix: '5~7', height: 42, platformColor: '#FFA1B9' },
+  { src: Lv8_10, prefix: 'Lv.', suffix: '8~10', height: 54, platformColor: '#FF90B3' },
 ];
 
 interface Props {
