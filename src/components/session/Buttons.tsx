@@ -39,7 +39,14 @@ export const Buttons = ({
       const data = await PassQuestion(String(Question[currentPage - 1].id), id);
       const newResult = [
         ...result,
-        { question: Question[currentPage - 1].content, time: 0, isAnswer: false, answerId: data.answerId },
+        {
+          question: Question[currentPage - 1].content,
+          questionId: Question[currentPage - 1].id,
+          time: 0,
+          interviewId: id,
+          isAnswer: true,
+          answerId: data.answerId,
+        },
       ];
       setResult(newResult);
       localStorage.setItem('result', JSON.stringify(newResult));
