@@ -44,7 +44,7 @@ export const Buttons = ({
           questionId: Question[currentPage - 1].id,
           time: 0,
           interviewId: id,
-          isAnswer: true,
+          isAnswer: false,
           answerId: data.answerId,
         },
       ];
