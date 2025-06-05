@@ -13,6 +13,14 @@ import { QuestionsState } from '../../store/question/Question';
 import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { GetAnswerDetailResponse } from '../../api/types';
+type LocalResultType = {
+  question: string;
+  time: number;
+  isAnswer: boolean;
+  answerId: number;
+  interviewId: string;
+  questionId: number;
+};
 
 export const ProgessResultPage: React.FC = () => {
   const resultState = useRecoilValue(ResultState);
@@ -26,6 +34,16 @@ export const ProgessResultPage: React.FC = () => {
   const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
   const [showResultModal, setShowResultModal] = useState<boolean>(false);
 
+  const getResultStateFromStorage = (): LocalResultType[] => {
+    try {
+      const raw = localStorage.getItem('result');
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch {
+      return [];
+    }
+  };
+
   useEffect(() => {
     const formatted: ResultDataType[] = resultState.map(item => ({
       question: item.question,
@@ -37,7 +55,8 @@ export const ProgessResultPage: React.FC = () => {
 
   useEffect(() => {
     const calculateTotalTime = () => {
-      const totalSeconds = resultState.reduce((acc, curr) => acc + curr.time, 0);
+      const source = resultState.length > 0 ? resultState : getResultStateFromStorage();
+      const totalSeconds = source.reduce((acc, curr) => acc + curr.time, 0);
       return formatSecondsToTime(totalSeconds);
     };
 
@@ -45,20 +64,33 @@ export const ProgessResultPage: React.FC = () => {
   }, [resultState]);
 
   const handleFeedbackClick = async () => {
-    if (!interviewId || questions.length === 0) return;
+    let fallbackInterviewId = interviewId;
+    let fallbackQuestions = questions;
+
+    if (!interviewId || questions.length === 0) {
+      const stored = getResultStateFromStorage();
+      if (stored.length > 0) {
+        fallbackInterviewId = Number(stored[0].interviewId);
+        fallbackQuestions = stored.map(item => ({
+          id: item.questionId,
+          content: item.question,
+        }));
+      }
+    }
+
+    if (!fallbackInterviewId || fallbackQuestions.length === 0) return;
 
     setIsLoading(true);
     try {
-      const questionId = questions[0].id;
+      const questionId = fallbackQuestions[0].id;
       const delay = new Promise(resolve => setTimeout(resolve, 1500));
-      const dataPromise = getAnswerDetail({ interviewId, questionId });
-
-      const [data] = await Promise.all([dataPromise, delay]); // 동시에 기다림
+      const dataPromise = getAnswerDetail({ interviewId: fallbackInterviewId, questionId });
+      const [data] = await Promise.all([dataPromise, delay]);
       setAnswerData(data);
     } catch (err) {
       console.error('AI 피드백 요청 실패', err);
     } finally {
-      setIsLoading(false); // 로딩 먼저 끝냄
+      setIsLoading(false);
     }
   };
 
@@ -69,6 +101,25 @@ export const ProgessResultPage: React.FC = () => {
       }, 300); // 살짝 딜레이 줘서 자연스럽게
     }
   }, [isLoading, answerData]);
+
+  useEffect(() => {
+    if (resultState.length === 0) {
+      const stored = getResultStateFromStorage();
+      const formatted: ResultDataType[] = stored.map(item => ({
+        question: item.question,
+        time: formatSecondsToTime(item.time),
+        status: item.isAnswer ? 'success' : 'giveup',
+      }));
+      setResultData(formatted);
+    } else {
+      const formatted: ResultDataType[] = resultState.map(item => ({
+        question: item.question,
+        time: formatSecondsToTime(item.time),
+        status: item.isAnswer ? 'success' : 'giveup',
+      }));
+      setResultData(formatted);
+    }
+  }, [resultState]);
 
   return (
     <>
