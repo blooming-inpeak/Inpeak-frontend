@@ -104,7 +104,9 @@ export const ContactPage = () => {
         </QuestionSection>
 
         <EmailSection>
-          <EmailAddress>직접 문의하기</EmailAddress>
+          <EmailAddress as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
+            직접 문의하기
+          </EmailAddress>
         </EmailSection>
       </Container>
       <Footer />
