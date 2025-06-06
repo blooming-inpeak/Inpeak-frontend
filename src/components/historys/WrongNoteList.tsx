@@ -197,7 +197,6 @@ const ListContainer = styled.div`
   gap: 12px;
   width: 100%;
   overflow-y: auto;
-  min-height: 400px;
 
   &::-webkit-scrollbar {
     display: none;
@@ -219,6 +218,7 @@ const QuestionCard = styled.div`
   overflow: hidden;
   color: var(--text-000, #000);
   text-overflow: ellipsis;
+  cursor: pointer;
 `;
 
 const Date = styled.span`
