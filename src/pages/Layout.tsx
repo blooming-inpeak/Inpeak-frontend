@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 const Layout = () => {
   const location = useLocation();
-  const [showHeader, setShowHeader] = useState(true);
+  const [showHeader, setShowHeader] = useState<true | false | null>(null);
 
   const controlHeader = () => {
     if (typeof window !== 'undefined') {
@@ -21,12 +21,18 @@ const Layout = () => {
   useEffect(() => {
     if (location.pathname === '/') {
       window.addEventListener('scroll', controlHeader);
+      controlHeader(); // 진입 직후 바로 판단
+    } else {
+      setShowHeader(true); // 다른 페이지는 무조건 헤더 보이기
     }
 
     return () => {
       window.removeEventListener('scroll', controlHeader);
     };
   }, [location.pathname]);
+
+  // 👉 헤더 상태 결정 전엔 전체 로딩 상태
+  if (showHeader === null) return null;
 
   return (
     <LayoutContainer>
