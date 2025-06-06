@@ -99,13 +99,13 @@ export const Wrapper = styled.div`
 
   .question-content {
     display: flex;
-    align-items: center;
+
     gap: 10px;
     margin-bottom: 20px;
   }
 
   .question-mark {
-    width: 42px;
+    min-width: 42px;
     font-weight: bold;
     font-size: 28px;
     font-weight: 700;
@@ -119,6 +119,8 @@ export const Wrapper = styled.div`
     font-weight: 600;
     line-height: 150%;
     margin: 0;
+    display: flex;
+    align-items: center;
   }
   .answer-content {
     display: flex;

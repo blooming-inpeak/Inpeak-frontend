@@ -23,13 +23,21 @@ import {
   updateAnswerUnderstood,
 } from '../../api/apiService';
 import { GetAnswerDetailResponse, AnswerStatus } from '../../api/types';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { ResultState } from '../../store/result/ResultState';
 import { QuestionsState } from '../../store/question/Question';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
+interface RawResultItem {
+  question: string;
+  questionId: number;
+  interviewId: string;
+  time: number;
+  isAnswer: boolean;
+  answerId: number;
+}
 interface InterviewResultProps {
   // 히스토리 모달 전용
   answerId?: number;
@@ -59,15 +67,11 @@ export const InterviewResult = ({
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
-  const [isMemoOpen, setIsMemoOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [memo, setMemo] = useState(''); // 메모 상태 추가
-  const memoTimeoutRef = useRef<number | null>(null);
-
-  const resultData = useRecoilValue(ResultState);
-  const interviewIdState = useRecoilValue(InterviewIdState);
-  const questionsState = useRecoilValue(QuestionsState);
+  const [resultData, setResult] = useRecoilState(ResultState);
+  const [questionsState, setQuestions] = useRecoilState(QuestionsState);
+  const [interviewIdState, setInterviewId] = useRecoilState(InterviewIdState);
 
   const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
   const [currentIndexState, setCurrentIndexState] = useState(currentIndex || 0);
@@ -78,6 +82,21 @@ export const InterviewResult = ({
   const isShowQuestionIndex = isAfterInterview || isCalendar;
 
   const isShowNavigation = isAfterInterview;
+
+  const [memo, setMemo] = useState(''); // 메모 상태 추가
+  const memoTimeoutRef = useRef<number | null>(null);
+
+  const [memoOpenMap, setMemoOpenMap] = useState<Record<string, boolean>>({});
+  const memoKey = answerIdForRequest?.toString() ?? `idx-${currentIndexState}`;
+  const isMemoOpenForCurrent = memoOpenMap[memoKey] || false;
+
+  const handleToggleMemo = () => {
+    if (!memoKey) return;
+    setMemoOpenMap(prev => ({
+      ...prev,
+      [memoKey]: !prev[memoKey],
+    }));
+  };
 
   useEffect(() => {
     if (currentIndex !== undefined) {
@@ -138,6 +157,46 @@ export const InterviewResult = ({
   };
 
   useEffect(() => {
+    const stored = localStorage.getItem('result');
+    if (!stored) return;
+
+    try {
+      const parsed: RawResultItem[] = JSON.parse(stored);
+      if (!Array.isArray(parsed) || parsed.length === 0) return;
+
+      // 최적화 포인트: 조건문 안으로 합침
+      if (resultData.length === 0) {
+        const resultList = parsed.map(({ question, time, isAnswer, answerId }) => ({
+          question,
+          time,
+          isAnswer,
+          answerId,
+        }));
+        setResult(resultList);
+      }
+
+      if (questionsState.length === 0) {
+        const questionMap = new Map<number, string>();
+        parsed.forEach(({ questionId, question }) => {
+          if (!questionMap.has(questionId)) questionMap.set(questionId, question);
+        });
+
+        const questionsList = Array.from(questionMap.entries()).map(([id, content]) => ({
+          id,
+          content,
+        }));
+        setQuestions(questionsList);
+      }
+
+      if (!interviewIdState && parsed[0]?.interviewId) {
+        setInterviewId(Number(parsed[0].interviewId));
+      }
+    } catch (err) {
+      console.error('❌ 로컬스토리지 result 파싱 실패', err);
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchAnswer = async () => {
       setIsLoading(true);
       try {
@@ -174,10 +233,10 @@ export const InterviewResult = ({
   };
 
   useEffect(() => {
-    if (isMemoOpen && textareaRef.current) {
+    if (isMemoOpenForCurrent && textareaRef.current) {
       handleResizeHeight(); // 메모가 열릴 때 높이 조정
     }
-  }, [isMemoOpen]);
+  }, [isMemoOpenForCurrent]);
   // 메모 초기값 세팅
   useEffect(() => {
     if (answerData) {
@@ -274,15 +333,19 @@ export const InterviewResult = ({
 
         {/* 메모 토글 */}
         <MemoWrapper>
-          <MemoToggle onClick={() => setIsMemoOpen(!isMemoOpen)}>
-            <span className="memo-text" style={{ color: isMemoOpen ? '#212121' : '#747474' }}>
-              {isMemoOpen ? '메모 접기' : '메모 펼치기'}
+          <MemoToggle onClick={handleToggleMemo}>
+            <span className="memo-text" style={{ color: isMemoOpenForCurrent ? '#212121' : '#747474' }}>
+              {isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}
             </span>
-            <img className={`memo-toggle ${isMemoOpen ? 'open' : ''}`} src="/images/memo_toggle.svg" alt="메모 토글" />
+            <img
+              className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
+              src="/images/memo_toggle.svg"
+              alt="메모 토글"
+            />
           </MemoToggle>
         </MemoWrapper>
 
-        {isMemoOpen && (
+        {isMemoOpenForCurrent && (
           <MemoBox
             ref={textareaRef}
             placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
