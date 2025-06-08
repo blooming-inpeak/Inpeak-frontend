@@ -35,6 +35,8 @@ export const AskHistoryMoreWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  margin-top: 5px;
 `;
 
 export const AskHistoryMoreIcon = styled.div`
@@ -47,9 +49,8 @@ export const AskHistroyMoreButton = styled.div`
   display: flex;
   justify-content: flex-end;
   position: absolute;
-  right: 50px;
-  bottom: 40px;
-
+  right: 0;
+  bottom: 0;
   color: #747474;
   font-size: 12px;
   font-weight: 500;

@@ -55,4 +55,10 @@ export const AskHistoryAnswer = styled.div`
   font-size: 12px;
   font-weight: 400;
   letter-spacing: -0.3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 `;
