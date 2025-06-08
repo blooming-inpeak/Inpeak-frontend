@@ -59,6 +59,7 @@ export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectS
       } else {
         navigate('/');
         window.history.replaceState({}, '', '/');
+        window.location.reload();
       }
     }
   };
