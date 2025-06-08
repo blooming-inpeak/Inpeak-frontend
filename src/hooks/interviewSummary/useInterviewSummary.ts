@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { summaryState } from '../../../store/Interview/summaryState';
-import { fetchTodayInterviewSummary } from '../../../api/interview/interviewAPI';
+import { summaryState } from '../../store/Interview/summaryState';
+import { fetchTodayInterviewSummary } from '../../api/interview/interviewAPI';
 
 export function useInterviewSummary(kakaoEmail: string | undefined) {
   const setSummary = useSetRecoilState(summaryState);
