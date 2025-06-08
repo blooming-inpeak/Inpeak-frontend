@@ -21,6 +21,7 @@ import { LoginModal } from './components/login/LoginModal';
 import { useEffect } from 'react';
 import { userState } from './store/auth/userState';
 import { HistoryDetailPage } from './pages/HistoryDetailPage';
+import ScrollToTop from './utils/ScrollToTop';
 
 function App() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function App() {
   return (
     <>
       <AppInitializer />
+      <ScrollToTop />
       {isLoginModalOpen && !user && <LoginModal setOpenLogin={setLoginModalOpen} />}
       {/* ✅ NEED_MORE_INFO 상태일 때만 자동 렌더링 */}
       {location.search.includes('status=NEED_MORE_INFO') && <SelectStack autoVisible method="post" />}
