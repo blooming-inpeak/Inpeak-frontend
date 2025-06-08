@@ -12,13 +12,13 @@ import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
 import { summaryState } from '../store/Interview/summaryState';
-import { useInterviewSummary } from '../hooks/logout/interviewSummary/useInterviewSummary';
+import { useInterviewSummary } from '../hooks/interviewSummary/useInterviewSummary';
 
 export const InterviewPage = () => {
   const user = useRecoilValue(userState);
   const summary = useRecoilValue(summaryState);
 
-  useInterviewSummary(user?.kakaoEmail); // ✅ 훅으로 분리
+  useInterviewSummary(user?.kakaoEmail);
 
   const chance = summary?.remainingInterviews?.count ?? 0;
 
