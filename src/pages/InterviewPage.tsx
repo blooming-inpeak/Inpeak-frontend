@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/auth/userState';
 import { CorrectAnswer } from '../components/interview/CorrectAnswer';
 import { InterviewChance } from '../components/interview/InterviewChance';
 import { Level } from '../components/interview/Level';
@@ -10,46 +11,16 @@ import AdImage from '../assets/img/ad/adBannerImg.png';
 import { Link } from 'react-router-dom';
 import Footer from '../components/common/Footer/Footer';
 import GrayArrow from '../assets/img/RightArrowGray.svg';
-import LoadingPage from './LoadingPage';
-
-import { fetchTodayInterviewSummary, InterviewSummaryResponse } from '../api/interview/interviewAPI';
+import { summaryState } from '../store/Interview/summaryState';
+import { useInterviewSummary } from '../hooks/logout/interviewSummary/useInterviewSummary';
 
 export const InterviewPage = () => {
-  const [summary, setSummary] = useState<InterviewSummaryResponse | null>(null);
-  const [prevSummary, setPrevSummary] = useState<InterviewSummaryResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const user = useRecoilValue(userState);
+  const summary = useRecoilValue(summaryState);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const startTime = Date.now(); // 시작 시간
+  useInterviewSummary(user?.kakaoEmail); // ✅ 훅으로 분리
 
-      try {
-        const today = new Date().toISOString().split('T')[0];
-        const data = await fetchTodayInterviewSummary(today);
-        setSummary(data);
-        setPrevSummary(data);
-      } catch (error) {
-        console.error('면접 요약 실패:', error);
-      } finally {
-        const elapsed = Date.now() - startTime; // 경과 시간
-        const MIN_LOADING_TIME = 500; // 최소 로딩 시간 0.5초
-        const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsed);
-
-        setTimeout(() => {
-          setIsLoading(false); // 최소 시간 후 로딩 종료
-        }, remainingTime);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const visibleSummary = summary ?? prevSummary;
-  const chance = summary?.remainingInterviews.count ?? 0;
-
-  if (isLoading || !visibleSummary) return <LoadingPage />;
-
-  // 이제는 깜빡임 없이 자연스럽게 출력
+  const chance = summary?.remainingInterviews?.count ?? 0;
 
   return (
     <>
@@ -57,8 +28,8 @@ export const InterviewPage = () => {
         <InterviewTop>
           <div id="bannerTop">
             <CorrectAnswer
-              cumulative={summary?.successRate.userSuccessRate ?? 0}
-              average={summary?.successRate.averageSuccessRate ?? 0}
+              cumulative={summary?.successRate?.userSuccessRate ?? 0}
+              average={summary?.successRate?.averageSuccessRate ?? 0}
             />
             <InterviewChance chance={chance} />
           </div>
@@ -77,9 +48,9 @@ export const InterviewPage = () => {
         <InterviewBottom>
           <InterviewBottomLeft>
             <Level
-              level={summary?.levelInfo.level ?? 1}
-              progress={summary?.levelInfo.currentExp ?? 0}
-              maxProgress={summary?.levelInfo.nextExp ?? 100}
+              level={summary?.levelInfo?.level ?? 1}
+              progress={summary?.levelInfo?.currentExp ?? 0}
+              maxProgress={summary?.levelInfo?.nextExp ?? 100}
             />
             <InterviewBottomAd>
               <InterviewBottomAdImage src={AdImage} alt="광고 이미지" />
