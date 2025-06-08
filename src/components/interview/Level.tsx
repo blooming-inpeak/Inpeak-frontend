@@ -60,7 +60,7 @@ export const Level: React.FC<LevelProps> = ({ level, progress, maxProgress }) =>
     fetchStats();
   }, []);
 
-  const progressPercentage = (progress / maxProgress) * 100;
+  const progressPercentage = level === 0 ? 0 : Math.min((progress / maxProgress) * 100, 100);
 
   const getGradeImage = (level: number) => {
     if (level === 0) return Grade0;

@@ -85,7 +85,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
 
         <OtherCorrectAnswer>
           <OtherCorrectAnswerTitle>평균 정답률</OtherCorrectAnswerTitle>
-          <OtherCorrectAnswerPercent adjusted="small" strokeGray data-content={`${average}%`}>
+          <OtherCorrectAnswerPercent adjusted="small" data-content={`${average}%`}>
             {average}%
           </OtherCorrectAnswerPercent>
         </OtherCorrectAnswer>
@@ -113,7 +113,7 @@ export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ cumulative = 0, av
 };
 
 export const CorrectAnswerWrapper = styled.div<CorrectAnswerWrapperProps>`
-  width: ${props => (props.onlyAverage ? '150px' : props.averageGreater ? '310px' : '310px')}; // 임의로 넓힘
+  width: ${props => (props.onlyAverage ? '150px' : props.averageGreater ? '315px' : '310px')}; // 임의로 넓힘
   height: 120px;
   gap: 24px;
   display: flex;
