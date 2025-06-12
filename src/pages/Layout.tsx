@@ -31,7 +31,6 @@ const Layout = () => {
     };
   }, [location.pathname]);
 
-  // 👉 헤더 상태 결정 전엔 전체 로딩 상태
   if (showHeader === null) return null;
 
   return (
@@ -39,7 +38,7 @@ const Layout = () => {
       <Header isState={showHeader ? 'show' : 'hidden'} />
       <MainContent>
         <Outlet />
-        <FloatingContactButton />
+        {location.pathname !== '/contact' && <FloatingContactButton />}
       </MainContent>
     </LayoutContainer>
   );
