@@ -11,7 +11,6 @@ import {
   ContactPage,
 } from './pages';
 import Layout from './pages/Layout';
-import { ResultPage } from './pages/interview/ResultPage';
 import { SelectStack } from './components/common/selectStack/SelectStack';
 import AppInitializer from './AppInitializer';
 import PrivateRoute from './routes/PrivateRoute';
@@ -100,14 +99,6 @@ function App() {
           element={
             <PrivateRoute>
               <ProgessResultPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/interview/result"
-          element={
-            <PrivateRoute>
-              <ResultPage />
             </PrivateRoute>
           }
         />
