@@ -194,7 +194,7 @@ export const InterviewResult = ({
     } catch (err) {
       console.error('❌ 로컬스토리지 result 파싱 실패', err);
     }
-  }, []);
+  }, [resultData.length, questionsState.length, setResult, setQuestions, setInterviewId, interviewIdState]);
 
   useEffect(() => {
     const fetchAnswer = async () => {
@@ -218,7 +218,7 @@ export const InterviewResult = ({
     };
 
     fetchAnswer();
-  }, [answerIdForRequest, currentIndexState]);
+  }, [answerIdForRequest, currentIndexState, interviewIdForRequest, questionsForRequest]);
 
   const handleNext = () => {
     if (currentIndexState < questions.length - 1) {
