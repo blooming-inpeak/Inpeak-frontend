@@ -29,6 +29,7 @@ import { QuestionsState } from '../../store/question/Question';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useOutsideClick } from '../../utils/useOutsideClick';
 
 interface RawResultItem {
   question: string;
@@ -64,6 +65,9 @@ export const InterviewResult = ({
   isCalendar,
   isAfterInterview,
 }: InterviewResultProps) => {
+  const modalRef = useOutsideClick<HTMLDivElement>(() => {
+    onClose?.();
+  });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -260,9 +264,14 @@ export const InterviewResult = ({
     }
 
     if (answerIdForRequest) {
-      updateAnswerUnderstood(Number(answerIdForRequest), nextChecked)
-        .then(() => console.log('이해완료 상태 업데이트 성공'))
-        .catch(err => console.error('이해완료 상태 업데이트 실패', err));
+      (async () => {
+        try {
+          await updateAnswerUnderstood(Number(answerIdForRequest), nextChecked);
+          console.log('이해완료 상태 업데이트 성공');
+        } catch (err) {
+          console.error('이해완료 상태 업데이트 실패', err);
+        }
+      })();
     }
   };
 
@@ -272,7 +281,7 @@ export const InterviewResult = ({
   if (!answerData) return null;
   return (
     <>
-      <ModalContainer>
+      <ModalContainer ref={modalRef}>
         <CloseButton
           onClick={() => {
             if (isAfterInterview) {
