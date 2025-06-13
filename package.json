@@ -21,7 +21,8 @@
     "react-dom": "18.0.0",
     "react-router-dom": "^7.1.5",
     "recoil": "^0.7.7",
-    "styled-components": "^6.1.15"
+    "styled-components": "^6.1.15",
+    "vite-plugin-remove-console": "^2.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

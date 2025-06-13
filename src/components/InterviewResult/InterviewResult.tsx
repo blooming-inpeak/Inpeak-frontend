@@ -29,6 +29,7 @@ import { QuestionsState } from '../../store/question/Question';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useOutsideClick } from '../../utils/useOutsideClick';
 
 interface RawResultItem {
   question: string;
@@ -64,6 +65,9 @@ export const InterviewResult = ({
   isCalendar,
   isAfterInterview,
 }: InterviewResultProps) => {
+  const modalRef = useOutsideClick<HTMLDivElement>(() => {
+    onClose?.();
+  });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -164,7 +168,6 @@ export const InterviewResult = ({
       const parsed: RawResultItem[] = JSON.parse(stored);
       if (!Array.isArray(parsed) || parsed.length === 0) return;
 
-      // 최적화 포인트: 조건문 안으로 합침
       if (resultData.length === 0) {
         const resultList = parsed.map(({ question, time, isAnswer, answerId }) => ({
           question,
@@ -194,7 +197,7 @@ export const InterviewResult = ({
     } catch (err) {
       console.error('❌ 로컬스토리지 result 파싱 실패', err);
     }
-  }, []);
+  }, [resultData.length, questionsState.length, setResult, setQuestions, setInterviewId, interviewIdState]);
 
   useEffect(() => {
     const fetchAnswer = async () => {
@@ -218,7 +221,7 @@ export const InterviewResult = ({
     };
 
     fetchAnswer();
-  }, [answerIdForRequest, currentIndexState]);
+  }, [answerIdForRequest, currentIndexState, interviewIdForRequest, questionsForRequest]);
 
   const handleNext = () => {
     if (currentIndexState < questions.length - 1) {
@@ -272,7 +275,7 @@ export const InterviewResult = ({
   if (!answerData) return null;
   return (
     <>
-      <ModalContainer>
+      <ModalContainer ref={modalRef}>
         <CloseButton
           onClick={() => {
             if (isAfterInterview) {
