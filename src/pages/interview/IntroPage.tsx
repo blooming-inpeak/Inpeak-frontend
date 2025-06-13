@@ -7,17 +7,20 @@ import { useSetRecoilState } from 'recoil';
 import { QuestionsState } from '../../store/question/Question';
 import { getFormattedDate } from '../../components/common/getFormattedDate';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
+import { ResultState } from '../../store/result/ResultState';
 
 export const IntroPage = () => {
   const navigate = useNavigate();
   const setQuestions = useSetRecoilState(QuestionsState);
   const setInterviewId = useSetRecoilState(InterviewIdState);
+  const setResult = useSetRecoilState(ResultState);
 
   const onClickStart = async () => {
     const today = getFormattedDate();
     const data = await GetQuestion(today);
     console.log(data);
     setQuestions(data.questions);
+    setResult([]);
     const interviewId = data.interviewId;
     setInterviewId(interviewId);
     localStorage.removeItem('result');
