@@ -158,9 +158,9 @@ export const ProgessResultPage: React.FC = () => {
                   </React.Fragment>
                 ))}
               </ResultList>
-              <ResultFeedbackButton onClick={handleFeedbackClick}>AI 피드백 받기</ResultFeedbackButton>
             </ResultmainBottom>
           </ResultMain>
+          <ResultFeedbackButton onClick={handleFeedbackClick}>AI 피드백 받기</ResultFeedbackButton>
         </ResultPageContainer>
       </ResultPageWrapper>
       {isLoading && (
@@ -229,12 +229,13 @@ const ResultPageWrapper = styled.div`
 `;
 
 const ResultPageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 710px;
   border-radius: 24px;
-  box-shadow:
-    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
-    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
+  padding-bottom: 48px;
 `;
 
 const ResultTop = styled.div`
@@ -247,7 +248,6 @@ const ResultTop = styled.div`
 
 const ResultMain = styled.div`
   width: 710px;
-  min-height: 552px;
   border-radius: 0px 0px 24px 24px;
   background: #fff;
   display: flex;
