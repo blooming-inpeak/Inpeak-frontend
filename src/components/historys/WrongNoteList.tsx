@@ -2,11 +2,17 @@ import styled from 'styled-components';
 
 import { SortDropdown } from '../common/SortDropdown';
 import { EmptyState } from './EmptyState';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getIncorrectAnswers } from '../../api/apiService.ts';
 import { AnswerResponse } from '../../api/types.ts';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { BlurBackground } from '../../components/common/background/BlurBackground';
+import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
+
+const STATUS_LABELS: Record<string, string> = {
+  INCORRECT: '오답',
+  SKIPPED: '포기',
+};
 
 export const WrongNoteList = () => {
   const [notes, setNotes] = useState<
@@ -16,83 +22,71 @@ export const WrongNoteList = () => {
   const [status, setStatus] = useState<'ALL' | 'INCORRECT' | 'SKIPPED'>('ALL');
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
   const handleItemClick = (answerId: number) => {
     setSelectedAnswerId(answerId);
     setIsModalOpen(true);
   };
-  const STATUS_LABELS: Record<string, string> = {
-    INCORRECT: '오답',
-    SKIPPED: '포기',
-  };
+  const infinite = useInfiniteScroll({
+    containerRef: scrollContainerRef,
+    hasNext,
+    fetchNext: (nextPage: number) => {
+      setPage(nextPage);
+    },
+  });
 
-  // API 요청 함수
-  const fetchNotes = async () => {
-    if (isFetching) return;
-    setIsFetching(true);
+  const fetchNotes = useCallback(
+    async (targetPage: number) => {
+      if (!hasNext) return;
+      try {
+        const response = await getIncorrectAnswers({ sortType, status, page: targetPage });
+        const data = response.data;
 
-    try {
-      const response = await getIncorrectAnswers({ sortType, status, page });
-      const data = response.data;
+        const answerList: AnswerResponse[] = data?.AnswerResponseList ?? [];
+        if (response.status === 204 || !data?.hasNext) {
+          setHasNext(false);
+          return;
+        }
 
-      const answerList = data?.AnswerResponseList ?? [];
-      if (response.status === 204) {
-        setHasNext(false); // 더 이상 불러올 게 없다고 가정
-        return;
-      }
-      setNotes(prevNotes => [
-        ...prevNotes,
-        ...answerList.map((item: AnswerResponse) => ({
+        const mapped = answerList.map(item => ({
           answerId: item.answerId,
           date: item.dateTime,
           question: item.questionContent,
           time: item.runningTime
             ? `${Math.floor(item.runningTime / 60)}:${String(item.runningTime % 60).padStart(2, '0')}`
-            : '--:--',
-          status: STATUS_LABELS[item.answerStatus],
-        })),
-      ]);
-      setHasNext(data?.hasNext ?? false);
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
+            : '',
+          status: STATUS_LABELS[item.answerStatus] ?? '기타',
+        }));
 
-  // `sortType`, `status` 변경 시 새롭게 데이터 로드
-  useEffect(() => {
-    setNotes([]); // 기존 데이터 초기화
-    setPage(0);
-    fetchNotes();
-  }, [sortType, status]);
-
-  // 페이지 변경될 때마다 새로운 데이터 요청
-  useEffect(() => {
-    if (page > 0) {
-      fetchNotes();
-    }
-  }, [page]);
-
-  //스크롤 이벤트 리스너 추가
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200 &&
-        hasNext &&
-        !isFetching
-      ) {
-        setPage(prevPage => prevPage + 1);
+        setNotes(prev => [...prev, ...mapped]);
+        setHasNext(data.hasNext);
+      } catch (error) {
+        console.error('Error fetching notes:', error);
+      } finally {
+        infinite.complete();
       }
-    };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sortType, status, hasNext],
+  );
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasNext, isFetching]);
+  useEffect(() => {
+    fetchNotes(page);
+  }, [page, fetchNotes]);
 
+  useEffect(() => {
+    setNotes([]);
+    setHasNext(true);
+    setPage(0);
+    infinite.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortType, status]);
   return (
     <>
       {isModalOpen && selectedAnswerId && (
@@ -126,25 +120,27 @@ export const WrongNoteList = () => {
             />
           </FiltersContainer>
         </Header>
-        {notes.length === 0 ? (
-          <EmptyContainer>
-            <EmptyState type="wrong" />
-          </EmptyContainer>
-        ) : (
-          <ListContainer>
-            {notes.map((note, index) => (
-              <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
-                <Date>{note.date}</Date>
-                <Question>{note.question}</Question>
-                <BottomRow>
-                  <Time>{note.time}</Time>
-                  <StatusBadge status={note.status}>{note.status}</StatusBadge>
-                </BottomRow>
-              </QuestionCard>
-            ))}
-          </ListContainer>
-        )}{' '}
-        {isFetching && <LoadingText></LoadingText>}
+        <ScrollWrapper ref={scrollContainerRef}>
+          {notes.length === 0 ? (
+            <EmptyContainer>
+              <EmptyState type="wrong" />
+            </EmptyContainer>
+          ) : (
+            <ListContainer>
+              {notes.map((note, index) => (
+                <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
+                  <Date>{note.date}</Date>
+                  <Question>{note.question}</Question>
+                  <BottomRow>
+                    <Time>{note.time}</Time>
+                    <StatusBadge status={note.status}>{note.status}</StatusBadge>
+                  </BottomRow>
+                </QuestionCard>
+              ))}
+            </ListContainer>
+          )}{' '}
+          {isFetching && <LoadingText></LoadingText>}
+        </ScrollWrapper>
       </SectionContainer>
     </>
   );
@@ -192,17 +188,12 @@ const TitleBox = styled.div`
 `;
 
 const ListContainer = styled.div`
+  height: 100%;
+  flex-grow: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   width: 100%;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 `;
 
 const QuestionCard = styled.div`
@@ -278,4 +269,13 @@ const LoadingText = styled.div`
   text-align: center;
   margin-top: 10px;
   color: #666;
+`;
+const ScrollWrapper = styled.div`
+  height: 100%;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
