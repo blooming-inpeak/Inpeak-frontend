@@ -52,7 +52,7 @@ export const WrongNoteList = () => {
           question: item.questionContent,
           time: item.runningTime
             ? `${Math.floor(item.runningTime / 60)}:${String(item.runningTime % 60).padStart(2, '0')}`
-            : '--:--',
+            : '00:00',
           status: STATUS_LABELS[item.answerStatus] ?? '기타',
         }));
 
@@ -67,26 +67,30 @@ export const WrongNoteList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [sortType, status],
   );
+  useEffect(() => {
+    console.log(
+      'Fetched notes:',
+      notes.map(n => n.answerId),
+    );
+  }, [notes]);
 
   useEffect(() => {
-    if (!hasNext) return;
-    fetchNotes(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, fetchNotes]);
+    if (hasNext) fetchNotes(page);
+  }, [page, fetchNotes, hasNext]);
 
   useEffect(() => {
-    setPage(0);
     setNotes([]);
+    setPage(0);
     setHasNext(true);
     requestedPages.current.clear();
-    fetchNotes(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortType, status]);
 
   useInfiniteScroll({
     containerRef: scrollContainerRef,
     shouldFetch: hasNext && !isFetching,
-    onScrollEnd: () => setPage(prev => prev + 1),
+    onScrollEnd: () => {
+      setPage(prev => prev + 1);
+    },
   });
 
   return (
@@ -129,8 +133,8 @@ export const WrongNoteList = () => {
             </EmptyContainer>
           ) : (
             <ListContainer>
-              {notes.map((note, index) => (
-                <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
+              {notes.map(note => (
+                <QuestionCard key={note.answerId} onClick={() => handleItemClick(note.answerId)}>
                   <Date>{note.date}</Date>
                   <Question>{note.question}</Question>
                   <BottomRow>

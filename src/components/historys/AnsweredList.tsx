@@ -41,7 +41,7 @@ export const AnsweredList = () => {
           question: item.questionContent,
           time: item.runningTime
             ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
-            : '',
+            : '00:00',
           badges: item.answerStatus === 'CORRECT' ? (item.isUnderstood ? ['이해완료', '정답'] : ['정답']) : [],
         }));
 
@@ -60,23 +60,19 @@ export const AnsweredList = () => {
     containerRef: scrollContainerRef,
     shouldFetch: hasNext && !isFetching,
     onScrollEnd: () => {
-      if (!isFetching && hasNext) setPage(prev => prev + 1);
+      setPage(prev => prev + 1);
     },
   });
 
   useEffect(() => {
-    if (!hasNext) return;
-    fetchAnswers(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, fetchAnswers]);
+    if (hasNext) fetchAnswers(page);
+  }, [page, fetchAnswers, hasNext]);
 
   useEffect(() => {
     setNotes([]);
     setPage(0);
     setHasNext(true);
     requestedPageRef.current.clear();
-    fetchAnswers(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortType, isUnderstood]);
 
   const handleItemClick = (answerId: number) => {
@@ -128,8 +124,8 @@ export const AnsweredList = () => {
             </EmptyContainer>
           ) : (
             <ListContainer>
-              {notes.map((note, index) => (
-                <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
+              {notes.map(note => (
+                <QuestionCard key={note.answerId} onClick={() => handleItemClick(note.answerId)}>
                   <Date>{note.date}</Date>
                   <Question>{note.question}</Question>
                   <BottomRow>
