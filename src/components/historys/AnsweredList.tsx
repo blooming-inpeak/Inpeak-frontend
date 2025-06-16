@@ -3,7 +3,7 @@ import { SortDropdown } from '../common/SortDropdown';
 import { EmptyState } from './EmptyState';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getAnsweredList } from '../../api/apiService';
-import { AnswerResponse } from '../../api/types';
+
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
@@ -18,75 +18,71 @@ export const AnsweredList = () => {
   const [isUnderstood, setIsUnderstood] = useState<boolean | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
-  const [isFetching] = useState(false);
+
+  const [isFetching, setIsFetching] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const infinite = useInfiniteScroll({
+  const requestedPageRef = useRef<Set<number>>(new Set());
+
+  const fetchAnswers = useCallback(
+    async (targetPage: number) => {
+      if (requestedPageRef.current.has(targetPage)) return;
+      requestedPageRef.current.add(targetPage);
+
+      setIsFetching(true);
+      try {
+        const res = await getAnsweredList({ sortType, isUnderstood, page: targetPage });
+        const data = res.data;
+        const list = data?.AnswerResponseList ?? [];
+
+        const mapped = list.map(item => ({
+          answerId: item.answerId,
+          date: item.dateTime,
+          question: item.questionContent,
+          time: item.runningTime
+            ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
+            : '',
+          badges: item.answerStatus === 'CORRECT' ? (item.isUnderstood ? ['이해완료', '정답'] : ['정답']) : [],
+        }));
+
+        setNotes(prev => [...prev, ...mapped]);
+        setHasNext(data?.hasNext ?? false);
+      } catch (e) {
+        console.error('불러오기 실패', e);
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [sortType, isUnderstood],
+  );
+
+  useInfiniteScroll({
     containerRef: scrollContainerRef,
-    hasNext,
-    fetchNext: (nextPage: number) => setPage(nextPage),
+    shouldFetch: hasNext && !isFetching,
+    onScrollEnd: () => {
+      if (!isFetching && hasNext) setPage(prev => prev + 1);
+    },
   });
+
+  useEffect(() => {
+    if (!hasNext) return;
+    fetchAnswers(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, fetchAnswers]);
+
+  useEffect(() => {
+    setNotes([]);
+    setPage(0);
+    setHasNext(true);
+    requestedPageRef.current.clear();
+    fetchAnswers(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortType, isUnderstood]);
 
   const handleItemClick = (answerId: number) => {
     setSelectedAnswerId(answerId);
     setIsModalOpen(true);
   };
-
-  const fetchAnswers = useCallback(
-    async (targetPage: number) => {
-      try {
-        const res = await getAnsweredList({ sortType, isUnderstood, page: targetPage });
-        const data = res.data;
-
-        const list = data?.AnswerResponseList ?? [];
-        if (res.status === 204 || !data?.hasNext) {
-          setHasNext(false);
-          return;
-        }
-
-        const mapped = list.map((item: AnswerResponse) => {
-          const badges = [];
-          if (item.answerStatus === 'CORRECT') {
-            badges.push('정답');
-            if (item.isUnderstood) badges.unshift('이해완료');
-          }
-
-          return {
-            answerId: item.answerId,
-            date: item.dateTime,
-            question: item.questionContent,
-            time: item.runningTime
-              ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
-              : '',
-            badges,
-          };
-        });
-
-        setNotes(prev => [...prev, ...mapped]);
-        setHasNext(data?.hasNext ?? false);
-      } catch (err) {
-        console.error('답변완료 리스트 가져오기 실패', err);
-      } finally {
-        infinite.complete();
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sortType, isUnderstood],
-  );
-
-  useEffect(() => {
-    if (page === 0) return;
-    fetchAnswers(page);
-  }, [page, fetchAnswers]);
-
-  useEffect(() => {
-    setNotes([]);
-    setHasNext(true);
-    infinite.reset();
-    setPage(0);
-    fetchAnswers(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortType, isUnderstood]);
 
   return (
     <>

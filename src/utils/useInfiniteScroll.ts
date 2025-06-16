@@ -2,28 +2,24 @@ import { useEffect, useRef } from 'react';
 
 interface UseInfiniteScrollProps {
   containerRef: React.RefObject<HTMLElement | null>;
-  hasNext: boolean;
-  fetchNext: (nextPage: number) => void;
+  shouldFetch: boolean;
+  onScrollEnd: () => void;
 }
 
-export const useInfiniteScroll = ({ containerRef, hasNext, fetchNext }: UseInfiniteScrollProps) => {
-  const isFetchingRef = useRef(false);
-  const lastRequestedPageRef = useRef(0);
+export const useInfiniteScroll = ({ containerRef, shouldFetch, onScrollEnd }: UseInfiniteScrollProps) => {
+  const isTriggeredRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const el = containerRef.current;
-      if (!el || isFetchingRef.current || !hasNext) return;
+      if (!el || !shouldFetch || isTriggeredRef.current) return;
 
       const { scrollTop, scrollHeight, clientHeight } = el;
       const isNearBottom = scrollHeight - scrollTop - clientHeight < 150;
 
       if (isNearBottom) {
-        const nextPage = lastRequestedPageRef.current + 1;
-        lastRequestedPageRef.current = nextPage;
-        isFetchingRef.current = true;
-
-        fetchNext(nextPage); // 부모에서 정의한 fetch 함수 호출
+        isTriggeredRef.current = true;
+        onScrollEnd();
       }
     };
 
@@ -32,16 +28,11 @@ export const useInfiniteScroll = ({ containerRef, hasNext, fetchNext }: UseInfin
     return () => {
       if (el) el.removeEventListener('scroll', handleScroll);
     };
-  }, [containerRef, hasNext, fetchNext]);
+  }, [containerRef, shouldFetch, onScrollEnd]);
 
-  const reset = () => {
-    isFetchingRef.current = false;
-    lastRequestedPageRef.current = 0;
-  };
-
-  const complete = () => {
-    isFetchingRef.current = false;
-  };
-
-  return { reset, complete };
+  useEffect(() => {
+    if (shouldFetch) {
+      isTriggeredRef.current = false;
+    }
+  }, [shouldFetch]);
 };

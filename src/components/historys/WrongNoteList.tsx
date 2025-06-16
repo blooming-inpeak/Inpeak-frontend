@@ -22,10 +22,11 @@ export const WrongNoteList = () => {
   const [status, setStatus] = useState<'ALL' | 'INCORRECT' | 'SKIPPED'>('ALL');
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
-  const [isFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const requestedPages = useRef(new Set<number>());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
@@ -33,26 +34,17 @@ export const WrongNoteList = () => {
     setSelectedAnswerId(answerId);
     setIsModalOpen(true);
   };
-  const infinite = useInfiniteScroll({
-    containerRef: scrollContainerRef,
-    hasNext,
-    fetchNext: (nextPage: number) => {
-      setPage(nextPage);
-    },
-  });
 
   const fetchNotes = useCallback(
     async (targetPage: number) => {
-      if (!hasNext) return;
+      if (isFetching || requestedPages.current.has(targetPage)) return;
+      requestedPages.current.add(targetPage);
+      setIsFetching(true);
+
       try {
         const response = await getIncorrectAnswers({ sortType, status, page: targetPage });
         const data = response.data;
-
         const answerList: AnswerResponse[] = data?.AnswerResponseList ?? [];
-        if (response.status === 204 || !data?.hasNext) {
-          setHasNext(false);
-          return;
-        }
 
         const mapped = answerList.map(item => ({
           answerId: item.answerId,
@@ -60,33 +52,43 @@ export const WrongNoteList = () => {
           question: item.questionContent,
           time: item.runningTime
             ? `${Math.floor(item.runningTime / 60)}:${String(item.runningTime % 60).padStart(2, '0')}`
-            : '',
+            : '--:--',
           status: STATUS_LABELS[item.answerStatus] ?? '기타',
         }));
 
         setNotes(prev => [...prev, ...mapped]);
-        setHasNext(data.hasNext);
+        setHasNext(data?.hasNext ?? false);
       } catch (error) {
         console.error('Error fetching notes:', error);
       } finally {
-        infinite.complete();
+        setIsFetching(false);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sortType, status, hasNext],
+    [sortType, status],
   );
 
   useEffect(() => {
+    if (!hasNext) return;
     fetchNotes(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, fetchNotes]);
 
   useEffect(() => {
+    setPage(0);
     setNotes([]);
     setHasNext(true);
-    setPage(0);
-    infinite.reset();
+    requestedPages.current.clear();
+    fetchNotes(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortType, status]);
+
+  useInfiniteScroll({
+    containerRef: scrollContainerRef,
+    shouldFetch: hasNext && !isFetching,
+    onScrollEnd: () => setPage(prev => prev + 1),
+  });
+
   return (
     <>
       {isModalOpen && selectedAnswerId && (
