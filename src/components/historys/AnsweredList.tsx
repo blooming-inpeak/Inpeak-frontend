@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { SortDropdown } from '../common/SortDropdown';
 import { EmptyState } from './EmptyState';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getAnsweredList } from '../../api/apiService';
-import { AnswerResponse } from '../../api/types';
+
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { BlurBackground } from '../../components/common/background/BlurBackground';
+import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
 
 export const AnsweredList = () => {
   const [notes, setNotes] = useState<
@@ -17,75 +18,68 @@ export const AnsweredList = () => {
   const [isUnderstood, setIsUnderstood] = useState<boolean | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
+
   const [isFetching, setIsFetching] = useState(false);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const requestedPageRef = useRef<Set<number>>(new Set());
+
+  const fetchAnswers = useCallback(
+    async (targetPage: number) => {
+      if (requestedPageRef.current.has(targetPage)) return;
+      requestedPageRef.current.add(targetPage);
+
+      setIsFetching(true);
+      try {
+        const res = await getAnsweredList({ sortType, isUnderstood, page: targetPage });
+        const data = res.data;
+        const list = data?.AnswerResponseList ?? [];
+
+        const mapped = list.map(item => ({
+          answerId: item.answerId,
+          date: item.dateTime,
+          question: item.questionContent,
+          time: item.runningTime
+            ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
+            : '00:00',
+          badges: item.answerStatus === 'CORRECT' ? (item.isUnderstood ? ['이해완료', '정답'] : ['정답']) : [],
+        }));
+
+        setNotes(prev => [...prev, ...mapped]);
+        setHasNext(data?.hasNext ?? false);
+      } catch (e) {
+        console.error('불러오기 실패', e);
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [sortType, isUnderstood],
+  );
+
+  useInfiniteScroll({
+    containerRef: scrollContainerRef,
+    shouldFetch: hasNext && !isFetching,
+    onScrollEnd: () => {
+      setPage(prev => prev + 1);
+    },
+  });
+
+  useEffect(() => {
+    if (hasNext) fetchAnswers(page);
+  }, [page, fetchAnswers, hasNext]);
+
+  useEffect(() => {
+    setNotes([]);
+    setPage(0);
+    setHasNext(true);
+    requestedPageRef.current.clear();
+  }, [sortType, isUnderstood]);
+
   const handleItemClick = (answerId: number) => {
     setSelectedAnswerId(answerId);
     setIsModalOpen(true);
   };
 
-  const fetchAnswers = async () => {
-    if (isFetching) return;
-    setIsFetching(true);
-    try {
-      const res = await getAnsweredList({ sortType, isUnderstood, page });
-      const data = res.data;
-
-      const list = data?.AnswerResponseList ?? [];
-      if (res.status === 204) {
-        setHasNext(false); // 더 이상 불러올 게 없다고 가정
-        return;
-      }
-      setNotes(prev => [
-        ...prev,
-        ...list.map((item: AnswerResponse) => {
-          const badges = [];
-
-          if (item.answerStatus === 'CORRECT') {
-            badges.push('정답');
-            if (item.isUnderstood) badges.unshift('이해완료'); // 이해완료를 앞에
-          }
-
-          return {
-            answerId: item.answerId,
-            date: item.dateTime,
-            question: item.questionContent,
-            time: item.runningTime
-              ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
-              : '--:--',
-
-            badges,
-          };
-        }),
-      ]);
-
-      setHasNext(data?.hasNext ?? false);
-    } catch (err) {
-      console.error('답변완료 리스트 가져오기 실패', err);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-  useEffect(() => {
-    setNotes([]);
-    setPage(0);
-    fetchAnswers();
-  }, [sortType, isUnderstood]);
-
-  useEffect(() => {
-    if (page > 0) fetchAnswers();
-  }, [page]);
-  useEffect(() => {
-    const handleScroll = () => {
-      const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200;
-
-      if (bottom && hasNext && !isFetching) {
-        setPage(prev => prev + 1);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasNext, isFetching]);
   return (
     <>
       {isModalOpen && selectedAnswerId && (
@@ -122,32 +116,34 @@ export const AnsweredList = () => {
             />
           </FiltersContainer>
         </Header>{' '}
-        {notes.length === 0 ? (
-          <EmptyContainer>
-            {' '}
-            <EmptyState type="answered" />
-          </EmptyContainer>
-        ) : (
-          <ListContainer>
-            {notes.map((note, index) => (
-              <QuestionCard key={index} onClick={() => handleItemClick(note.answerId)}>
-                <Date>{note.date}</Date>
-                <Question>{note.question}</Question>
-                <BottomRow>
-                  <Time>{note.time}</Time>
-                  <BadgeContainer>
-                    {note.badges.map((badge, i) => (
-                      <StatusBadge key={i} status={badge}>
-                        {badge}
-                      </StatusBadge>
-                    ))}
-                  </BadgeContainer>
-                </BottomRow>
-              </QuestionCard>
-            ))}
-          </ListContainer>
-        )}
-        {isFetching && <LoadingText></LoadingText>}
+        <ScrollWrapper ref={scrollContainerRef}>
+          {notes.length === 0 ? (
+            <EmptyContainer>
+              {' '}
+              <EmptyState type="answered" />
+            </EmptyContainer>
+          ) : (
+            <ListContainer>
+              {notes.map(note => (
+                <QuestionCard key={note.answerId} onClick={() => handleItemClick(note.answerId)}>
+                  <Date>{note.date}</Date>
+                  <Question>{note.question}</Question>
+                  <BottomRow>
+                    <Time>{note.time}</Time>
+                    <BadgeContainer>
+                      {note.badges.map((badge, i) => (
+                        <StatusBadge key={i} status={badge}>
+                          {badge}
+                        </StatusBadge>
+                      ))}
+                    </BadgeContainer>
+                  </BottomRow>
+                </QuestionCard>
+              ))}
+            </ListContainer>
+          )}
+          {isFetching && <LoadingText></LoadingText>}
+        </ScrollWrapper>
       </SectionContainer>
     </>
   );
@@ -197,13 +193,6 @@ const ListContainer = styled.div`
   grid-template-columns: repeat(1, 1fr);
   gap: 12px;
   width: 100%;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 `;
 
 const QuestionCard = styled.div`
@@ -286,4 +275,13 @@ const LoadingText = styled.div`
 const BadgeContainer = styled.div`
   display: flex;
   gap: 4px;
+`;
+const ScrollWrapper = styled.div`
+  height: 100%;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
