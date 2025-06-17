@@ -9,6 +9,8 @@ import { getFormattedDate } from '../../components/common/getFormattedDate';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { ResultState } from '../../store/result/ResultState';
 import { isMicConnectedState } from '../../store/record/Record';
+import { useEffect, useState } from 'react';
+import { fetchTodayInterviewSummary } from '../../api/interview/interviewAPI';
 
 interface IntroStartButtonProps {
   disabled: boolean;
@@ -20,6 +22,20 @@ export const IntroPage = () => {
   const setInterviewId = useSetRecoilState(InterviewIdState);
   const setResult = useSetRecoilState(ResultState);
   const isMicConnected = useRecoilValue(isMicConnectedState);
+  const today = new Date().toISOString().split('T')[0];
+  const [isStarted, setIsStarted] = useState(true);
+
+  useEffect(() => {
+    const checkInterviewCount = async () => {
+      const data = await fetchTodayInterviewSummary(today);
+      console.log(data);
+      if (data.remainingInterviews.count === 0) {
+        setIsStarted(false);
+      }
+    };
+
+    checkInterviewCount();
+  }, []);
 
   const onClickStart = async () => {
     const today = getFormattedDate();
@@ -41,8 +57,8 @@ export const IntroPage = () => {
         <IntroTest>
           <IntroTestTop />
           <IntroTestBottom>
-            <IntroStartButton onClick={onClickStart} disabled={!isMicConnected}>
-              {isMicConnected ? '시작하기' : '마이크를 연결해주세요'}
+            <IntroStartButton onClick={onClickStart} disabled={!isMicConnected || !isStarted}>
+              {isMicConnected ? '시작하기' : !isStarted ? '면접기회가 부족합니다' : '마이크를 연결해주세요'}
             </IntroStartButton>
           </IntroTestBottom>
         </IntroTest>
