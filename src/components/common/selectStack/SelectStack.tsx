@@ -16,6 +16,7 @@ import {
 import { BlurBackground } from '../background/BlurBackground';
 import { registerInterest } from '../../../api/interest/interestAPI';
 import { updateInterest } from '../../../api/interest/updateInterestAPI';
+import { useOutsideClick } from '../../../utils/useOutsideClick';
 
 interface Props {
   method?: 'post' | 'put';
@@ -29,6 +30,12 @@ export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectS
   const location = useLocation();
   const [select, setSelect] = useState<string[]>(interests ?? []);
   const [isVisible, setIsVisible] = useState(!autoVisible);
+
+  const stackRef = useOutsideClick<HTMLDivElement>(() => {
+    if (location.pathname === '/mypage' && setIsSelectStack) {
+      setIsSelectStack(false);
+    }
+  });
 
   useEffect(() => {
     if (!autoVisible) return;
@@ -68,7 +75,7 @@ export const SelectStack = ({ method = 'post', autoVisible = false, setIsSelectS
 
   return (
     <BlurBackground>
-      <SelectStackWrapper>
+      <SelectStackWrapper ref={stackRef}>
         {location.pathname === '/mypage' && setIsSelectStack ? (
           <BackButtonWrapper>
             <BackButton

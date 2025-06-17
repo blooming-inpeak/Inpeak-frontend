@@ -104,16 +104,26 @@ export const SessionPage = () => {
     }
   };
 
+  const stopMediaStream = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => {
+        if (track.readyState === 'live') track.stop();
+      });
+      streamRef.current = null;
+    }
+  };
+
   // 녹화 종료 및 API 요청
   const stopRecording = async (elapsedTime?: number) => {
     const currentTime = elapsedTime ?? 180 - time;
     console.log('time: ', currentTime);
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
+
+    stopMediaStream();
 
     // onstop 이벤트에서 데이터 처리가 완료될 때까지 대기
     const { videoBlob, audioBlob } = await recordingPromiseRef.current!;
@@ -279,6 +289,7 @@ export const SessionPage = () => {
             nextPage={() => setCurrentPage(prev => prev + 1)}
             isSubmitting={isSubmitting}
             setIsSubmitting={setIsSubmitting}
+            stopMediaStream={stopMediaStream}
           />
         </SessionBody>
 

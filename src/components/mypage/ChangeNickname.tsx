@@ -4,6 +4,7 @@ import { SaveNicknameAPI } from '../../api/changeNickname/SaveNicknameAPI';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../../store/auth/userState';
 import axios from 'axios';
+import { useOutsideClick } from '../../utils/useOutsideClick';
 
 interface Props {
   close: () => void;
@@ -13,6 +14,8 @@ export const ChangeNickname = ({ close }: Props) => {
   const setUser = useSetRecoilState(userState);
   const [nickname, setNickname] = useState('');
   const [error, setError] = useState('');
+
+  const ref = useOutsideClick<HTMLDivElement>(close);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -63,7 +66,7 @@ export const ChangeNickname = ({ close }: Props) => {
   };
 
   return (
-    <ChangeNicknameWrapper>
+    <ChangeNicknameWrapper ref={ref}>
       <CloseContainer>
         <img src="/images/Close.svg" alt="close" onClick={close} style={{ cursor: 'pointer' }} />
       </CloseContainer>
