@@ -7,11 +7,22 @@ import { getAnsweredList } from '../../api/apiService';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
+import { UnderstoodState } from '../../store/Interview/UnderstoodState.ts';
+import { useRecoilValue } from 'recoil';
+import { AnswerStatus } from '../../api/types.ts';
 
 export const AnsweredList = () => {
   const [notes, setNotes] = useState<
-    { answerId: number; date: string; question: string; time: string; badges: string[] }[]
+    {
+      answerId: number;
+      date: string;
+      question: string;
+      time: string;
+      answerStatus: AnswerStatus;
+      isUnderstood: boolean;
+    }[]
   >([]);
+
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortType, setSortType] = useState<'DESC' | 'ASC'>('DESC');
@@ -23,6 +34,8 @@ export const AnsweredList = () => {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const requestedPageRef = useRef<Set<number>>(new Set());
+
+  const understoodMap = useRecoilValue(UnderstoodState);
 
   const fetchAnswers = useCallback(
     async (targetPage: number) => {
@@ -42,7 +55,8 @@ export const AnsweredList = () => {
           time: item.runningTime
             ? `${String(Math.floor(item.runningTime / 60)).padStart(2, '0')}:${String(item.runningTime % 60).padStart(2, '0')}`
             : '00:00',
-          badges: item.answerStatus === 'CORRECT' ? (item.isUnderstood ? ['이해완료', '정답'] : ['정답']) : [],
+          answerStatus: item.answerStatus,
+          isUnderstood: item.isUnderstood,
         }));
 
         setNotes(prev => [...prev, ...mapped]);
@@ -124,22 +138,29 @@ export const AnsweredList = () => {
             </EmptyContainer>
           ) : (
             <ListContainer>
-              {notes.map(note => (
-                <QuestionCard key={note.answerId} onClick={() => handleItemClick(note.answerId)}>
-                  <Date>{note.date}</Date>
-                  <Question>{note.question}</Question>
-                  <BottomRow>
-                    <Time>{note.time}</Time>
-                    <BadgeContainer>
-                      {note.badges.map((badge, i) => (
-                        <StatusBadge key={i} status={badge}>
-                          {badge}
-                        </StatusBadge>
-                      ))}
-                    </BadgeContainer>
-                  </BottomRow>
-                </QuestionCard>
-              ))}
+              {notes.map(note => {
+                const isUnderstoodGlobal = understoodMap[String(note.answerId)];
+                const showUnderstood = isUnderstoodGlobal ?? note.isUnderstood;
+                const badges =
+                  note.answerStatus === 'CORRECT' ? (showUnderstood ? ['이해완료', '정답'] : ['정답']) : [];
+
+                return (
+                  <QuestionCard key={note.answerId} onClick={() => handleItemClick(note.answerId)}>
+                    <Date>{note.date}</Date>
+                    <Question>{note.question}</Question>
+                    <BottomRow>
+                      <Time>{note.time}</Time>
+                      <BadgeContainer>
+                        {badges.map((badge, i) => (
+                          <StatusBadge key={i} status={badge}>
+                            {badge}
+                          </StatusBadge>
+                        ))}
+                      </BadgeContainer>
+                    </BottomRow>
+                  </QuestionCard>
+                );
+              })}
             </ListContainer>
           )}
           {isFetching && <LoadingText></LoadingText>}

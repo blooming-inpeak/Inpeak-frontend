@@ -22,13 +22,14 @@ import {
   updateAnswerUnderstood,
 } from '../../api/apiService';
 import { GetAnswerDetailResponse, AnswerStatus } from '../../api/types';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { ResultState } from '../../store/result/ResultState';
 import { QuestionsState } from '../../store/question/Question';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useOutsideClick } from '../../utils/useOutsideClick';
+import { UnderstoodState } from '../../store/Interview/UnderstoodState';
 
 interface RawResultItem {
   question: string;
@@ -69,7 +70,7 @@ export const InterviewResult = ({
   });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [isChecked, setIsChecked] = useState(false);
+
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [resultData, setResult] = useRecoilState(ResultState);
@@ -92,6 +93,8 @@ export const InterviewResult = ({
   const [memoOpenMap, setMemoOpenMap] = useState<Record<string, boolean>>({});
   const memoKey = answerIdForRequest?.toString() ?? `idx-${currentIndexState}`;
   const isMemoOpenForCurrent = memoOpenMap[memoKey] || false;
+
+  const setUnderstoodMap = useSetRecoilState(UnderstoodState);
 
   const handleToggleMemo = () => {
     if (!memoKey) return;
@@ -254,30 +257,26 @@ export const InterviewResult = ({
   // 메모 초기값 세팅
   useEffect(() => {
     if (answerData) {
-      setIsChecked(answerData.isUnderstood); // 이해완료 상태 초기화
       setMemo(answerData.comment || '');
       // 메모 초기화
     }
   }, [answerData]);
 
   const handleToggle = () => {
-    if (!isCorrect) return;
+    if (!isCorrect || !answerIdForRequest) return;
 
-    const nextChecked = !isChecked;
-    setIsChecked(nextChecked);
+    const nextChecked = !answerData.isUnderstood;
 
-    if (answerData) {
-      setAnswerData({
-        ...answerData,
-        isUnderstood: nextChecked,
-      });
-    }
+    setAnswerData(prev => prev && { ...prev, isUnderstood: nextChecked });
 
-    if (answerIdForRequest) {
-      updateAnswerUnderstood(Number(answerIdForRequest), nextChecked)
-        .then(() => console.log('이해완료 상태 업데이트 성공'))
-        .catch(err => console.error('이해완료 상태 업데이트 실패', err));
-    }
+    setUnderstoodMap(prev => ({
+      ...prev,
+      [String(answerIdForRequest)]: nextChecked,
+    }));
+
+    updateAnswerUnderstood(Number(answerIdForRequest), nextChecked)
+      .then(() => console.log('이해완료 상태 업데이트 성공'))
+      .catch(err => console.error('이해완료 상태 업데이트 실패', err));
   };
 
   if (isLoading) {
@@ -286,111 +285,115 @@ export const InterviewResult = ({
   if (!answerData) return null;
   return (
     <>
-      <ModalContainer ref={modalRef}>
-        <CloseButton
-          onClick={() => {
-            if (isAfterInterview) {
-              navigate('/history');
-            } else {
-              onClose?.();
-            }
-          }}
-        >
-          <img src="/images/Close.svg" alt="close" />
-        </CloseButton>
+      {answerData && (
+        <ModalContainer ref={modalRef}>
+          <CloseButton
+            onClick={() => {
+              if (isAfterInterview) {
+                navigate('/history');
+              } else {
+                onClose?.();
+              }
+            }}
+          >
+            <img src="/images/Close.svg" alt="close" />
+          </CloseButton>
 
-        {/* 헤더: 날짜 및 이미지 */}
-        <ModalHeader>
-          <span className="date">{formatKoreanDate(answerData.dateTime)}</span>
-          {(answerData.isUnderstood || isChecked) && <span className="understood-badge">이해 완료</span>}
+          {/* 헤더: 날짜 및 이미지 */}
+          <ModalHeader>
+            <span className="date">{formatKoreanDate(answerData.dateTime)}</span>
+            {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
 
-          <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
-        </ModalHeader>
+            <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
+          </ModalHeader>
 
-        {/* 질문,답변 영역 */}
-        <Wrapper>
-          <div className="question-content">
-            {isShowQuestionIndex ? (
-              <span className="question-mark">Q{currentIndexState + 1}</span>
-            ) : (
-              <span className="question-mark">Q</span>
-            )}
-            <p className="question">{answerData.questionContent}</p>
-          </div>
-          {answerData.answerStatus !== 'SKIPPED' && (
-            <div className="answer-content">
-              <span className="answer-mark">A</span>
-              <p className="answer">{answerData.userAnswer}</p>
-              {answerData.videoUrl && (
-                <div className="video-container">
-                  <video width="168" height="95" controls>
-                    <source src={answerData.videoUrl} type="video/mp4" />
-                  </video>
-                  <span className="video-time">{formatRunningTime(answerData.runningTime)}</span>
-                </div>
-              )}
-            </div>
-          )}
-        </Wrapper>
-        <ToggleContainer>
-          <label className="toggle-label" style={{ color: isCorrect ? '#212121' : '#AFAFAF' }}>
-            이 질문은 완벽히 이해함
-          </label>
-          <ToggleSwitch isChecked={isChecked} onClick={handleToggle} disabled={!isCorrect} />
-        </ToggleContainer>
-
-        {/* 피드백 박스 */}
-        <FeedbackBox>
-          <span className="feedback-title">이렇게 말해보세요!</span>
-          <p className="feedback-content">{answerData.AIAnswer}</p>
-        </FeedbackBox>
-
-        {/* 메모 토글 */}
-        <MemoWrapper>
-          <MemoToggle onClick={handleToggleMemo}>
-            <span className="memo-text" style={{ color: isMemoOpenForCurrent ? '#212121' : '#747474' }}>
-              {isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}
-            </span>
-            <img
-              className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
-              src="/images/memo_toggle.svg"
-              alt="메모 토글"
-            />
-          </MemoToggle>
-        </MemoWrapper>
-
-        {isMemoOpenForCurrent && (
-          <MemoBox
-            ref={textareaRef}
-            placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
-            value={memo}
-            onChange={handleMemoChange}
-          />
-        )}
-        {isShowNavigation && (
-          <Navigation>
-            <ButtonGroup position="left">
-              {currentIndexState > 0 && (
-                <Button className="prev" onClick={handlePrev}>
-                  이전으로
-                </Button>
-              )}
-            </ButtonGroup>
-
-            <ButtonGroup position="right">
-              {currentIndexState < questions.length - 1 ? (
-                <Button className="next" onClick={handleNext}>
-                  다음으로
-                </Button>
+          {/* 질문,답변 영역 */}
+          <Wrapper>
+            <div className="question-content">
+              {isShowQuestionIndex ? (
+                <span className="question-mark">Q{currentIndexState + 1}</span>
               ) : (
-                <Button className="next" onClick={() => navigate('/history')}>
-                  완료
-                </Button>
+                <span className="question-mark">Q</span>
               )}
-            </ButtonGroup>
-          </Navigation>
-        )}
-      </ModalContainer>
+              <p className="question">{answerData.questionContent}</p>
+            </div>
+            {answerData.answerStatus !== 'SKIPPED' && (
+              <div className="answer-content">
+                <span className="answer-mark">A</span>
+                <p className="answer">{answerData.userAnswer}</p>
+                {answerData.videoUrl && (
+                  <div className="video-container">
+                    <video width="168" height="95" controls>
+                      <source src={answerData.videoUrl} type="video/mp4" />
+                    </video>
+                    <span className="video-time">{formatRunningTime(answerData.runningTime)}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </Wrapper>
+          <ToggleContainer>
+            <label className="toggle-label" style={{ color: isCorrect ? '#212121' : '#AFAFAF' }}>
+              이 질문은 완벽히 이해함
+            </label>
+            {answerData && (
+              <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
+            )}
+          </ToggleContainer>
+
+          {/* 피드백 박스 */}
+          <FeedbackBox>
+            <span className="feedback-title">이렇게 말해보세요!</span>
+            <p className="feedback-content">{answerData.AIAnswer}</p>
+          </FeedbackBox>
+
+          {/* 메모 토글 */}
+          <MemoWrapper>
+            <MemoToggle onClick={handleToggleMemo}>
+              <span className="memo-text" style={{ color: isMemoOpenForCurrent ? '#212121' : '#747474' }}>
+                {isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}
+              </span>
+              <img
+                className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
+                src="/images/memo_toggle.svg"
+                alt="메모 토글"
+              />
+            </MemoToggle>
+          </MemoWrapper>
+
+          {isMemoOpenForCurrent && (
+            <MemoBox
+              ref={textareaRef}
+              placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
+              value={memo}
+              onChange={handleMemoChange}
+            />
+          )}
+          {isShowNavigation && (
+            <Navigation>
+              <ButtonGroup position="left">
+                {currentIndexState > 0 && (
+                  <Button className="prev" onClick={handlePrev}>
+                    이전으로
+                  </Button>
+                )}
+              </ButtonGroup>
+
+              <ButtonGroup position="right">
+                {currentIndexState < questions.length - 1 ? (
+                  <Button className="next" onClick={handleNext}>
+                    다음으로
+                  </Button>
+                ) : (
+                  <Button className="next" onClick={() => navigate('/history')}>
+                    완료
+                  </Button>
+                )}
+              </ButtonGroup>
+            </Navigation>
+          )}
+        </ModalContainer>
+      )}
     </>
   );
 };
