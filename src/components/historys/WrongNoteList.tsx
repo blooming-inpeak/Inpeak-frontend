@@ -67,12 +67,6 @@ export const WrongNoteList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [sortType, status],
   );
-  useEffect(() => {
-    console.log(
-      'Fetched notes:',
-      notes.map(n => n.answerId),
-    );
-  }, [notes]);
 
   useEffect(() => {
     if (hasNext) fetchNotes(page);
@@ -194,12 +188,12 @@ const TitleBox = styled.div`
 `;
 
 const ListContainer = styled.div`
-  height: 100%;
-  flex-grow: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   width: 100%;
+  align-items: start;
+  place-items: start;
 `;
 
 const QuestionCard = styled.div`

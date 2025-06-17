@@ -199,28 +199,40 @@ export const InterviewResult = ({
   }, [resultData.length, questionsState.length, setResult, setQuestions, setInterviewId, interviewIdState]);
 
   useEffect(() => {
-    const fetchAnswer = async () => {
+    if (!answerIdForRequest) return;
+    const fetch = async () => {
       setIsLoading(true);
       try {
-        if (answerIdForRequest) {
-          // 히스토리 모달
-          const data = await getAnswerDetailById(answerIdForRequest);
-          setAnswerData(data);
-        } else if (interviewIdForRequest && questionsForRequest.length) {
-          // 면접 직후
-          const questionId = questionsForRequest[currentIndexState].id;
-          const data = await getAnswerDetail({ interviewId: interviewIdForRequest, questionId });
-          setAnswerData(data);
-        }
+        const data = await getAnswerDetailById(answerIdForRequest);
+        setAnswerData(data);
       } catch (err) {
-        console.error('답변 조회 실패', err);
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
     };
+    fetch();
+  }, [answerIdForRequest]);
 
-    fetchAnswer();
-  }, [answerIdForRequest, currentIndexState, interviewIdForRequest, questionsForRequest]);
+  useEffect(() => {
+    if (answerIdForRequest) return; // 우선순위 조절
+    if (!interviewIdForRequest || questionsForRequest.length === 0) return;
+
+    const fetch = async () => {
+      setIsLoading(true);
+      try {
+        const questionId = questionsForRequest[currentIndexState].id;
+        const data = await getAnswerDetail({ interviewId: interviewIdForRequest, questionId });
+        setAnswerData(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interviewIdForRequest, currentIndexState, questionsForRequest]);
 
   const handleNext = () => {
     if (currentIndexState < questions.length - 1) {
