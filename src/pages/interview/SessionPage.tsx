@@ -12,6 +12,7 @@ import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question
 import { ResultState } from '../../store/result/ResultState';
 import { getFormattedDate } from '../../components/common/getFormattedDate';
 import { LoadingModal } from '../../components/common/loading/LoadingModal';
+import { InterviewIdState } from '../../store/Interview/InterviewId';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
@@ -24,25 +25,34 @@ export const SessionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
   const [time, setTime] = useRecoilState(TimeState);
-
+  const interviewId = useRecoilValue(InterviewIdState);
   const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
   const navigate = useNavigate();
+  console.log(interviewId);
+
+  useEffect(() => {
+    if (!interviewId) {
+      navigate('/interview');
+    }
+  }, [interviewId, navigate]);
 
   // 새로고침 감지
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      return '';
+      if (interviewId) {
+        e.preventDefault();
+        return '';
+      }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []);
+  }, [interviewId]);
 
   // audioBlob 반환용 Promise
   const recordingPromiseRef = useRef<Promise<{ videoBlob: Blob; audioBlob: Blob }>>(null);
@@ -246,6 +256,8 @@ export const SessionPage = () => {
       setToasts([]);
     };
   }, [isRecording, start]);
+
+  if (!interviewId || Questions.length === 0) return null;
 
   return (
     <>
