@@ -22,13 +22,14 @@ import {
   updateAnswerUnderstood,
 } from '../../api/apiService';
 import { GetAnswerDetailResponse, AnswerStatus } from '../../api/types';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { ResultState } from '../../store/result/ResultState';
 import { QuestionsState } from '../../store/question/Question';
 import { InterviewIdState } from '../../store/Interview/InterviewId';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useOutsideClick } from '../../utils/useOutsideClick';
+import { UnderstoodState } from '../../store/Interview/UnderstoodState';
 
 interface RawResultItem {
   question: string;
@@ -92,6 +93,8 @@ export const InterviewResult = ({
   const [memoOpenMap, setMemoOpenMap] = useState<Record<string, boolean>>({});
   const memoKey = answerIdForRequest?.toString() ?? `idx-${currentIndexState}`;
   const isMemoOpenForCurrent = memoOpenMap[memoKey] || false;
+
+  const setUnderstoodMap = useSetRecoilState(UnderstoodState);
 
   const handleToggleMemo = () => {
     if (!memoKey) return;
@@ -261,23 +264,25 @@ export const InterviewResult = ({
   }, [answerData]);
 
   const handleToggle = () => {
-    if (!isCorrect) return;
+    if (!isCorrect || !answerIdForRequest) return;
 
     const nextChecked = !isChecked;
     setIsChecked(nextChecked);
 
-    if (answerData) {
-      setAnswerData({
-        ...answerData,
-        isUnderstood: nextChecked,
-      });
-    }
+    setAnswerData({
+      ...answerData,
+      isUnderstood: nextChecked,
+    });
+    const key = String(answerIdForRequest);
 
-    if (answerIdForRequest) {
-      updateAnswerUnderstood(Number(answerIdForRequest), nextChecked)
-        .then(() => console.log('이해완료 상태 업데이트 성공'))
-        .catch(err => console.error('이해완료 상태 업데이트 실패', err));
-    }
+    setUnderstoodMap(prev => ({
+      ...prev,
+      [key]: nextChecked,
+    }));
+
+    updateAnswerUnderstood(Number(answerIdForRequest), nextChecked)
+      .then(() => console.log('이해완료 상태 업데이트 성공'))
+      .catch(err => console.error('이해완료 상태 업데이트 실패', err));
   };
 
   if (isLoading) {
