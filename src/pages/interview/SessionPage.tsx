@@ -24,11 +24,25 @@ export const SessionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
   const [time, setTime] = useRecoilState(TimeState);
+
   const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
   const navigate = useNavigate();
+
+  // 새로고침 감지
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   // audioBlob 반환용 Promise
   const recordingPromiseRef = useRef<Promise<{ videoBlob: Blob; audioBlob: Blob }>>(null);
