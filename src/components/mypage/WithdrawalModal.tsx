@@ -11,8 +11,11 @@ import {
   WithdrawalTitle,
   YesButton,
 } from './WithdrawalModalStyle';
+import { useOutsideClick } from '../../utils/useOutsideClick';
 
 export const WithdrawalModal = ({ onClose }: { onClose: () => void }) => {
+  const ref = useOutsideClick<HTMLDivElement>(onClose);
+
   const navigate = useNavigate();
   const onClickWithdrawal = async () => {
     const data = await WithdrawalUser();
@@ -21,7 +24,7 @@ export const WithdrawalModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <WithdrawalModalWrapper>
+    <WithdrawalModalWrapper ref={ref}>
       <CloseButton>
         <img src="/images/Close.svg" alt="close icon" style={{ width: '24px', cursor: 'pointer' }} onClick={onClose} />
       </CloseButton>

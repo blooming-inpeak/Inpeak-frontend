@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { MicList } from './MicList';
 import { BlurBackground } from '../common/background/BlurBackground';
 import { MicTest } from './MicTest';
+import { useRecoilValue } from 'recoil';
+import { isMicConnectedState } from '../../store/record/Record';
 
 interface Props {
   currentMic: string | null;
@@ -12,6 +14,10 @@ interface Props {
   handleVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   analyser: AnalyserNode | null;
   setVolume: (volume: number) => void;
+}
+
+interface IntroMicCheckProps {
+  disabled: boolean;
 }
 
 export const MicCheck = ({
@@ -25,6 +31,7 @@ export const MicCheck = ({
 }: Props) => {
   const [isClick, setIsClick] = useState(false);
   const [micTest, setMicTest] = useState(false);
+  const isMicConnected = useRecoilValue(isMicConnectedState);
 
   return (
     <MicCheckWrapper>
@@ -56,7 +63,9 @@ export const MicCheck = ({
           </div>
         </MicSelect>
 
-        <MicSelectButton onClick={() => setMicTest(true)}>마이크 테스트</MicSelectButton>
+        <MicSelectButton onClick={() => setMicTest(true)} disabled={!isMicConnected}>
+          마이크 테스트
+        </MicSelectButton>
         {micTest && (
           <BlurBackground>
             <MicTest
@@ -127,18 +136,17 @@ export const MicListButton = styled.img<{ $isClick: boolean }>`
   transition: transform 0.3s ease;
 `;
 
-export const MicSelectButton = styled.div`
-  width: 80px;
-  height: 24px;
-  padding: 2px 10px;
+export const MicSelectButton = styled.button<IntroMicCheckProps>`
+  width: 100px;
+  height: 28px;
 
   border-radius: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #3277ed;
+  background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#3277ed')};
 
-  color: white;
+  color: ${({ disabled }) => (disabled ? '#707991' : 'white')};
   font-size: 12px;
   font-weight: 500;
   letter-spacing: -0.3px;
@@ -146,6 +154,6 @@ export const MicSelectButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #72a6ff;
+    background-color: ${({ disabled }) => (disabled ? '' : '#72a6ff')};
   }
 `;

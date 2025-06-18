@@ -15,6 +15,7 @@ interface Props {
   lastQuestion: boolean;
   isSubmitting: boolean;
   setIsSubmitting: Dispatch<React.SetStateAction<boolean>>;
+  stopMediaStream: () => void;
 }
 
 export const Buttons = ({
@@ -26,6 +27,7 @@ export const Buttons = ({
   lastQuestion,
   isSubmitting,
   setIsSubmitting,
+  stopMediaStream,
 }: Props) => {
   const navigate = useNavigate();
   const [ishover, setIsHover] = useState(false);
@@ -52,6 +54,7 @@ export const Buttons = ({
       localStorage.setItem('result', JSON.stringify(newResult));
       console.log(data);
       if (lastQuestion) {
+        stopMediaStream();
         navigate('/interview/progressresult');
       } else {
         nextPage();

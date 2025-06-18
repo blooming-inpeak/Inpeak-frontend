@@ -3,9 +3,12 @@ import styled from 'styled-components';
 
 interface Props {
   close: () => void;
+  title: string;
+  content: string;
+  buttonConent: string;
 }
 
-export const ExitInterview = ({ close }: Props) => {
+export const ExitInterview = ({ close, title, content, buttonConent }: Props) => {
   const navigate = useNavigate();
   const stopInterview = () => {
     navigate('/interview');
@@ -17,12 +20,12 @@ export const ExitInterview = ({ close }: Props) => {
 
       <ExitInterviewBody>
         <ExitInterviewDescription>
-          <ExitInterviewTitle>정말 모의면접 연습을 중단하실 건가요?</ExitInterviewTitle>
-          <ExitInterviewSubTitle>중단시 사용한 면접 기회는 복구되지 않습니다.</ExitInterviewSubTitle>
+          <ExitInterviewTitle>{title}</ExitInterviewTitle>
+          <ExitInterviewSubTitle>{content}</ExitInterviewSubTitle>
         </ExitInterviewDescription>
 
         <ExitInterviewButtons>
-          <StopButton onClick={stopInterview}>중단하기</StopButton>
+          <StopButton onClick={stopInterview}>{buttonConent}</StopButton>
           <ContinueButton onClick={close}>계속 연습하기</ContinueButton>
         </ExitInterviewButtons>
       </ExitInterviewBody>
