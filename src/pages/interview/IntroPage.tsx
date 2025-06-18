@@ -58,7 +58,7 @@ export const IntroPage = () => {
           <IntroTestTop />
           <IntroTestBottom>
             <IntroStartButton onClick={onClickStart} disabled={!isMicConnected || !isStarted}>
-              {isMicConnected ? '시작하기' : !isStarted ? '면접기회가 부족합니다' : '마이크를 연결해주세요'}
+              {!isStarted ? '면접기회가 부족합니다' : isMicConnected ? '시작하기' : '마이크를 연결해주세요'}
             </IntroStartButton>
           </IntroTestBottom>
         </IntroTest>
