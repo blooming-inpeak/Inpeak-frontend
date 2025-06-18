@@ -4,13 +4,14 @@ import { MyStack } from './MyStack';
 import { RecordCheck } from './RecordCheck';
 import { RecordTest } from './RecordTest';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
-import { currentMicState, isRecordingState } from '../../store/record/Record';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { currentMicState, isMicConnectedState, isRecordingState } from '../../store/record/Record';
 
 export const IntroTestTop = () => {
   const [isRecord, setIsRecord] = useRecoilState(isRecordingState);
   const [currentMic, setCurrentMic] = useRecoilState(currentMicState);
   const [micList, setMicList] = useState<MediaDeviceInfo[]>([]);
+  const setIsMicConnected = useSetRecoilState(isMicConnectedState);
   const [volume, setVolume] = useState(1); //볼륨 상태 (0~1)
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -44,6 +45,7 @@ export const IntroTestTop = () => {
         if (audioTracks.length > 0 && !currentMic) {
           // 사용중인 마이크의 lable 가져오기
           setCurrentMic(audioTracks[0].label);
+          setIsMicConnected(true);
         }
 
         if (videoRef.current) {

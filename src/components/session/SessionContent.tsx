@@ -25,6 +25,7 @@ interface Props {
   nextPage: () => void;
   isSubmitting: boolean;
   setIsSubmitting: Dispatch<React.SetStateAction<boolean>>;
+  stopMediaStream: () => void;
 }
 
 export const SessionContent = ({
@@ -36,6 +37,7 @@ export const SessionContent = ({
   nextPage,
   isSubmitting,
   setIsSubmitting,
+  stopMediaStream,
 }: Props) => {
   const isRecording = useRecoilValue(isRecordingState);
   const Questions = useRecoilValue(QuestionsState);
@@ -71,6 +73,7 @@ export const SessionContent = ({
           lastQuestion={lastQuestion}
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
+          stopMediaStream={stopMediaStream} // Placeholder for stopMediaStream prop
         />
       </SessionContentBody>
     </SessionContentWrapper>

@@ -8,6 +8,7 @@ import {
   PrivacyWrapper,
   Space,
 } from './PolicyStyle';
+import { useOutsideClick } from '../../../utils/useOutsideClick';
 
 interface Props {
   isPolicy: string;
@@ -16,6 +17,7 @@ interface Props {
 
 export const PrivacyPolicyModal = ({ isPolicy, onClose }: Props) => {
   const [privacyContent, setPrivacyContent] = useState('');
+  const ref = useOutsideClick<HTMLDivElement>(onClose);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -28,7 +30,7 @@ export const PrivacyPolicyModal = ({ isPolicy, onClose }: Props) => {
   }, [isPolicy]);
 
   return (
-    <PrivacyWrapper>
+    <PrivacyWrapper ref={ref}>
       <PrivacyTop>
         <img src="/images/chevron/Chevron_left.svg" alt="Chevron_left" onClick={onClose} style={{ width: '24px' }} />
         <PrivacyTitle>{isPolicy === 'privacy' ? '개인정보처리방침' : '서비스 약관'}</PrivacyTitle>

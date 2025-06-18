@@ -64,7 +64,12 @@ export const SessionTop = ({ start, setStart, stopRecording, isSubmitting, setIs
       <SessionTime>{formatTime(time)}</SessionTime>
       {isClick && (
         <BlurBackground>
-          <ExitInterview close={() => setIsClick(false)} />
+          <ExitInterview
+            close={() => setIsClick(false)}
+            title="정말 모의면접 연습을 중단하실 건가요?"
+            content="중단시 사용한 면접 기회는 복구되지 않습니다."
+            buttonConent="중단하기"
+          />
         </BlurBackground>
       )}
     </SessionTopWrapper>

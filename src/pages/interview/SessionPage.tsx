@@ -12,6 +12,7 @@ import { AnswerQuestion, getVideoUrl, uploadVideoToS3 } from '../../api/question
 import { ResultState } from '../../store/result/ResultState';
 import { getFormattedDate } from '../../components/common/getFormattedDate';
 import { LoadingModal } from '../../components/common/loading/LoadingModal';
+import { InterviewIdState } from '../../store/Interview/InterviewId';
 
 export const SessionPage = () => {
   const [start, setStart] = useState(false);
@@ -24,11 +25,34 @@ export const SessionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const Questions = useRecoilValue(QuestionsState);
   const [time, setTime] = useRecoilState(TimeState);
+  const interviewId = useRecoilValue(InterviewIdState);
   const setResult = useSetRecoilState(ResultState);
   const page = Questions.length;
   const { id } = useParams();
   const lastQuestion = page === currentPage;
   const navigate = useNavigate();
+  console.log(interviewId);
+
+  useEffect(() => {
+    if (!interviewId) {
+      navigate('/interview');
+    }
+  }, [interviewId, navigate]);
+
+  // 새로고침 감지
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (interviewId) {
+        e.preventDefault();
+        return '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [interviewId]);
 
   // audioBlob 반환용 Promise
   const recordingPromiseRef = useRef<Promise<{ videoBlob: Blob; audioBlob: Blob }>>(null);
@@ -80,16 +104,26 @@ export const SessionPage = () => {
     }
   };
 
+  const stopMediaStream = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => {
+        if (track.readyState === 'live') track.stop();
+      });
+      streamRef.current = null;
+    }
+  };
+
   // 녹화 종료 및 API 요청
   const stopRecording = async (elapsedTime?: number) => {
     const currentTime = elapsedTime ?? 180 - time;
     console.log('time: ', currentTime);
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
+
+    stopMediaStream();
 
     // onstop 이벤트에서 데이터 처리가 완료될 때까지 대기
     const { videoBlob, audioBlob } = await recordingPromiseRef.current!;
@@ -233,6 +267,8 @@ export const SessionPage = () => {
     };
   }, [isRecording, start]);
 
+  if (!interviewId || Questions.length === 0) return null;
+
   return (
     <>
       <SessionWrapper>
@@ -253,6 +289,7 @@ export const SessionPage = () => {
             nextPage={() => setCurrentPage(prev => prev + 1)}
             isSubmitting={isSubmitting}
             setIsSubmitting={setIsSubmitting}
+            stopMediaStream={stopMediaStream}
           />
         </SessionBody>
 
