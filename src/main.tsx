@@ -6,6 +6,15 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import './index.css';
 
+if (import.meta.env.MODE === 'development') {
+  const noop = () => {};
+  console.log = noop;
+  console.error = noop;
+  console.debug = noop;
+  console.warn = noop;
+  console.info = noop;
+}
+
 createRoot(document.getElementById('root')!).render(
   <RecoilRoot>
     <BrowserRouter>
