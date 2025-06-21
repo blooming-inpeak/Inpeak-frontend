@@ -1,4 +1,4 @@
-import api from '../apiClient';
+import api from '../index';
 
 export const SaveNicknameAPI = async (nickname: string) => {
   try {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import api from '../apiClient';
+import api from '../index';
 
 export const PassQuestion = async (questionId: string, interviewId: string) => {
   try {
