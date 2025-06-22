@@ -10,6 +10,7 @@ import {
   isSameMonth,
   isSameDay,
   addDays,
+  getDay,
 } from 'date-fns';
 import LeftArrow from '../../../assets/img/LeftArrow.svg';
 import RightArrow from '../../../assets/img/RightArrow.svg';
@@ -259,6 +260,7 @@ const HistoryCalendar = () => {
                       isToday={isSameDay(day, new Date())}
                       isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
                       isSameMonth={isSameMonth(day, monthStart)}
+                      isSunday={getDay(cloneDay) === 0}
                       onClick={() => setSelectedDate(cloneDay)}
                     >
                       <DateContent>
