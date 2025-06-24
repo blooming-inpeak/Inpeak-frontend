@@ -209,7 +209,12 @@ export const Row = styled.div`
   width: 100%;
 `;
 
-export const DateCell = styled.div<{ isToday?: boolean; isSelected?: boolean; isSameMonth?: boolean }>`
+export const DateCell = styled.div<{
+  isToday?: boolean;
+  isSelected?: boolean;
+  isSameMonth?: boolean;
+  isSunday?: boolean;
+}>`
   position: relative;
   width: 24px;
   height: 24px;
@@ -219,7 +224,12 @@ export const DateCell = styled.div<{ isToday?: boolean; isSelected?: boolean; is
   font-size: 12px;
   border-radius: 50%;
   background: ${({ isToday, isSelected }) => (isToday ? '#3277ED' : isSelected ? '#C3DAFF' : 'none')};
-  color: ${({ isToday, isSelected }) => (isToday ? '#fff' : isSelected ? '#0050D8' : '#747474')};
+  color: ${({ isToday, isSelected, isSunday }) => {
+    if (isToday) return '#fff';
+    if (isSelected) return '#0050D8';
+    if (isSunday) return '#D60000'; // 일요일은 빨간색
+    return '#747474'; // 기본 회색
+  }};
   font-weight: 400;
   cursor: pointer;
   &:hover {
