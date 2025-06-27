@@ -44,3 +44,11 @@ export interface GetAnswerDetailResponse {
   videoUrl?: string;
   AIAnswer: string;
 }
+
+export interface AnswerQuestionRequest {
+  audioURL: string;
+  time: number;
+  questionId: number;
+  interviewId: number;
+  videoURL: string;
+}
