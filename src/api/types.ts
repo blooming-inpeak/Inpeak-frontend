@@ -20,17 +20,13 @@ export interface GetIncorrectAnswersResponse {
 }
 export interface GetAnsweredListParams {
   sortType: 'ASC' | 'DESC';
-  isUnderstood?: boolean;
+  isUnderstood: boolean;
   page: number;
 }
 
 export interface GetAnsweredListResponse {
   AnswerResponseList: AnswerResponse[];
   hasNext: boolean;
-}
-export interface GetAnswerDetailParams {
-  interviewId: number;
-  questionId: number;
 }
 
 export interface GetAnswerDetailResponse {

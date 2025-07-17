@@ -1,40 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Lottie from 'lottie-react';
-import loadingAnimationData from '../../../public/images/loading/loading.json';
 import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
-import { useRecoilValue } from 'recoil';
-import { ResultState } from '../../store/result/ResultState';
-import { getAnswerDetail } from '../../api/apiService';
-import { InterviewIdState } from '../../store/Interview/InterviewId';
-import { QuestionsState } from '../../store/question/Question';
-
-import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
-import { GetAnswerDetailResponse } from '../../api/types';
-type LocalResultType = {
-  question: string;
-  time: number;
-  isAnswer: boolean;
-  answerId: number;
+import { formatSecondsToTime } from '../../utils/format';
+
+export type Result = {
   interviewId: string;
   questionId: number;
+  question: string;
+  answerId?: number;
+  taskId?: number;
+  time: number;
+  isAnswer: boolean;
+};
+export type ResultDataType = {
+  question: string;
+  time: string;
+  status: 'success' | 'giveup';
+};
+type ResultItemProps = {
+  index: number;
+  item: Result;
 };
 
 export const ProgessResultPage: React.FC = () => {
-  const resultState = useRecoilValue(ResultState);
-  const [resultData, setResultData] = useState<ResultDataType[]>([]);
+  const [resultData, setResultData] = useState<Result[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const interviewId = useRecoilValue(InterviewIdState);
-  const questions = useRecoilValue(QuestionsState);
-
-  const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
   const [showResultModal, setShowResultModal] = useState<boolean>(false);
 
-  const getResultStateFromStorage = (): LocalResultType[] => {
+  const getResultStateFromStorage = (): Result[] => {
     try {
       const raw = localStorage.getItem('result');
       if (!raw) return [];
@@ -45,94 +40,16 @@ export const ProgessResultPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const formatted: ResultDataType[] = resultState.map(item => ({
-      question: item.question,
-      time: formatSecondsToTime(item.time),
-      status: item.isAnswer ? 'success' : 'giveup',
-    }));
-    setResultData(formatted);
-  }, [resultState]);
-
-  useEffect(() => {
-    const calculateTotalTime = () => {
-      const source = resultState.length > 0 ? resultState : getResultStateFromStorage();
-      const totalSeconds = source.reduce((acc, curr) => acc + curr.time, 0);
-      return formatSecondsToTime(totalSeconds);
-    };
-
-    setTotalTime(calculateTotalTime());
-  }, [resultState]);
-
-  const handleFeedbackClick = async () => {
-    let fallbackInterviewId = interviewId;
-    let fallbackQuestions = questions;
-
-    if (!interviewId || questions.length === 0) {
-      const stored = getResultStateFromStorage();
-      if (stored.length > 0) {
-        fallbackInterviewId = Number(stored[0].interviewId);
-        fallbackQuestions = stored.map(item => ({
-          id: item.questionId,
-          content: item.question,
-        }));
-      }
-    }
-
-    if (!fallbackInterviewId || fallbackQuestions.length === 0) return;
-
-    setIsLoading(true);
-    try {
-      const questionId = fallbackQuestions[0].id;
-      const delay = new Promise(resolve => setTimeout(resolve, 1500));
-      const dataPromise = getAnswerDetail({ interviewId: fallbackInterviewId, questionId });
-      const [data] = await Promise.all([dataPromise, delay]);
-      setAnswerData(data);
-    } catch (err) {
-      console.error('AI 피드백 요청 실패', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!isLoading && answerData) {
-      setTimeout(() => {
-        setShowResultModal(true);
-      }, 300); // 살짝 딜레이 줘서 자연스럽게
-    }
-  }, [isLoading, answerData]);
-
-  useEffect(() => {
-    if (resultState.length === 0) {
-      const stored = getResultStateFromStorage();
-      const formatted: ResultDataType[] = stored.map(item => ({
-        question: item.question,
-        time: formatSecondsToTime(item.time),
-        status: item.isAnswer ? 'success' : 'giveup',
-      }));
-      setResultData(formatted);
-    } else {
-      const formatted: ResultDataType[] = resultState.map(item => ({
-        question: item.question,
-        time: formatSecondsToTime(item.time),
-        status: item.isAnswer ? 'success' : 'giveup',
-      }));
-      setResultData(formatted);
-    }
-  }, [resultState]);
+    const stored = getResultStateFromStorage();
+    setResultData(stored);
+    const totalSeconds = stored.reduce((acc, curr) => acc + curr.time, 0);
+    setTotalTime(formatSecondsToTime(totalSeconds));
+  }, []);
 
   return (
     <>
-      {showResultModal && answerData && (
-        <BlurBackground>
-          <InterviewResult
-            interviewId={interviewId}
-            questions={questions}
-            initialAnswerData={answerData}
-            onClose={() => setShowResultModal(false)} // 모달 닫기
-            isAfterInterview
-          />
-        </BlurBackground>
+      {showResultModal && (
+        <InterviewResult result={resultData} onClose={() => setShowResultModal(false)} isAfterInterview />
       )}
 
       <ResultPageWrapper>
@@ -160,60 +77,25 @@ export const ProgessResultPage: React.FC = () => {
               </ResultList>
             </ResultmainBottom>
           </ResultMain>
-          <ResultFeedbackButton onClick={handleFeedbackClick}>AI 피드백 받기</ResultFeedbackButton>
+          <ResultFeedbackButton onClick={() => setShowResultModal(true)}>AI 피드백 받기</ResultFeedbackButton>
         </ResultPageContainer>
       </ResultPageWrapper>
-      {isLoading && (
-        <Overlay>
-          <Lottie
-            animationData={loadingAnimationData}
-            loop={true}
-            autoplay={true}
-            style={{ width: '203px', height: '200px' }}
-          />
-          <ProgressBarContainer>
-            <ProgressBar />
-          </ProgressBarContainer>
-        </Overlay>
-      )}
     </>
   );
 };
 
-const formatSecondsToTime = (seconds: number): string => {
-  const minutes = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, '0');
-  const remaining = (seconds % 60).toString().padStart(2, '0');
-  return `${minutes}:${remaining}`;
-};
+const getStampImage = (status: 'success' | 'giveup') => (status === 'success' ? SuccessStamp : GiveupStamp);
 
-export type ResultDataType = {
-  question: string;
-  time: string;
-  status: 'success' | 'giveup';
-};
-
-type ResultItemProps = {
-  index: number;
-  item: ResultDataType;
-};
-
-const ResultItem: React.FC<ResultItemProps> = ({ index, item }) => {
-  const getStampImage = (status: 'success' | 'giveup') => {
-    if (status === 'success') return SuccessStamp;
-    if (status === 'giveup') return GiveupStamp;
-    return '';
-  };
-
+const ResultItem: React.FC<ResultItemProps> = ({ index, item: { question, time, isAnswer } }) => {
+  const status = isAnswer ? 'success' : 'giveup';
   return (
     <div className="resultList">
       <h1>Q{index + 1}</h1>
       <div id="resultListContent">
-        <h2>{item.question}</h2>
-        <h3>{item.time}</h3>
+        <h2>{question}</h2>
+        <h3>{formatSecondsToTime(time)}</h3>
       </div>
-      <img src={getStampImage(item.status)} alt={item.status} />
+      <img src={getStampImage(status)} alt={status} />
     </div>
   );
 };
@@ -233,7 +115,9 @@ const ResultPageContainer = styled.div`
   flex-direction: column;
   width: 710px;
   border-radius: 24px;
-  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow:
+    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
+    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
   padding-bottom: 48px;
 `;
@@ -358,7 +242,7 @@ const Divider = styled.div`
   width: 500px;
   height: 1px;
   background-color: #e0e0e0;
-  margin: 10px 0;
+  margin: 10px auto;
 `;
 
 const ResultFeedbackButton = styled.button`
@@ -376,43 +260,5 @@ const ResultFeedbackButton = styled.button`
 
   &:hover {
     background: rgb(13, 17, 27);
-  }
-`;
-
-const Overlay = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgb(255, 255, 255);
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  gap: 42.5px;
-`;
-
-const ProgressBarContainer = styled.div`
-  width: 470px;
-  height: 10px;
-  background: #ccc;
-  border-radius: 10px;
-  overflow: hidden;
-`;
-
-const ProgressBar = styled.div`
-  background: #85b2ff;
-  height: 100%;
-  animation: progressAnimation 5s linear forwards;
-
-  @keyframes progressAnimation {
-    from {
-      width: 0%;
-    }
-    to {
-      width: 100%;
-    }
   }
 `;
