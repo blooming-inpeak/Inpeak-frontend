@@ -1,12 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ContactIcon from '/images/contacticon.svg';
+import { useState } from 'react';
+import ContactSvg from './ContactSvg';
 
 export const FloatingContactButton = () => {
   const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <Button onClick={() => navigate('/contact')}>
+    <Button
+      onClick={() => navigate('/contact')}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {hovered && (
+        <Tooltip>
+          <ContactSvg />
+        </Tooltip>
+      )}
       <img src={ContactIcon} alt="Contact" />
     </Button>
   );
@@ -34,4 +46,12 @@ const Button = styled.button`
     height: 100%;
     object-fit: contain;
   }
+`;
+const Tooltip = styled.div`
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  z-index: 10000;
 `;

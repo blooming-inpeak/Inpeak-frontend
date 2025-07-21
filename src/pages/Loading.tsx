@@ -9,7 +9,7 @@ function Loading() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const DURATION = 50000000;
+    const DURATION = 13000;
     const INTERVAL = 10;
     const STEP = 100 / (DURATION / INTERVAL);
 
@@ -44,8 +44,8 @@ function Loading() {
         animationData={loadingAnimationData}
         loop={true}
         autoplay={true}
-        style={{ width: '120x', height: '120px', paddingTop: '109px' }}
-      />{' '}
+        style={{ width: '120px', height: '120px', paddingTop: '109px' }}
+      />
       <MainText>잠시만 기다려주세요</MainText>
       <SubText>인픽이가 열심히 답변을 분석하고 있어요</SubText>
     </Container>
