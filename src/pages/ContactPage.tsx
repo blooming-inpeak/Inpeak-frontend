@@ -76,6 +76,9 @@ const EmailAddress = styled.button`
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.35px;
+  &:hover {
+    background-color: #72a6ff;
+  }
 `;
 
 export const ContactPage = () => {

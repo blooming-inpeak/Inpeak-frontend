@@ -4,6 +4,7 @@ import SuccessStamp from '../../assets/img/SuccessStamp.svg';
 import GiveupStamp from '../../assets/img/GiveupStamp.svg';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { formatSecondsToTime } from '../../utils/format';
+import { SessionCloseModal } from '../../components/session/SessionCloseModal';
 
 export type Result = {
   interviewId: string;
@@ -28,6 +29,7 @@ export const ProgessResultPage: React.FC = () => {
   const [resultData, setResultData] = useState<Result[]>([]);
   const [totalTime, setTotalTime] = useState<string>('00:00');
   const [showResultModal, setShowResultModal] = useState<boolean>(false);
+  const [showCloseModal, setShowCloseModal] = useState(false);
 
   const getResultStateFromStorage = (): Result[] => {
     try {
@@ -54,7 +56,10 @@ export const ProgessResultPage: React.FC = () => {
 
       <ResultPageWrapper>
         <ResultPageContainer>
-          <ResultTop />
+          <ResultTop>
+            <CloseBtn onClick={() => setShowCloseModal(true)}>닫기</CloseBtn>
+          </ResultTop>
+          {showCloseModal && <SessionCloseModal onClose={() => setShowCloseModal(false)} />}
           <ResultMain>
             <ResultmainTop>
               <div id="resultTitle">
@@ -129,7 +134,21 @@ const ResultTop = styled.div`
   border-radius: 24px 24px 0px 0px;
   background: #323b54;
 `;
-
+const CloseBtn = styled.button`
+  width: 40px;
+  height: 25px;
+  border: 1px solid #afafaf;
+  border-radius: 10px;
+  color: #fff;
+  margin-top: 12px;
+  margin-left: 12px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+`;
 const ResultMain = styled.div`
   width: 710px;
   border-radius: 0px 0px 24px 24px;

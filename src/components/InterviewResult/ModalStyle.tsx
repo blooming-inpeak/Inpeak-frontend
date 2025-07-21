@@ -10,7 +10,7 @@ export const ModalContainer = styled.div<{ isInterviewPage?: boolean }>`
   max-width: 829px;
   min-height: 300px;
   height: auto;
-  max-height: 80vh;
+  max-height: 85vh;
   width: 100%;
   overflow-y: auto;
   scrollbar-width: none;
@@ -207,8 +207,10 @@ export const FeedbackBox = styled.div`
 
 export const MemoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
   width: 100%;
+  padding-bottom: 97px;
 `;
 
 export const MemoToggle = styled.div`
@@ -217,7 +219,6 @@ export const MemoToggle = styled.div`
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  margin-bottom: 20px;
 
   .memo-text {
     font-size: 14px;
@@ -255,9 +256,20 @@ export const MemoBox = styled.textarea`
 export const Navigation = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  align-items: center;
   width: 100%;
   position: relative;
+  .question-index {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #afafaf;
+    .current {
+      color: #1463e8;
+      font-weight: 600;
+    }
+  }
 `;
 
 export const ButtonGroup = styled.div<{ position: 'left' | 'right' }>`
@@ -268,6 +280,7 @@ export const ButtonGroup = styled.div<{ position: 'left' | 'right' }>`
 export const Button = styled.button`
   padding: 6px 18px;
   white-space: nowrap;
+  width: 100px;
   height: 36px;
   border: none;
   border-radius: 100px;
@@ -277,11 +290,17 @@ export const Button = styled.button`
   &.prev {
     background: #c3daff;
     color: #0050d8;
+    &:hover {
+      background: #e6efff;
+    }
   }
 
   &.next {
     background: #3277ed;
     color: #ffffff;
+    &:hover {
+      background: #72a6ff;
+    }
   }
 `;
 export const CloseButton = styled.div`

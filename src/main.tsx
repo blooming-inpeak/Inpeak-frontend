@@ -6,6 +6,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import './index.css';
 
+// if (import.meta.env.DEV) {
+//   const { worker } = await import('./mocks/browser');
+//   await worker.start();
+// }
 if (import.meta.env.MODE === 'production') {
   const empty = () => {};
   console.log = empty;
