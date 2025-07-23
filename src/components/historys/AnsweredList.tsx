@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getAnsweredList } from '../../api/apiService';
 
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
-import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
 import { UnderstoodState } from '../../store/Interview/UnderstoodState.ts';
 import { useRecoilValue } from 'recoil';
@@ -97,13 +96,7 @@ export const AnsweredList = () => {
   return (
     <>
       {isModalOpen && selectedAnswerId && (
-        <BlurBackground>
-          <InterviewResult
-            answerId={selectedAnswerId}
-            showQuestionIndex={false}
-            onClose={() => setIsModalOpen(false)}
-          />
-        </BlurBackground>
+        <InterviewResult answerId={selectedAnswerId} showQuestionIndex={false} onClose={() => setIsModalOpen(false)} />
       )}
 
       <SectionContainer>

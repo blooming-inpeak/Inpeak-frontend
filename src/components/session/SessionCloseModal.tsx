@@ -44,7 +44,6 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 340px;
   background: #fff;
   border-radius: 24px;
   padding: 52px 65px;

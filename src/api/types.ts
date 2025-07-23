@@ -20,7 +20,7 @@ export interface GetIncorrectAnswersResponse {
 }
 export interface GetAnsweredListParams {
   sortType: 'ASC' | 'DESC';
-  isUnderstood: boolean;
+  isUnderstood?: boolean;
   page: number;
 }
 

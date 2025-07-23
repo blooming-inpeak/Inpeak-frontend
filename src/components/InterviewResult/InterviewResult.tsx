@@ -28,19 +28,21 @@ import { BlurBackground } from '../common/background/BlurBackground';
 import Loading from '../../pages/Loading';
 import { Fail } from '../../pages/Fail';
 
-interface RawResultItem {
-  question: string;
-  questionId: number;
-  time: number;
-  isAnswer: boolean;
+type RawResultItem = {
   answerId?: number;
   taskId?: number;
-}
+  isAnswer?: boolean;
+  question?: string;
+  questionId?: number;
+  time?: number;
+};
+
 interface InterviewResultProps {
-  result: RawResultItem[];
-  showQuestionIndex?: boolean;
+  result?: RawResultItem[]; // 여러 질문용
+  answerId?: number; // 단일 질문용
   currentIndex?: number;
   onClose?: () => void;
+  showQuestionIndex?: boolean;
   isAfterInterview?: boolean;
   isCalendar?: boolean;
   isList?: boolean;
@@ -48,6 +50,7 @@ interface InterviewResultProps {
 
 export const InterviewResult = ({
   result,
+  answerId,
   onClose,
   currentIndex = 0,
   isCalendar,
@@ -68,14 +71,32 @@ export const InterviewResult = ({
   const setUnderstoodMap = useSetRecoilState(UnderstoodState);
   const [taskStatusMap, setTaskStatusMap] = useState<Record<string, 'WAITING' | 'SUCCESS' | 'FAILED'>>({});
   const [taskLoadingMap, setTaskLoadingMap] = useState<Record<string, boolean>>({});
+  const [isMounted, setIsMounted] = useState(false);
 
   const isTaskFailed = taskStatusMap[currentIndexState] === 'FAILED';
   const isTaskLoading = isLoading || taskLoadingMap[currentIndexState];
-  const hasNoAnswer = !answerData;
 
   useEffect(() => {
-    storedResult.current = result;
-  }, [result]);
+    const timeout = setTimeout(() => {
+      setIsMounted(true);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    if (result && result.length > 0) {
+      storedResult.current = result;
+    } else if (answerId) {
+      storedResult.current = [
+        {
+          answerId,
+          isAnswer: true,
+        },
+      ];
+    } else {
+      storedResult.current = [];
+    }
+  }, [result, answerId]);
 
   const answerIdForRequest = storedResult.current[currentIndexState]?.answerId ?? null;
 
@@ -160,19 +181,6 @@ export const InterviewResult = ({
     updateAnswerUnderstood(Number(answerIdForRequest), nextChecked);
   };
 
-  if (!result || result.length === 0) {
-    return (
-      <BlurBackground>
-        <ModalContainer ref={modalRef}>
-          <div style={{ padding: '64px', textAlign: 'center' }}>
-            <p>표시할 질문이 없습니다.</p>
-            <p>면접을 먼저 진행해 주세요.</p>
-          </div>
-        </ModalContainer>
-      </BlurBackground>
-    );
-  }
-
   const getStatusLabel = (status: AnswerStatus): string => {
     switch (status) {
       case 'CORRECT':
@@ -186,6 +194,21 @@ export const InterviewResult = ({
     }
   };
 
+  if (!isMounted) {
+    return null;
+  }
+
+  const item = storedResult.current[currentIndexState];
+  if (!item) {
+    return (
+      <BlurBackground>
+        <ModalContainer ref={modalRef}>
+          <div style={{ padding: '64px', textAlign: 'center' }}></div>
+        </ModalContainer>
+      </BlurBackground>
+    );
+  }
+
   return (
     <BlurBackground>
       <ModalContainer ref={modalRef}>
@@ -194,7 +217,7 @@ export const InterviewResult = ({
         </CloseButton>
         {isTaskFailed ? (
           <Fail index={currentIndexState} />
-        ) : isTaskLoading || hasNoAnswer ? (
+        ) : isTaskLoading || !answerData ? (
           <Loading />
         ) : (
           <>

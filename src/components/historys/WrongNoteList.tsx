@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getIncorrectAnswers } from '../../api/apiService.ts';
 import { AnswerResponse } from '../../api/types.ts';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
-import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -90,13 +89,7 @@ export const WrongNoteList = () => {
   return (
     <>
       {isModalOpen && selectedAnswerId && (
-        <BlurBackground>
-          <InterviewResult
-            answerId={selectedAnswerId}
-            showQuestionIndex={false}
-            onClose={() => setIsModalOpen(false)}
-          />
-        </BlurBackground>
+        <InterviewResult answerId={selectedAnswerId} showQuestionIndex={false} onClose={() => setIsModalOpen(false)} />
       )}
       <SectionContainer>
         <Header>
