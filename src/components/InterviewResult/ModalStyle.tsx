@@ -207,15 +207,15 @@ export const FeedbackBox = styled.div`
 
 export const MemoWrapper = styled.div<{
   isOpen: boolean;
-  isAfterInterview: boolean;
+  $isAfterInterview?: boolean;
 }>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   width: 100%;
-  margin-bottom: ${({ isOpen, isAfterInterview }) => {
-    if (isOpen) return isAfterInterview ? '40px' : '0px';
-    return isAfterInterview ? '84px' : '44px';
+  margin-bottom: ${({ isOpen, $isAfterInterview }) => {
+    if (isOpen) return $isAfterInterview ? '40px' : '0px';
+    return $isAfterInterview ? '84px' : '44px';
   }};
 `;
 

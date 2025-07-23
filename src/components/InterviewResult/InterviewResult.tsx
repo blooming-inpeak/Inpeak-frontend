@@ -125,13 +125,27 @@ export const InterviewResult = ({
   };
 
   useEffect(() => {
-    const loadAnswer = async () => {
-      const item = storedResult.current[currentIndexState];
-      const { answerId, taskId } = item;
-      const status = taskStatusMap[currentIndexState];
-
+    if (typeof answerId === 'number' && !result) {
       setIsLoading(true);
 
+      getAnswerDetailById(answerId)
+        .then(setAnswerData)
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    }
+  }, [answerId, result]);
+
+  useEffect(() => {
+    if (!result) return;
+
+    const item = storedResult.current[currentIndexState];
+    if (!item) return;
+
+    const { answerId, taskId } = item;
+    const status = taskStatusMap[currentIndexState];
+
+    const loadAnswer = async () => {
+      setIsLoading(true);
       try {
         if (answerId) {
           const detail = await getAnswerDetailById(answerId);
@@ -156,7 +170,7 @@ export const InterviewResult = ({
 
     loadAnswer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndexState]);
+  }, [result, currentIndexState]);
 
   useEffect(() => {
     if (answerData) setMemo(answerData.comment || '');
@@ -196,17 +210,6 @@ export const InterviewResult = ({
 
   if (!isMounted) {
     return null;
-  }
-
-  const item = storedResult.current[currentIndexState];
-  if (!item) {
-    return (
-      <BlurBackground>
-        <ModalContainer ref={modalRef}>
-          <div style={{ padding: '64px', textAlign: 'center' }}></div>
-        </ModalContainer>
-      </BlurBackground>
-    );
   }
 
   return (
@@ -260,7 +263,7 @@ export const InterviewResult = ({
               <span className="feedback-title">이렇게 말해보세요!</span>
               <p className="feedback-content">{answerData.AIAnswer}</p>
             </FeedbackBox>
-            <MemoWrapper isOpen={isMemoOpenForCurrent ?? false} isAfterInterview={isAfterInterview ?? false}>
+            <MemoWrapper isOpen={isMemoOpenForCurrent ?? false} $isAfterInterview={isAfterInterview}>
               <MemoToggle onClick={() => setMemoOpenMap(prev => ({ ...prev, [memoKey]: !prev[memoKey] }))}>
                 <span className="memo-text">{isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}</span>
                 <img
