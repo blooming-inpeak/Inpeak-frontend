@@ -174,13 +174,13 @@ export const InterviewResult = ({
   };
 
   const handleToggle = () => {
-    if (!answerData?.isUnderstood || !answerIdForRequest) return;
+    if (!isCorrect || !answerIdForRequest) return;
     const nextChecked = !answerData.isUnderstood;
     setAnswerData(prev => prev && { ...prev, isUnderstood: nextChecked });
     setUnderstoodMap(prev => ({ ...prev, [String(answerIdForRequest)]: nextChecked }));
     updateAnswerUnderstood(Number(answerIdForRequest), nextChecked);
   };
-
+  const isCorrect = answerData?.answerStatus === 'CORRECT';
   const getStatusLabel = (status: AnswerStatus): string => {
     switch (status) {
       case 'CORRECT':
@@ -254,11 +254,7 @@ export const InterviewResult = ({
               <label className="toggle-label" style={{ color: '#212121' }}>
                 이 질문은 완벽히 이해함
               </label>
-              <ToggleSwitch
-                isChecked={answerData.isUnderstood}
-                onClick={handleToggle}
-                disabled={!answerData.isUnderstood}
-              />
+              <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
             </ToggleContainer>
             <FeedbackBox>
               <span className="feedback-title">이렇게 말해보세요!</span>
