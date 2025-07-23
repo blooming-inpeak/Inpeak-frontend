@@ -74,7 +74,7 @@ export const InterviewResult = ({
   const [isMounted, setIsMounted] = useState(false);
 
   const isTaskFailed = taskStatusMap[currentIndexState] === 'FAILED';
-  const isTaskLoading = isLoading || taskLoadingMap[currentIndexState];
+  const isTaskLoading = taskLoadingMap[currentIndexState];
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -215,13 +215,16 @@ export const InterviewResult = ({
         <CloseButton onClick={() => onClose?.()}>
           <img src="/images/Close.svg" alt="close" />
         </CloseButton>
-        {isTaskFailed ? (
+        {isLoading ? (
+          <div style={{ height: '679px' }}></div>
+        ) : isTaskFailed ? (
           <Fail index={currentIndexState} />
-        ) : isTaskLoading || !answerData ? (
+        ) : isTaskLoading ? (
           <Loading />
+        ) : !answerData ? (
+          <div style={{ padding: '64px' }} />
         ) : (
           <>
-            {' '}
             <ModalHeader>
               <span className="date">{dayjs(answerData.dateTime).format('YYYY년 MM월 DD일')}</span>
               {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
