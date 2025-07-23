@@ -261,7 +261,7 @@ export const InterviewResult = ({
               <span className="feedback-title">이렇게 말해보세요!</span>
               <p className="feedback-content">{answerData.AIAnswer}</p>
             </FeedbackBox>
-            <MemoWrapper>
+            <MemoWrapper isOpen={isMemoOpenForCurrent ?? false} isAfterInterview={isAfterInterview ?? false}>
               <MemoToggle onClick={() => setMemoOpenMap(prev => ({ ...prev, [memoKey]: !prev[memoKey] }))}>
                 <span className="memo-text">{isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}</span>
                 <img

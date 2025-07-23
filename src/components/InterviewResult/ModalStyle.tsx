@@ -205,12 +205,18 @@ export const FeedbackBox = styled.div`
   }
 `;
 
-export const MemoWrapper = styled.div`
+export const MemoWrapper = styled.div<{
+  isOpen: boolean;
+  isAfterInterview: boolean;
+}>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   width: 100%;
-  padding-bottom: 97px;
+  margin-bottom: ${({ isOpen, isAfterInterview }) => {
+    if (isOpen) return isAfterInterview ? '40px' : '0px';
+    return isAfterInterview ? '84px' : '44px';
+  }};
 `;
 
 export const MemoToggle = styled.div`
