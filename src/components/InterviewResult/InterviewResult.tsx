@@ -106,6 +106,7 @@ export const InterviewResult = ({
   const MAX_RETRY_COUNT = 13;
   const fetchWithTaskId = async (taskId: number, index: number) => {
     setTaskLoadingMap(prev => ({ ...prev, [index]: true }));
+    let success = false;
     for (let i = 0; i < MAX_RETRY_COUNT; i++) {
       const statusRes = await getTaskStatus(taskId);
       if (taskLoadingMap[index]) return;
@@ -114,12 +115,18 @@ export const InterviewResult = ({
         const detail = await getAnswerDetailById(statusRes.answerId);
         setAnswerData(detail);
         setTaskStatusMap(prev => ({ ...prev, [index]: 'SUCCESS' }));
+        success = true;
         break;
       } else if (statusRes.status === 'FAILED') {
         setTaskStatusMap(prev => ({ ...prev, [index]: 'FAILED' }));
+        success = true;
         break;
       }
       await new Promise(r => setTimeout(r, 1000));
+    }
+    if (!success) {
+      // MAX_RETRY_COUNT 도달 시 강제 실패 처리
+      setTaskStatusMap(prev => ({ ...prev, [index]: 'FAILED' }));
     }
     setTaskLoadingMap(prev => ({ ...prev, [index]: false }));
   };
@@ -218,12 +225,12 @@ export const InterviewResult = ({
         <CloseButton onClick={() => onClose?.()}>
           <img src="/images/Close.svg" alt="close" />
         </CloseButton>
-        {isLoading ? (
-          <div style={{ height: '679px' }}></div>
+        {isTaskLoading ? (
+          <Loading />
+        ) : isLoading ? (
+          <div style={{ height: '400px' }}></div>
         ) : isTaskFailed ? (
           <Fail index={currentIndexState} />
-        ) : isTaskLoading ? (
-          <Loading />
         ) : !answerData ? (
           <div style={{ padding: '64px' }} />
         ) : (

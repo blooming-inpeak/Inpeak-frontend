@@ -47,7 +47,43 @@ export const ProgessResultPage: React.FC = () => {
     const totalSeconds = stored.reduce((acc, curr) => acc + curr.time, 0);
     setTotalTime(formatSecondsToTime(totalSeconds));
   }, []);
-
+  // const mockResult = [
+  //   {
+  //     questionId: 5,
+  //     question: '자기소개 해주세요',
+  //     time: 25,
+  //     isAnswer: true,
+  //     taskId: 777, // WAITING후 실패
+  //   },
+  //   {
+  //     questionId: 1,
+  //     question: '자기소개 해주세요',
+  //     time: 25,
+  //     isAnswer: true,
+  //     taskId: 111, // WAITING 고정 (계속 로딩 상태)
+  //   },
+  //   {
+  //     questionId: 2,
+  //     question: '지원 동기를 말씀해주세요',
+  //     time: 30,
+  //     isAnswer: true,
+  //     taskId: 222, // SUCCESS 즉시 → answerId: 999
+  //   },
+  //   {
+  //     questionId: 3,
+  //     question: '최근에 읽은 책에 대해 이야기해주세요',
+  //     time: 20,
+  //     isAnswer: true,
+  //     taskId: 333, // FAILED → 에러 메시지 보여주기
+  //   },
+  //   {
+  //     questionId: 4,
+  //     question: '자기2',
+  //     time: 25,
+  //     isAnswer: true,
+  //     taskId: 999,
+  //   },
+  // ];
   return (
     <>
       {showResultModal && (
