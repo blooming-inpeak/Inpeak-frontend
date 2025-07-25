@@ -27,6 +27,7 @@ import { formatSecondsToTime } from '../../utils/format';
 import { BlurBackground } from '../common/background/BlurBackground';
 import Loading from '../../pages/Loading';
 import { Fail } from '../../pages/Fail';
+import { useAnswerCache } from '../../hooks/interview/useAnswerCache';
 
 type RawResultItem = {
   answerId?: number;
@@ -76,6 +77,8 @@ export const InterviewResult = ({
   const isTaskFailed = taskStatusMap[currentIndexState] === 'FAILED';
   const isTaskLoading = taskLoadingMap[currentIndexState];
 
+  const { get: getCachedAnswer, set: setCachedAnswer } = useAnswerCache();
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsMounted(true);
@@ -105,7 +108,16 @@ export const InterviewResult = ({
 
   const MAX_RETRY_COUNT = 13;
   const fetchWithTaskId = async (taskId: number, index: number) => {
-    setTaskLoadingMap(prev => ({ ...prev, [index]: true }));
+    let isAborted = false;
+    setTaskLoadingMap(prev => {
+      if (prev[index]) {
+        isAborted = true;
+        return prev;
+      }
+      return { ...prev, [index]: true };
+    });
+
+    if (isAborted) return;
     let success = false;
     for (let i = 0; i < MAX_RETRY_COUNT; i++) {
       const statusRes = await getTaskStatus(taskId);
@@ -114,6 +126,7 @@ export const InterviewResult = ({
         storedResult.current[index].answerId = statusRes.answerId;
         const detail = await getAnswerDetailById(statusRes.answerId);
         setAnswerData(detail);
+        setCachedAnswer(statusRes.answerId, detail);
         setTaskStatusMap(prev => ({ ...prev, [index]: 'SUCCESS' }));
         success = true;
         break;
@@ -133,14 +146,27 @@ export const InterviewResult = ({
 
   useEffect(() => {
     if (typeof answerId === 'number' && !result) {
-      setIsLoading(true);
+      const cached = getCachedAnswer(answerId);
+      if (cached) {
+        setAnswerData(cached);
+        setIsLoading(false);
+        return;
+      }
 
+      setIsLoading(true);
       getAnswerDetailById(answerId)
-        .then(setAnswerData)
+        .then(detail => {
+          setAnswerData(detail);
+          setCachedAnswer(answerId, detail);
+        })
         .catch(console.error)
         .finally(() => setIsLoading(false));
     }
-  }, [answerId, result]);
+  }, [answerId, result, getCachedAnswer, setCachedAnswer]);
+
+  const getCurrentAnswerId = () => {
+    return storedResult.current[currentIndexState]?.answerId;
+  };
 
   useEffect(() => {
     if (!result) return;
@@ -152,11 +178,21 @@ export const InterviewResult = ({
     const status = taskStatusMap[currentIndexState];
 
     const loadAnswer = async () => {
+      const key = getCurrentAnswerId();
       setIsLoading(true);
       try {
         if (answerId) {
-          const detail = await getAnswerDetailById(answerId);
-          setAnswerData(detail);
+          if (typeof key === 'number') {
+            const cached = getCachedAnswer(key);
+            if (cached) {
+              setAnswerData(cached);
+              return;
+            }
+
+            const detail = await getAnswerDetailById(key);
+            setAnswerData(detail);
+            setCachedAnswer(key, detail);
+          }
         } else if (taskId) {
           if (!status || status === 'WAITING') {
             await fetchWithTaskId(taskId, currentIndexState);
@@ -184,20 +220,37 @@ export const InterviewResult = ({
   }, [answerData]);
 
   const handleMemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const key = getCurrentAnswerId();
     const value = e.target.value;
     setMemo(value);
-    textareaRef.current!.style.height = 'auto';
-    textareaRef.current!.style.height = textareaRef.current!.scrollHeight + 'px';
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
     if (memoTimeoutRef.current) clearTimeout(memoTimeoutRef.current);
     memoTimeoutRef.current = window.setTimeout(() => {
-      if (answerIdForRequest) updateAnswerComment(Number(answerIdForRequest), value);
-    }, 5000);
+      if (answerIdForRequest && typeof key === 'number') {
+        updateAnswerComment(Number(answerIdForRequest), value);
+        const updated = {
+          ...getCachedAnswer(key),
+          comment: value,
+        };
+        setCachedAnswer(key, updated);
+      }
+    }, 1000);
   };
 
   const handleToggle = () => {
+    const key = getCurrentAnswerId();
     if (!isCorrect || !answerIdForRequest) return;
     const nextChecked = !answerData.isUnderstood;
-    setAnswerData(prev => prev && { ...prev, isUnderstood: nextChecked });
+    setAnswerData(prev => {
+      const updated = { ...prev!, isUnderstood: nextChecked };
+      if (typeof key === 'number') {
+        setCachedAnswer(key, updated);
+      }
+      return updated;
+    });
     setUnderstoodMap(prev => ({ ...prev, [String(answerIdForRequest)]: nextChecked }));
     updateAnswerUnderstood(Number(answerIdForRequest), nextChecked);
   };
