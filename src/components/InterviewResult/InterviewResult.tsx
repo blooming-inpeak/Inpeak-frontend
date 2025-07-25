@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ModalContainer,
   ModalHeader,
@@ -72,19 +72,11 @@ export const InterviewResult = ({
   const setUnderstoodMap = useSetRecoilState(UnderstoodState);
   const [taskStatusMap, setTaskStatusMap] = useState<Record<string, 'WAITING' | 'SUCCESS' | 'FAILED'>>({});
   const [taskLoadingMap, setTaskLoadingMap] = useState<Record<string, boolean>>({});
-  const [isMounted, setIsMounted] = useState(false);
 
   const isTaskFailed = taskStatusMap[currentIndexState] === 'FAILED';
-  const isTaskLoading = taskLoadingMap[currentIndexState];
+  const taskStatus = taskStatusMap[currentIndexState];
 
   const { get: getCachedAnswer, set: setCachedAnswer } = useAnswerCache();
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsMounted(true);
-    }, 100);
-    return () => clearTimeout(timeout);
-  }, []);
 
   useEffect(() => {
     if (result && result.length > 0) {
@@ -104,7 +96,9 @@ export const InterviewResult = ({
   const answerIdForRequest = storedResult.current[currentIndexState]?.answerId ?? null;
 
   const memoKey = answerIdForRequest?.toString() ?? `idx-${currentIndexState}`;
-  const isMemoOpenForCurrent = memoOpenMap[memoKey] || false;
+  const isMemoOpenForCurrent = useMemo(() => {
+    return memoOpenMap[memoKey] || false;
+  }, [memoOpenMap, memoKey]);
 
   const MAX_RETRY_COUNT = 13;
   const fetchWithTaskId = async (taskId: number, index: number) => {
@@ -118,10 +112,18 @@ export const InterviewResult = ({
     });
 
     if (isAborted) return;
+
     let success = false;
     for (let i = 0; i < MAX_RETRY_COUNT; i++) {
       const statusRes = await getTaskStatus(taskId);
+
+      if (i === 0 && statusRes.status === 'WAITING') {
+        setTaskStatusMap(prev => ({ ...prev, [index]: 'WAITING' }));
+        setAnswerData(null); // answerData 초기화해서 빈 화면 보이게
+      }
+
       if (taskLoadingMap[index]) return;
+
       if (statusRes.status === 'SUCCESS' && statusRes.answerId) {
         storedResult.current[index].answerId = statusRes.answerId;
         const detail = await getAnswerDetailById(statusRes.answerId);
@@ -135,12 +137,14 @@ export const InterviewResult = ({
         success = true;
         break;
       }
+
       await new Promise(r => setTimeout(r, 1000));
     }
+
     if (!success) {
-      // MAX_RETRY_COUNT 도달 시 강제 실패 처리
       setTaskStatusMap(prev => ({ ...prev, [index]: 'FAILED' }));
     }
+
     setTaskLoadingMap(prev => ({ ...prev, [index]: false }));
   };
 
@@ -179,6 +183,10 @@ export const InterviewResult = ({
 
     const loadAnswer = async () => {
       const key = getCurrentAnswerId();
+      if (!answerId && taskId && (!status || status === 'WAITING')) {
+        setAnswerData(null);
+      }
+
       setIsLoading(true);
       try {
         if (answerId) {
@@ -267,82 +275,85 @@ export const InterviewResult = ({
         return '';
     }
   };
-
-  if (!isMounted) {
+  if (typeof answerId === 'number' && !result && (isLoading || !answerData)) {
     return null;
   }
-
   return (
     <BlurBackground>
       <ModalContainer ref={modalRef}>
         <CloseButton onClick={() => onClose?.()}>
           <img src="/images/Close.svg" alt="close" />
         </CloseButton>
-        {isTaskLoading ? (
-          <Loading />
-        ) : isLoading ? (
-          <div style={{ height: '400px' }}></div>
-        ) : isTaskFailed ? (
-          <Fail index={currentIndexState} />
-        ) : !answerData ? (
-          <div style={{ padding: '64px' }} />
-        ) : (
-          <>
-            <ModalHeader>
-              <span className="date">{dayjs(answerData.dateTime).format('YYYY년 MM월 DD일')}</span>
-              {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
-              <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
-            </ModalHeader>
-            <Wrapper>
-              <div className="question-content">
-                <span className="question-mark">Q{isShowQuestionIndex ? currentIndexState + 1 : ''}</span>
-                <p className="question">{answerData.questionContent}</p>
-              </div>
-              {answerData.answerStatus !== 'SKIPPED' && (
-                <div className="answer-content">
-                  <span className="answer-mark">A</span>
-                  <p className="answer">{answerData.userAnswer}</p>
-                  {answerData.videoUrl && (
-                    <div className="video-container">
-                      <video width="168" height="95" controls>
-                        <source src={answerData.videoUrl} type="video/mp4" />
-                      </video>
-                      <span className="video-time">{formatSecondsToTime(answerData.runningTime)}</span>
-                    </div>
-                  )}
+        {(() => {
+          if (taskStatus === 'WAITING') {
+            return <Loading />;
+          }
+
+          if (isTaskFailed) {
+            return <Fail index={currentIndexState} />;
+          }
+
+          if (isLoading || !answerData) {
+            return <div style={{ minHeight: '500px' }} />;
+          }
+          return (
+            <>
+              <ModalHeader>
+                <span className="date">{dayjs(answerData.dateTime).format('YYYY년 MM월 DD일')}</span>
+                {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
+                <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
+              </ModalHeader>
+              <Wrapper>
+                <div className="question-content">
+                  <span className="question-mark">Q{isShowQuestionIndex ? currentIndexState + 1 : ''}</span>
+                  <p className="question">{answerData.questionContent}</p>
                 </div>
-              )}
-            </Wrapper>
-            <ToggleContainer>
-              <label className="toggle-label" style={{ color: '#212121' }}>
-                이 질문은 완벽히 이해함
-              </label>
-              <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
-            </ToggleContainer>
-            <FeedbackBox>
-              <span className="feedback-title">이렇게 말해보세요!</span>
-              <p className="feedback-content">{answerData.AIAnswer}</p>
-            </FeedbackBox>
-            <MemoWrapper isOpen={isMemoOpenForCurrent ?? false} $isAfterInterview={isAfterInterview}>
-              <MemoToggle onClick={() => setMemoOpenMap(prev => ({ ...prev, [memoKey]: !prev[memoKey] }))}>
-                <span className="memo-text">{isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}</span>
-                <img
-                  className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
-                  src="/images/memo_toggle.svg"
-                  alt="메모 토글"
-                />
-              </MemoToggle>
-              {isMemoOpenForCurrent && (
-                <MemoBox
-                  ref={textareaRef}
-                  placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
-                  value={memo}
-                  onChange={handleMemoChange}
-                />
-              )}
-            </MemoWrapper>
-          </>
-        )}
+                {answerData.answerStatus !== 'SKIPPED' && (
+                  <div className="answer-content">
+                    <span className="answer-mark">A</span>
+                    <p className="answer">{answerData.userAnswer}</p>
+                    {answerData.videoUrl && (
+                      <div className="video-container">
+                        <video width="168" height="95" controls>
+                          <source src={answerData.videoUrl} type="video/mp4" />
+                        </video>
+                        <span className="video-time">{formatSecondsToTime(answerData.runningTime)}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </Wrapper>
+              <ToggleContainer>
+                <label className="toggle-label" style={{ color: '#212121' }}>
+                  이 질문은 완벽히 이해함
+                </label>
+                <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
+              </ToggleContainer>
+              <FeedbackBox>
+                <span className="feedback-title">이렇게 말해보세요!</span>
+                <p className="feedback-content">{answerData.AIAnswer}</p>
+              </FeedbackBox>
+              <MemoWrapper isOpen={isMemoOpenForCurrent ?? false} $isAfterInterview={isAfterInterview}>
+                <MemoToggle onClick={() => setMemoOpenMap(prev => ({ ...prev, [memoKey]: !prev[memoKey] }))}>
+                  <span className="memo-text">{isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}</span>
+                  <img
+                    className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
+                    src="/images/memo_toggle.svg"
+                    alt="메모 토글"
+                  />
+                </MemoToggle>
+                {isMemoOpenForCurrent && (
+                  <MemoBox
+                    ref={textareaRef}
+                    placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
+                    value={memo}
+                    onChange={handleMemoChange}
+                  />
+                )}
+              </MemoWrapper>
+            </>
+          );
+        })()}
 
         {isShowNavigation && (
           <Navigation>
