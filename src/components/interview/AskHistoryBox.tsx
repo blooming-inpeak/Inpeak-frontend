@@ -14,10 +14,12 @@ export const AskHistoryBox: React.FC<AskHistoryBoxProps> = ({ question, answer, 
   return (
     <AskHistoryBoxWrapper onClick={onClick}>
       <AskHistoryContent>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <AskHistoryTop>
           <AskHistoryQuestion>{question}</AskHistoryQuestion>
-          <MultiCaption type={status} />
-        </div>
+          <AskHistoryCaptionWrapper>
+            <MultiCaption type={status} />
+          </AskHistoryCaptionWrapper>
+        </AskHistoryTop>
         <AskHistoryAnswer>{answer}</AskHistoryAnswer>
       </AskHistoryContent>
     </AskHistoryBoxWrapper>
@@ -33,6 +35,7 @@ export const AskHistoryBoxWrapper = styled.div`
   padding: 20px;
   cursor: pointer;
   border-radius: 12px;
+  transition: background-color 0.2s ease;
   &:hover {
     background-color: #eff5ff;
   }
@@ -42,12 +45,31 @@ export const AskHistoryContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
+  min-width: 0;
+`;
+
+const AskHistoryTop = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
 `;
 
 export const AskHistoryQuestion = styled.div`
+  flex: 1;
   font-size: 14px;
   font-weight: 600;
-  margin-right: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 8px;
+`;
+
+const AskHistoryCaptionWrapper = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 `;
 
 export const AskHistoryAnswer = styled.div`
