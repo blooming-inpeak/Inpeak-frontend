@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { SortDropdown } from '../common/SortDropdown';
 import { EmptyState } from './EmptyState';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -9,6 +9,7 @@ import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
 import { UnderstoodState } from '../../store/Interview/UnderstoodState.ts';
 import { useRecoilValue } from 'recoil';
 import { AnswerStatus } from '../../api/types.ts';
+import { getStatusColor } from '../../utils/getStatusColor.ts';
 
 export const AnsweredList = () => {
   const [notes, setNotes] = useState<
@@ -272,14 +273,14 @@ const StatusBadge = styled.span<{ status: string }>`
   font-weight: 500;
   border-radius: 4px;
 
-  ${({ status }) =>
-    status === '포기'
-      ? 'background: #F8FFEA; color: #85C000; border: 1px solid #85C000;'
-      : status === '정답'
-        ? 'background: #F5F9FF; color: #0050D8; border: 1px solid #0050D8;'
-        : status === '이해완료'
-          ? 'background: var(--sementic-light-400, #FAFAFA); color: var(--text-500, #747474); border: 1px solid var(--text-500, #747474);'
-          : 'background: #FFF3F4; color: #F84883; border: 1px solid #F84883;'}
+  ${({ status, theme }) => {
+    const { background, color, border } = getStatusColor(status, theme);
+    return css`
+      background: ${background};
+      color: ${color};
+      border: 1px solid ${border};
+    `;
+  }}
 `;
 const LoadingText = styled.div`
   text-align: center;

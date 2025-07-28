@@ -8,9 +8,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.head5}
   text-align: left;
 `;
 
@@ -28,17 +26,11 @@ const QuestionContainer = styled.div`
 `;
 
 const Question = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.title2}
 `;
 
 const Answer = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 150%;
-  letter-spacing: -0.35px;
-
+  ${({ theme }) => theme.typography.body3R}
   margin: 0 0 0 18px;
 `;
 
@@ -49,14 +41,14 @@ const Divider = styled.div`
   margin: 0 auto;
 `;
 
-const EmailSection = styled.div`
+const ContactSection = styled.div`
   margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 `;
 
-const EmailAddress = styled.button`
+const ContactAddress = styled.button`
   all: unset;
   cursor: pointer;
   margin: 0;
@@ -66,19 +58,13 @@ const EmailAddress = styled.button`
   align-items: center;
   gap: 4px;
   border-radius: 100px;
-  background: var(--brand-main, #3277ed);
-  color: white;
+  background: ${({ theme }) => theme.colors.brand.main};
+  color: ${({ theme }) => theme.colors.white};
   width: 94px;
   height: 24px;
-  color: var(--text-1700, #fff);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-  letter-spacing: -0.35px;
+  ${({ theme }) => theme.typography.button2}
   &:hover {
-    background-color: #72a6ff;
-  }
+    background-color: ${({ theme }) => theme.colors.blue800}
 `;
 
 export const ContactPage = () => {
@@ -90,7 +76,6 @@ export const ContactPage = () => {
 
   return (
     <>
-      {' '}
       <Container>
         <QuestionSection>
           <Title>자주 묻는 질문</Title>
@@ -106,11 +91,11 @@ export const ContactPage = () => {
           ))}
         </QuestionSection>
 
-        <EmailSection>
-          <EmailAddress as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
+        <ContactSection>
+          <ContactAddress as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
             직접 문의하기
-          </EmailAddress>
-        </EmailSection>
+          </ContactAddress>
+        </ContactSection>
       </Container>
       <Footer />
     </>

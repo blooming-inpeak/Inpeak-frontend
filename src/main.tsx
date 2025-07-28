@@ -5,6 +5,8 @@ import App from './App.tsx';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import './index.css';
+import { ThemeProvider } from 'styled-components';
+import theme from './styles/theme.ts';
 
 // if (import.meta.env.DEV) {
 //   const { worker } = await import('./mocks/browser');
@@ -22,9 +24,11 @@ if (import.meta.env.MODE === 'production') {
 createRoot(document.getElementById('root')!).render(
   <RecoilRoot>
     <BrowserRouter>
-      <StrictMode>
-        <App />
-      </StrictMode>
+      <ThemeProvider theme={theme}>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </ThemeProvider>
     </BrowserRouter>
   </RecoilRoot>,
 );

@@ -301,7 +301,9 @@ export const InterviewResult = ({
               <ModalHeader>
                 <span className="date">{dayjs(answerData.dateTime).format('YYYY년 MM월 DD일')}</span>
                 {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
-                <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
+                <StatusBadge status={getStatusLabel(answerData.answerStatus)}>
+                  {getStatusLabel(answerData.answerStatus)}
+                </StatusBadge>
               </ModalHeader>
               <Wrapper>
                 <div className="question-content">
@@ -324,9 +326,7 @@ export const InterviewResult = ({
                 )}
               </Wrapper>
               <ToggleContainer>
-                <label className="toggle-label" style={{ color: '#212121' }}>
-                  이 질문은 완벽히 이해함
-                </label>
+                <label className="toggle-label">이 질문은 완벽히 이해함</label>
                 <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
               </ToggleContainer>
               <FeedbackBox>
@@ -365,9 +365,7 @@ export const InterviewResult = ({
               )}
             </ButtonGroup>
             <div className="question-index">
-              <span>
-                <strong className="current">{currentIndexState + 1}</strong>/{storedResult.current.length}
-              </span>
+              <div className="current">{currentIndexState + 1}</div>/{storedResult.current.length}
             </div>
             <ButtonGroup position="right">
               {currentIndexState < storedResult.current.length - 1 ? (

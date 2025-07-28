@@ -31,7 +31,7 @@ const Button = styled.button`
   width: 70px;
   height: 70px;
   border-radius: 100px;
-  background: #3277ed;
+  background: ${({ theme }) => theme.colors.brand.main};
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;

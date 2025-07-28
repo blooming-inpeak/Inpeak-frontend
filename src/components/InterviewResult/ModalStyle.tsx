@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { getStatusColor } from '../../utils/getStatusColor';
 
 export const ModalContainer = styled.div<{ isInterviewPage?: boolean }>`
   position: relative;
@@ -33,7 +34,7 @@ export const ModalHeader = styled.div`
   margin-bottom: 20px;
 
   .date {
-    color: #afafaf;
+    color: ${({ theme }) => theme.colors.text800};
     font-size: 14px;
     font-weight: 600;
     line-height: 150%;
@@ -58,9 +59,9 @@ export const ModalHeader = styled.div`
     font-weight: 500;
     line-height: 150%;
     letter-spacing: -0.3px;
-    border: 1px solid var(--text-500, #747474);
-    background: var(--sementic-light-400, #fafafa);
-    color: var(--text-500, #747474);
+    border: 1px solid ${({ theme }) => theme.colors.text500};
+    background: ${({ theme }) => theme.colors.sementic.light400};
+    color: ${({ theme }) => theme.colors.text500};
     font-size: 12px;
     font-style: normal;
     font-weight: 500;
@@ -85,12 +86,14 @@ export const StatusBadge = styled.span<{ status: string }>`
   line-height: 150%;
   letter-spacing: -0.3px;
 
-  ${({ status }) =>
-    status === 'SKIPPED'
-      ? `color: #85C000; border-color: #85C000; background: #F8FFEA;`
-      : status === 'CORRECT'
-        ? `color: #0050D8; border-color: #0050D8; background: #F5F9FF;`
-        : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
+  ${({ status, theme }) => {
+    const { background, color, border } = getStatusColor(status, theme);
+    return css`
+      background: ${background};
+      color: ${color};
+      border: 1px solid ${border};
+    `;
+  }}
 `;
 
 export const Wrapper = styled.div`
@@ -106,21 +109,15 @@ export const Wrapper = styled.div`
 
   .question-mark {
     min-width: 42px;
-    font-weight: bold;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.14px;
+    ${({ theme }) => theme.typography.head4}
   }
 
   .question {
     flex: 1;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 150%;
     margin: 0;
     display: flex;
     align-items: center;
+    ${({ theme }) => theme.typography.title1}
   }
   .answer-content {
     display: flex;
@@ -130,22 +127,14 @@ export const Wrapper = styled.div`
 
   .answer-mark {
     width: 42px;
-    font-weight: bold;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.14px;
+    ${({ theme }) => theme.typography.head4}
   }
 
   .answer {
     flex: 1;
     margin: 0;
-    color: var(--text-000, #000);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%;
-    letter-spacing: -0.4px;
+    color: ${({ theme }) => theme.colors.text000};
+    ${({ theme }) => theme.typography.body2R}
   }
   .video-container {
     width: 168px;
@@ -163,45 +152,34 @@ export const Wrapper = styled.div`
   .video-time {
     width: 100%;
     text-align: right; /* 맨 오른쪽 정렬 */
-    color: var(--text-500, #747474);
-    font-family: 'Pretendard Variable';
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%; /* 18px */
-    letter-spacing: -0.3px;
-  }
-
-  .toggle-container {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    justify-content: flex-end;
-  }
-
-  .toggle-label {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 150%;
-    letter-spacing: -0.3px;
+    color: ${({ theme }) => theme.colors.text500};
+    ${({ theme }) => theme.typography.body4R}
   }
 `;
 export const ToggleContainer = styled.div`
   display: flex;
   gap: 7px;
   justify-content: flex-end;
+  align-items: center;
+  .toggle-label {
+    ${({ theme }) => theme.typography.body4M}
+    color: ${({ theme }) => theme.colors.text100};
+  }
 `;
 export const FeedbackBox = styled.div`
   padding: 30px 20px;
-  border: 1px solid #e6efff;
+  border: 1px solid ${({ theme }) => theme.colors.blue1400};
   border-radius: 12px;
   margin-bottom: 20px;
   margin-left: 41px;
   margin-top: 16px;
   .feedback-title {
-    color: #0050d8;
-    font-weight: bold;
+    color: ${({ theme }) => theme.colors.brand.darker};
+    ${({ theme }) => theme.typography.title2}
     margin-bottom: 10px;
+  }
+  .feedback-content {
+    ${({ theme }) => theme.typography.body2R}
   }
 `;
 
@@ -211,7 +189,6 @@ export const MemoWrapper = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   width: 100%;
   margin-bottom: ${({ isOpen, $isAfterInterview }) => {
     if (isOpen) return $isAfterInterview ? '40px' : '0px';
@@ -220,14 +197,16 @@ export const MemoWrapper = styled.div<{
 `;
 
 export const MemoToggle = styled.div`
-  display: inline-flex;
+  display: flex;
+  width: 76px;
   justify-content: flex-end;
   align-items: center;
   gap: 5px;
   cursor: pointer;
-
+  align-self: flex-end;
   .memo-text {
-    font-size: 14px;
+    color: ${({ theme }) => theme.colors.text500};
+    ${({ theme }) => theme.typography.caption1}
     transition: color 0.3s ease;
   }
 
@@ -240,6 +219,10 @@ export const MemoToggle = styled.div`
   .memo-toggle.open {
     transform: rotate(-180deg);
   }
+  img {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 export const MemoBox = styled.textarea`
@@ -248,15 +231,17 @@ export const MemoBox = styled.textarea`
   height: auto;
   padding: 15px 20px;
   border-radius: 12px;
-  border: 1px solid #e6efff;
+  border: 1px solid ${({ theme }) => theme.colors.blue1400};
   box-sizing: border-box;
   margin-top: 8px;
   margin-left: 41px;
-  font-size: 14px;
-  font-family: inherit;
-  line-height: 1.5;
   resize: none;
   overflow-y: hidden;
+  color: ${({ theme }) => theme.colors.text000};
+  ${({ theme }) => theme.typography.body3R}
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text800};
+  }
 `;
 
 export const Navigation = styled.div`
@@ -266,14 +251,13 @@ export const Navigation = styled.div`
   width: 100%;
   position: relative;
   .question-index {
+    display: flex;
     flex: 1;
     text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #afafaf;
+    ${({ theme }) => theme.typography.body3R}
+    color: ${({ theme }) => theme.colors.text800};
     .current {
-      color: #1463e8;
-      font-weight: 600;
+      color: ${({ theme }) => theme.colors.blue300};
     }
   }
 `;
@@ -290,23 +274,21 @@ export const Button = styled.button`
   height: 36px;
   border: none;
   border-radius: 100px;
-  font-size: 14px;
   cursor: pointer;
-  font-weight: 600;
+  ${({ theme }) => theme.typography.button2}
   &.prev {
-    background: #c3daff;
-    color: #0050d8;
+    background: ${({ theme }) => theme.colors.blue1200};
+    color: ${({ theme }) => theme.colors.brand.darker};
     &:hover {
-      background: #e6efff;
+      background: ${({ theme }) => theme.colors.blue1400};
     }
   }
 
   &.next {
-    background: #3277ed;
-    color: #ffffff;
+    background: ${({ theme }) => theme.colors.brand.main};
+    color: ${({ theme }) => theme.colors.white};
     &:hover {
-      background: #72a6ff;
-    }
+      background: ${({ theme }) => theme.colors.blue800};
   }
 `;
 export const CloseButton = styled.div`

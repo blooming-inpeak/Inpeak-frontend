@@ -17,7 +17,7 @@ export const ToggleSwitch = ({ isChecked, onClick, disabled = false }: TogglePro
 const ToggleWrapper = styled.div<{ $isChecked: boolean; $disabled?: boolean }>`
   width: 36px;
   height: 22px;
-  background-color: ${({ $isChecked }) => ($isChecked ? '#72a6ff' : '#fafafa')};
+  background-color: ${({ $isChecked, theme }) => ($isChecked ? theme.colors.blue800 : theme.colors.sementic.light400)};
   box-shadow: 0px 2px 4px 0px rgba(0, 80, 216, 0.08) inset;
   border-radius: 30px;
   position: relative;

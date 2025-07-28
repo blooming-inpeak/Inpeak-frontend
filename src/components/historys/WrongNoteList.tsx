@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { SortDropdown } from '../common/SortDropdown';
 import { EmptyState } from './EmptyState';
@@ -7,6 +7,7 @@ import { getIncorrectAnswers } from '../../api/apiService.ts';
 import { AnswerResponse } from '../../api/types.ts';
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
 import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
+import { getStatusColor } from '../../utils/getStatusColor.ts';
 
 const STATUS_LABELS: Record<string, string> = {
   INCORRECT: '오답',
@@ -206,19 +207,15 @@ const QuestionCard = styled.div`
 `;
 
 const Date = styled.span`
-  color: #747474;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 150%;
+  color: ${({ theme }) => theme.colors.text500};
+  ${({ theme }) => theme.typography.title4}
 `;
 
 const Question = styled.p`
   overflow: hidden;
-  color: #000;
+  color: ${({ theme }) => theme.colors.text000};
   text-overflow: ellipsis;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.title3}
   margin-bottom: 8px;
 
   flex-grow: 1;
@@ -234,12 +231,8 @@ const BottomRow = styled.div`
 `;
 
 const Time = styled.span`
-  color: var(--text-800, #afafaf);
-  font-family: 'Pretendard Variable';
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
+  color: ${({ theme }) => theme.colors.text800};
+  ${({ theme }) => theme.typography.title4}
 `;
 
 const StatusBadge = styled.span<{ status: string }>`
@@ -251,12 +244,14 @@ const StatusBadge = styled.span<{ status: string }>`
   font-size: 12px;
   font-weight: 500;
   border-radius: 4px;
-  ${({ status }) =>
-    status === '포기'
-      ? 'background: #F8FFEA; color: #85C000; border: 1px solid #85C000; '
-      : status === '정답'
-        ? 'background: #F5F9FF; color: #0050D8; border: 1px solid #0050D8;'
-        : 'background: #FFF3F4; color: #F84883; border: 1px solid #F84883;'}
+  ${({ status, theme }) => {
+    const { background, color, border } = getStatusColor(status, theme);
+    return css`
+      background: ${background};
+      color: ${color};
+      border: 1px solid ${border};
+    `;
+  }}
 `;
 const LoadingText = styled.div`
   text-align: center;

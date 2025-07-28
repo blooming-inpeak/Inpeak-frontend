@@ -51,33 +51,29 @@ const ModalContent = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  color: #212121;
+  ${({ theme }) => theme.typography.title3}
+  color: ${({ theme }) => theme.colors.text100};
   margin-bottom: 4px;
 `;
 
 const Description = styled.div`
-  font-size: 14px;
-  color: #212121;
+  ${({ theme }) => theme.typography.body3R}
+  color: ${({ theme }) => theme.colors.text100};
   margin-bottom: 20px;
-  line-height: 1.5;
 `;
 
 const ConfirmButton = styled.button`
   width: 76px;
   height: 36px;
   border-radius: 100px;
-  background: #202a43;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
+  color: ${({ theme }) => theme.colors.white};
   cursor: pointer;
-  background-color: #3277ed;
-  color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.brand.main};
+  color: ${({ theme }) => theme.colors.white};
   &:hover {
-    background-color: #72a6ff;
+    background-color: ${({ theme }) => theme.colors.blue800};
   }
   margin: 0 auto;
   display: block;
+  ${({ theme }) => theme.typography.button2}
 `;

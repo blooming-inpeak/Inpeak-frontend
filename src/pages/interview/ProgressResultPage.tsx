@@ -179,11 +179,10 @@ const CloseBtn = styled.button`
   margin-top: 12px;
   margin-left: 12px;
   text-align: center;
-  font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 600;
+  ${({ theme }) => theme.typography.button2}
 `;
 const ResultMain = styled.div`
   width: 710px;
