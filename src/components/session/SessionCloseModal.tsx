@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useOutsideClick } from '../../utils/useOutsideClick';
+import { BlurBackground } from '../common/background/BlurBackground';
 import { CommonButton } from '../common/button/CommonButton';
 
 interface Props {
@@ -17,9 +18,9 @@ export const SessionCloseModal: React.FC<Props> = ({ onClose }) => {
   };
 
   return (
-    <ModalOverlay>
-      <ModalContainer>
-        <ModalContent ref={modalRef}>
+    <BlurBackground>
+      <ModalContainer ref={modalRef}>
+        <ModalContent>
           <Title>히스토리 페이지에서 다시 확인할 수 있어요</Title>
           <Description>
             진행한 면접 내역은 히스토리 페이지에서, 피드백 받은 형태로
@@ -31,28 +32,13 @@ export const SessionCloseModal: React.FC<Props> = ({ onClose }) => {
           확인
         </CommonButton>
       </ModalContainer>
-    </ModalOverlay>
+    </BlurBackground>
   );
 };
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const ModalContainer = styled.div`
-  box-sizing: border-box;
   width: 450px;
   height: 218px;
-  padding: 52px 65px 40px 65px;
   display: flex;
   flex-direction: column;
   justify-content: center;
