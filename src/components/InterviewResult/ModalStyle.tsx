@@ -267,30 +267,7 @@ export const ButtonGroup = styled.div<{ position: 'left' | 'right' }>`
   ${({ position }) => (position === 'left' ? 'justify-content: flex-start;' : 'justify-content: flex-end;')}
   width: 100%;
 `;
-export const Button = styled.button`
-  padding: 6px 18px;
-  white-space: nowrap;
-  width: 100px;
-  height: 36px;
-  border: none;
-  border-radius: 100px;
-  cursor: pointer;
-  ${({ theme }) => theme.typography.button2}
-  &.prev {
-    background: ${({ theme }) => theme.colors.blue1200};
-    color: ${({ theme }) => theme.colors.brand.darker};
-    &:hover {
-      background: ${({ theme }) => theme.colors.blue1400};
-    }
-  }
 
-  &.next {
-    background: ${({ theme }) => theme.colors.brand.main};
-    color: ${({ theme }) => theme.colors.white};
-    &:hover {
-      background: ${({ theme }) => theme.colors.blue800};
-  }
-`;
 export const CloseButton = styled.div`
   position: absolute;
   top: 24px;

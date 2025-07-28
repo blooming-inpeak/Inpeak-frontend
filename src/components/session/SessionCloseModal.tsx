@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useOutsideClick } from '../../utils/useOutsideClick';
+import { CommonButton } from '../common/button/CommonButton';
 
 interface Props {
   onClose: () => void;
@@ -17,15 +18,19 @@ export const SessionCloseModal: React.FC<Props> = ({ onClose }) => {
 
   return (
     <ModalOverlay>
-      <ModalContent ref={modalRef}>
-        <Title>히스토리 페이지에서 다시 확인할 수 있어요</Title>
-        <Description>
-          진행한 면접 내역은 히스토리 페이지에서, 피드백 받은 형태로
-          <br />
-          확인할 수 있어요.
-        </Description>
-        <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
-      </ModalContent>
+      <ModalContainer>
+        <ModalContent ref={modalRef}>
+          <Title>히스토리 페이지에서 다시 확인할 수 있어요</Title>
+          <Description>
+            진행한 면접 내역은 히스토리 페이지에서, 피드백 받은 형태로
+            <br />
+            확인할 수 있어요.
+          </Description>
+        </ModalContent>
+        <CommonButton width={76} height={36} onClick={handleConfirm}>
+          확인
+        </CommonButton>
+      </ModalContainer>
     </ModalOverlay>
   );
 };
@@ -43,11 +48,24 @@ const ModalOverlay = styled.div`
   align-items: center;
 `;
 
-const ModalContent = styled.div`
-  background: #fff;
+const ModalContainer = styled.div`
+  box-sizing: border-box;
+  width: 450px;
+  height: 218px;
+  padding: 52px 65px 40px 65px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: ${({ theme }) => theme.colors.white};
   border-radius: 24px;
-  padding: 52px 65px;
   text-align: left;
+`;
+
+const ModalContent = styled.div`
+  width: 320px;
+  height: 70px;
+  margin-bottom: 20px;
 `;
 
 const Title = styled.div`
@@ -60,20 +78,4 @@ const Description = styled.div`
   ${({ theme }) => theme.typography.body3R}
   color: ${({ theme }) => theme.colors.text100};
   margin-bottom: 20px;
-`;
-
-const ConfirmButton = styled.button`
-  width: 76px;
-  height: 36px;
-  border-radius: 100px;
-  color: ${({ theme }) => theme.colors.white};
-  cursor: pointer;
-  background-color: ${({ theme }) => theme.colors.brand.main};
-  color: ${({ theme }) => theme.colors.white};
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.blue800};
-  }
-  margin: 0 auto;
-  display: block;
-  ${({ theme }) => theme.typography.button2}
 `;

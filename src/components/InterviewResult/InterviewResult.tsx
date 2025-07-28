@@ -5,7 +5,6 @@ import {
   FeedbackBox,
   MemoToggle,
   Navigation,
-  Button,
   StatusBadge,
   MemoBox,
   MemoWrapper,
@@ -28,6 +27,7 @@ import { BlurBackground } from '../common/background/BlurBackground';
 import Loading from '../../pages/Loading';
 import { Fail } from '../../pages/Fail';
 import { useAnswerCache } from '../../hooks/interview/useAnswerCache';
+import { CommonButton } from '../common/button/CommonButton';
 
 type RawResultItem = {
   answerId?: number;
@@ -359,9 +359,9 @@ export const InterviewResult = ({
           <Navigation>
             <ButtonGroup position="left">
               {currentIndexState > 0 && (
-                <Button className="prev" onClick={() => setCurrentIndexState(prev => prev - 1)}>
+                <CommonButton width={100} height={36} onClick={() => setCurrentIndexState(prev => prev - 1)}>
                   이전으로
-                </Button>
+                </CommonButton>
               )}
             </ButtonGroup>
             <div className="question-index">
@@ -369,13 +369,13 @@ export const InterviewResult = ({
             </div>
             <ButtonGroup position="right">
               {currentIndexState < storedResult.current.length - 1 ? (
-                <Button className="next" onClick={() => setCurrentIndexState(prev => prev + 1)}>
+                <CommonButton width={100} height={36} onClick={() => setCurrentIndexState(prev => prev + 1)}>
                   다음으로
-                </Button>
+                </CommonButton>
               ) : (
-                <Button className="next" onClick={() => navigate('/history')}>
+                <CommonButton width={100} height={36} className="next" onClick={() => navigate('/history')}>
                   완료
-                </Button>
+                </CommonButton>
               )}
             </ButtonGroup>
           </Navigation>
