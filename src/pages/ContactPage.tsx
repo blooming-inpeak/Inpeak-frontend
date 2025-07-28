@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import React from 'react';
 import Footer from '../components/common/Footer/Footer';
+import { CommonButton } from '../components/common/button/CommonButton';
 
 const Container = styled.div`
   width: 550px;
-  margin: 100px auto;
+  margin: 100px auto 184px;
 `;
 
 const Title = styled.h1`
@@ -13,16 +14,16 @@ const Title = styled.h1`
 `;
 
 const QuestionSection = styled.div`
-  margin-bottom: 110px;
+  margin-bottom: 100px;
 `;
 
 const QuestionContainer = styled.div`
   width: 550px;
-  height: 119px;
+  height: 159px;
   padding: 40px 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 `;
 
 const Question = styled.h2`
@@ -42,29 +43,9 @@ const Divider = styled.div`
 `;
 
 const ContactSection = styled.div`
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-`;
-
-const ContactAddress = styled.button`
-  all: unset;
-  cursor: pointer;
-  margin: 0;
-  display: flex;
-  padding: 6px 18px;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  border-radius: 100px;
-  background: ${({ theme }) => theme.colors.brand.main};
-  color: ${({ theme }) => theme.colors.white};
-  width: 94px;
-  height: 24px;
-  ${({ theme }) => theme.typography.button2}
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.blue800}
 `;
 
 export const ContactPage = () => {
@@ -92,9 +73,9 @@ export const ContactPage = () => {
         </QuestionSection>
 
         <ContactSection>
-          <ContactAddress as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
+          <CommonButton width={126} height={36} as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
             직접 문의하기
-          </ContactAddress>
+          </CommonButton>
         </ContactSection>
       </Container>
       <Footer />

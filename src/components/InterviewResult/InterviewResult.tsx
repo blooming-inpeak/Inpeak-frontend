@@ -5,7 +5,6 @@ import {
   FeedbackBox,
   MemoToggle,
   Navigation,
-  StatusBadge,
   MemoBox,
   MemoWrapper,
   ToggleContainer,
@@ -17,7 +16,6 @@ import { ToggleSwitch } from '../common/ToggleSwitch';
 import { getAnswerDetailById, getTaskStatus, updateAnswerComment, updateAnswerUnderstood } from '../../api/apiService';
 import { AnswerStatus, GetAnswerDetailResponse } from '../../api/types';
 import { useSetRecoilState } from 'recoil';
-
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useOutsideClick } from '../../utils/useOutsideClick';
@@ -28,6 +26,7 @@ import Loading from '../../pages/Loading';
 import { Fail } from '../../pages/Fail';
 import { useAnswerCache } from '../../hooks/interview/useAnswerCache';
 import { CommonButton } from '../common/button/CommonButton';
+import { StatusBadge } from '../historys/NoteListStyle';
 
 type RawResultItem = {
   answerId?: number;

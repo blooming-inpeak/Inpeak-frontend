@@ -1,5 +1,4 @@
-import styled, { css } from 'styled-components';
-import { getStatusColor } from '../../utils/getStatusColor';
+import styled from 'styled-components';
 
 export const ModalContainer = styled.div<{ isInterviewPage?: boolean }>`
   position: relative;
@@ -32,6 +31,7 @@ export const ModalHeader = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 20px;
+  gap: 6px;
 
   .date {
     color: ${({ theme }) => theme.colors.text800};
@@ -68,32 +68,6 @@ export const ModalHeader = styled.div`
     line-height: 150%;
     letter-spacing: -0.3px;
   }
-`;
-
-export const StatusBadge = styled.span<{ status: string }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 21px;
-  height: 18px;
-  border-radius: 4px;
-  border-width: 1px;
-  border-style: solid;
-  margin-left: 6px;
-  padding: 0 4px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 150%;
-  letter-spacing: -0.3px;
-
-  ${({ status, theme }) => {
-    const { background, color, border } = getStatusColor(status, theme);
-    return css`
-      background: ${background};
-      color: ${color};
-      border: 1px solid ${border};
-    `;
-  }}
 `;
 
 export const Wrapper = styled.div`
@@ -167,16 +141,18 @@ export const ToggleContainer = styled.div`
   }
 `;
 export const FeedbackBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 30px 20px;
   border: 1px solid ${({ theme }) => theme.colors.blue1400};
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   margin-left: 41px;
   margin-top: 16px;
   .feedback-title {
     color: ${({ theme }) => theme.colors.brand.darker};
     ${({ theme }) => theme.typography.title2}
-    margin-bottom: 10px;
   }
   .feedback-content {
     ${({ theme }) => theme.typography.body2R}
