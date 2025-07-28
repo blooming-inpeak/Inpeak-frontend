@@ -75,6 +75,8 @@ export const InterviewResult = ({
   const isTaskFailed = taskStatusMap[currentIndexState] === 'FAILED';
   const taskStatus = taskStatusMap[currentIndexState];
 
+  const [isUserToggled, setIsUserToggled] = useState(false);
+
   const { get: getCachedAnswer, set: setCachedAnswer } = useAnswerCache();
 
   useEffect(() => {
@@ -251,6 +253,7 @@ export const InterviewResult = ({
     const key = getCurrentAnswerId();
     if (!isCorrect || !answerIdForRequest) return;
     const nextChecked = !answerData.isUnderstood;
+    setIsUserToggled(true);
     setAnswerData(prev => {
       const updated = { ...prev!, isUnderstood: nextChecked };
       if (typeof key === 'number') {
@@ -261,6 +264,10 @@ export const InterviewResult = ({
     setUnderstoodMap(prev => ({ ...prev, [String(answerIdForRequest)]: nextChecked }));
     updateAnswerUnderstood(Number(answerIdForRequest), nextChecked);
   };
+  useEffect(() => {
+    setIsUserToggled(false);
+  }, [currentIndexState]);
+
   const isCorrect = answerData?.answerStatus === 'CORRECT';
   const getStatusLabel = (status: AnswerStatus): string => {
     switch (status) {
@@ -326,7 +333,12 @@ export const InterviewResult = ({
               </Wrapper>
               <ToggleContainer>
                 <label className="toggle-label">이 질문은 완벽히 이해함</label>
-                <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
+                <ToggleSwitch
+                  isChecked={answerData.isUnderstood}
+                  onClick={handleToggle}
+                  disabled={!isCorrect}
+                  shouldAnimate={isUserToggled}
+                />
               </ToggleContainer>
               <FeedbackBox>
                 <span className="feedback-title">이렇게 말해보세요!</span>
