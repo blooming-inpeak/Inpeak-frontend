@@ -74,6 +74,7 @@ export const Time = styled.span`
 export const StatusBadge = styled.span<{ status: string }>`
   display: flex;
   padding: 0px 4px;
+  height: 18px;
   justify-content: center;
   align-items: center;
   gap: 10px;
