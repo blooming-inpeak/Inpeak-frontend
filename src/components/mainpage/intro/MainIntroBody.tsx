@@ -116,7 +116,7 @@ export const MainIntroBodyWrapper = styled.div`
 
 export const MainIntroBodyTop = styled.div`
   width: 100%;
-  height: 557px;
+  height: 670px;
   padding: 150px 0 100px 0;
 
   background-color: #ffffff;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const SelectStackWrapper = styled.div`
-  width: 452px;
-  height: 293px;
+  width: 500px;
+  height: 342px;
 
   display: flex;
   flex-direction: column;
@@ -14,8 +14,8 @@ export const SelectStackWrapper = styled.div`
 `;
 
 export const SelectStackBody = styled.div`
-  width: 428px;
-  height: 245px;
+  width: 452px;
+  height: 268px;
 
   display: flex;
   flex-direction: column;
@@ -64,8 +64,8 @@ export const SelectStackContentBottom = styled.div`
 `;
 
 export const SelectStackButton = styled.div`
-  width: 64px;
-  height: 24px;
+  width: 100px;
+  height: 36px;
   padding: 6px 18px;
   border-radius: 100px;
 

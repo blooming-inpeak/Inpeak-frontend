@@ -113,6 +113,7 @@ export const IntroStartButton = styled.button<IntroStartButtonProps>`
   align-items: center;
   justify-content: center;
   background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#202a43')};
+  margin-top: 64px;
 
   color: ${({ disabled }) => (disabled ? '#707991' : '#ffffff')};
   font-size: 16px;

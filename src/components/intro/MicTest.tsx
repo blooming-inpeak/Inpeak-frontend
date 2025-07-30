@@ -57,8 +57,8 @@ export const MicTest = ({ volume, handleVolumeChange, analyser, closeMicTest, se
 };
 
 export const MicTestWrapper = styled.div`
-  width: 236px;
-  height: 134px;
+  width: 300px;
+  height: 190px;
 
   padding: 32px 32px 24px 32px;
   border-radius: 24px;
@@ -108,7 +108,7 @@ export const MicTestVolume = styled.div`
 `;
 
 export const MicTestComplete = styled.div`
-  width: 34px;
+  width: 46px;
   height: 24px;
   padding: 0 6px;
 
