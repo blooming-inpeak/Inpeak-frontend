@@ -31,7 +31,6 @@ export const OpenLoginModal = ({ onClose }: Props) => {
         </OpenLoginModalMenu>
         <Divide />
         <OpenLoginModalMenu
-          style={{ height: '100%', cursor: 'pointer' }}
           onClick={logout} // ✅ 로그아웃 실행
         >
           로그아웃
