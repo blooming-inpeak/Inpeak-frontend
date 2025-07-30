@@ -44,7 +44,6 @@ import {
   CaptionBox,
 } from './HistoryCalendarStyles';
 import { CaptionType } from '../../common/caption/CaptionType';
-import { BlurBackground } from '../../common/background/BlurBackground';
 import { InterviewResult } from '../../InterviewResult/InterviewResult';
 
 interface CalendarQuestion {
@@ -154,15 +153,13 @@ const HistoryCalendar = () => {
   return (
     <>
       {isModalOpen && selectedAnswerId && (
-        <BlurBackground>
-          <InterviewResult
-            answerId={selectedAnswerId}
-            showQuestionIndex={true}
-            currentIndex={clickedIndex}
-            onClose={() => setIsModalOpen(false)}
-            isCalendar
-          />
-        </BlurBackground>
+        <InterviewResult
+          answerId={selectedAnswerId}
+          showQuestionIndex={true}
+          currentIndex={clickedIndex}
+          onClose={() => setIsModalOpen(false)}
+          isCalendar
+        />
       )}
       <Container>
         <LeftSection>

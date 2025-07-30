@@ -5,11 +5,24 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getAnsweredList } from '../../api/apiService';
 
 import { InterviewResult } from '../../components/InterviewResult/InterviewResult';
-import { BlurBackground } from '../../components/common/background/BlurBackground';
 import { useInfiniteScroll } from '../../utils/useInfiniteScroll.ts';
 import { UnderstoodState } from '../../store/Interview/UnderstoodState.ts';
 import { useRecoilValue } from 'recoil';
 import { AnswerStatus } from '../../api/types.ts';
+import {
+  BottomRow,
+  Date,
+  FiltersContainer,
+  Header,
+  LoadingText,
+  Question,
+  QuestionCard,
+  ScrollWrapper,
+  SectionContainer,
+  StatusBadge,
+  Time,
+  TitleBox,
+} from './NoteListStyle.tsx';
 
 export const AnsweredList = () => {
   const [notes, setNotes] = useState<
@@ -97,13 +110,7 @@ export const AnsweredList = () => {
   return (
     <>
       {isModalOpen && selectedAnswerId && (
-        <BlurBackground>
-          <InterviewResult
-            answerId={selectedAnswerId}
-            showQuestionIndex={false}
-            onClose={() => setIsModalOpen(false)}
-          />
-        </BlurBackground>
+        <InterviewResult answerId={selectedAnswerId} showQuestionIndex={false} onClose={() => setIsModalOpen(false)} />
       )}
 
       <SectionContainer>
@@ -129,11 +136,10 @@ export const AnsweredList = () => {
               }}
             />
           </FiltersContainer>
-        </Header>{' '}
+        </Header>
         <ScrollWrapper ref={scrollContainerRef}>
           {notes.length === 0 ? (
             <EmptyContainer>
-              {' '}
               <EmptyState type="answered" />
             </EmptyContainer>
           ) : (
@@ -174,40 +180,6 @@ const EmptyContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const FiltersContainer = styled.div`
-  display: flex;
-  gap: 4px;
-`;
-
-const SectionContainer = styled.div`
-  height: 800px;
-  padding: 42px;
-  background-color: #f5f9ff;
-  border-radius: 24px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const TitleBox = styled.div`
-  width: 83px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 150%;
-  letter-spacing: -0.12px;
-  color: #212121;
-`;
 
 const ListContainer = styled.div`
   display: grid;
@@ -216,93 +188,7 @@ const ListContainer = styled.div`
   width: 100%;
 `;
 
-const QuestionCard = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  width: 264px;
-  height: 154px;
-  padding: 20px;
-  border-radius: 16px;
-  background: var(--text-1700, #fff);
-
-  overflow: hidden;
-  color: var(--text-000, #000);
-  text-overflow: ellipsis;
-  cursor: pointer;
-`;
-
-const Date = styled.span`
-  color: #747474;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 150%;
-`;
-
-const Question = styled.p`
-  overflow: hidden;
-  color: #000;
-  text-overflow: ellipsis;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 150%;
-  margin-bottom: 8px;
-
-  flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-`;
-
-const BottomRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Time = styled.span`
-  color: var(--text-800, #afafaf);
-  font-family: 'Pretendard Variable';
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-`;
-
-const StatusBadge = styled.span<{ status: string }>`
-  display: flex;
-  padding: 0px 4px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: 4px;
-
-  ${({ status }) =>
-    status === '포기'
-      ? 'background: #F8FFEA; color: #85C000; border: 1px solid #85C000;'
-      : status === '정답'
-        ? 'background: #F5F9FF; color: #0050D8; border: 1px solid #0050D8;'
-        : status === '이해완료'
-          ? 'background: var(--sementic-light-400, #FAFAFA); color: var(--text-500, #747474); border: 1px solid var(--text-500, #747474);'
-          : 'background: #FFF3F4; color: #F84883; border: 1px solid #F84883;'}
-`;
-const LoadingText = styled.div`
-  text-align: center;
-  margin-top: 10px;
-  color: #666;
-`;
 const BadgeContainer = styled.div`
   display: flex;
   gap: 4px;
-`;
-const ScrollWrapper = styled.div`
-  height: 100%;
-  overflow-y: auto;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 `;

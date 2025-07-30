@@ -28,10 +28,6 @@ export interface GetAnsweredListResponse {
   AnswerResponseList: AnswerResponse[];
   hasNext: boolean;
 }
-export interface GetAnswerDetailParams {
-  interviewId: number;
-  questionId: number;
-}
 
 export interface GetAnswerDetailResponse {
   dateTime: string;

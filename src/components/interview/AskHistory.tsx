@@ -5,7 +5,6 @@ import { AskHistoryBox } from './AskHistoryBox';
 import { AskHistoryMore } from './AskHistoryMore';
 import { fetchRecentAnswers } from '../../api/interview/recentInterviewAPI';
 import { CaptionType } from '../common/caption/CaptionType';
-import { BlurBackground } from '../common/background/BlurBackground';
 import { InterviewResult } from '../InterviewResult/InterviewResult';
 
 interface HistoryItem {
@@ -48,8 +47,8 @@ export const AskHistory: React.FC = () => {
         status: (item.answerStatus === 'CORRECT'
           ? '정답-small'
           : item.answerStatus === 'INCORRECT'
-          ? '오답-small'
-          : '포기-small') as CaptionType,
+            ? '오답-small'
+            : '포기-small') as CaptionType,
         detailUrl: `history/detail/${item.answerId}`,
       }));
 
@@ -69,9 +68,7 @@ export const AskHistory: React.FC = () => {
   return (
     <AskHistoryWrapper>
       {showModal && selectedAnswerId && (
-        <BlurBackground>
-          <InterviewResult answerId={selectedAnswerId} onClose={() => setShowModal(false)} isList />
-        </BlurBackground>
+        <InterviewResult answerId={selectedAnswerId} onClose={() => setShowModal(false)} isList />
       )}
       <AskHistoryTitle>최근 질문 히스토리</AskHistoryTitle>
       {loading ? (

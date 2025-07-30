@@ -62,24 +62,18 @@ const DropdownButton = styled.button<DropdownButtonProps>`
   width: 80px;
   height: 26px;
   padding: 0 8px;
-  background: #fbfdff;
-  border: 1px solid #3277ed;
-  border-bottom: ${({ isOpen }) => (isOpen ? 'none' : '1px solid #3277ed')};
+  background: ${({ theme }) => theme.colors.sementic.standard400};
+  border: 1px solid ${({ theme }) => theme.colors.brand.main};
+  border-bottom: ${({ isOpen, theme }) => (isOpen ? 'none' : `1px solid ${theme.colors.brand.main}`)};
   border-radius: ${({ isOpen }) => (isOpen ? '4px 4px 0 0' : '4px')};
-
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   cursor: pointer;
   outline: none;
-
-  color: var(--brand-main, #3277ed);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 150%;
-  letter-spacing: -0.3px;
+  color: ${({ theme }) => theme.colors.brand.main};
+  ${({ theme }) => theme.typography.caption1}
 `;
 
 interface ArrowIconWrapperProps {
@@ -100,18 +94,15 @@ const DropdownMenu = styled.ul`
   top: 24px;
   left: 0;
   width: 80px;
-
   margin: 0;
   padding: 4px 0;
   list-style: none;
-
-  border: 1px solid #3277ed;
+  border: 1px solid ${({ theme }) => theme.colors.brand.main};
   border-top: none;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   box-sizing: border-box;
-
-  background: #fbfdff;
+  background: ${({ theme }) => theme.colors.sementic.standard400};
 `;
 
 interface DropdownMenuItemProps {
@@ -122,16 +113,12 @@ const DropdownMenuItem = styled.li<DropdownMenuItemProps>`
   width: 100%;
   padding: 4px 8px;
   box-sizing: border-box;
-
-  font-size: 12px;
-  font-weight: 500;
-  color: ${({ isSelected }) => (isSelected ? '#3277ed' : '#212121')};
-  background: ${({ isSelected }) => (isSelected ? '#e6efff' : 'transparent')};
-  color: #3277ed;
+  ${({ theme }) => theme.typography.caption1}
+  color: ${({ theme }) => theme.colors.brand.main};
+  background: ${({ isSelected, theme }) => (isSelected ? theme.colors.blue1400 : 'transparent')};
   cursor: pointer;
-
   &:hover {
-    background: #e6efff;
-    color: #3277ed;
+    background: ${({ theme }) => theme.colors.blue1400};
+    color: ${({ theme }) => theme.colors.brand.main};
   }
 `;

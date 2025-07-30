@@ -1,4 +1,4 @@
-import api from '../apiClient';
+import api from '../index';
 
 export const fetchInterviewCalendarData = async (month: string, year: string) => {
   try {

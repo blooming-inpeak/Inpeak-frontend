@@ -10,7 +10,7 @@ export const ModalContainer = styled.div<{ isInterviewPage?: boolean }>`
   max-width: 829px;
   min-height: 300px;
   height: auto;
-  max-height: 80vh;
+  max-height: 85vh;
   width: 100%;
   overflow-y: auto;
   scrollbar-width: none;
@@ -31,9 +31,10 @@ export const ModalHeader = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 20px;
+  gap: 6px;
 
   .date {
-    color: #afafaf;
+    color: ${({ theme }) => theme.colors.text800};
     font-size: 14px;
     font-weight: 600;
     line-height: 150%;
@@ -58,39 +59,15 @@ export const ModalHeader = styled.div`
     font-weight: 500;
     line-height: 150%;
     letter-spacing: -0.3px;
-    border: 1px solid var(--text-500, #747474);
-    background: var(--sementic-light-400, #fafafa);
-    color: var(--text-500, #747474);
+    border: 1px solid ${({ theme }) => theme.colors.text500};
+    background: ${({ theme }) => theme.colors.sementic.light400};
+    color: ${({ theme }) => theme.colors.text500};
     font-size: 12px;
     font-style: normal;
     font-weight: 500;
     line-height: 150%;
     letter-spacing: -0.3px;
   }
-`;
-
-export const StatusBadge = styled.span<{ status: string }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 21px;
-  height: 18px;
-  border-radius: 4px;
-  border-width: 1px;
-  border-style: solid;
-  margin-left: 6px;
-  padding: 0 4px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 150%;
-  letter-spacing: -0.3px;
-
-  ${({ status }) =>
-    status === 'SKIPPED'
-      ? `color: #85C000; border-color: #85C000; background: #F8FFEA;`
-      : status === 'CORRECT'
-        ? `color: #0050D8; border-color: #0050D8; background: #F5F9FF;`
-        : `color: #F84883; border-color: #F84883; background: #FFF3F4;`}
 `;
 
 export const Wrapper = styled.div`
@@ -106,21 +83,15 @@ export const Wrapper = styled.div`
 
   .question-mark {
     min-width: 42px;
-    font-weight: bold;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.14px;
+    ${({ theme }) => theme.typography.head4}
   }
 
   .question {
     flex: 1;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 150%;
     margin: 0;
     display: flex;
     align-items: center;
+    ${({ theme }) => theme.typography.title1}
   }
   .answer-content {
     display: flex;
@@ -130,22 +101,14 @@ export const Wrapper = styled.div`
 
   .answer-mark {
     width: 42px;
-    font-weight: bold;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -0.14px;
+    ${({ theme }) => theme.typography.head4}
   }
 
   .answer {
     flex: 1;
     margin: 0;
-    color: var(--text-000, #000);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%;
-    letter-spacing: -0.4px;
+    color: ${({ theme }) => theme.colors.text000};
+    ${({ theme }) => theme.typography.body2R}
   }
   .video-container {
     width: 168px;
@@ -163,64 +126,63 @@ export const Wrapper = styled.div`
   .video-time {
     width: 100%;
     text-align: right; /* 맨 오른쪽 정렬 */
-    color: var(--text-500, #747474);
-    font-family: 'Pretendard Variable';
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%; /* 18px */
-    letter-spacing: -0.3px;
-  }
-
-  .toggle-container {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    justify-content: flex-end;
-  }
-
-  .toggle-label {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 150%;
-    letter-spacing: -0.3px;
+    color: ${({ theme }) => theme.colors.text500};
+    ${({ theme }) => theme.typography.body4R}
   }
 `;
 export const ToggleContainer = styled.div`
   display: flex;
   gap: 7px;
   justify-content: flex-end;
+  align-items: center;
+  .toggle-label {
+    ${({ theme }) => theme.typography.body4M}
+    color: ${({ theme }) => theme.colors.text100};
+  }
 `;
 export const FeedbackBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 30px 20px;
-  border: 1px solid #e6efff;
+  border: 1px solid ${({ theme }) => theme.colors.blue1400};
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   margin-left: 41px;
   margin-top: 16px;
   .feedback-title {
-    color: #0050d8;
-    font-weight: bold;
-    margin-bottom: 10px;
+    color: ${({ theme }) => theme.colors.brand.darker};
+    ${({ theme }) => theme.typography.title2}
+  }
+  .feedback-content {
+    ${({ theme }) => theme.typography.body2R}
   }
 `;
 
-export const MemoWrapper = styled.div`
+export const MemoWrapper = styled.div<{
+  isOpen: boolean;
+  $isAfterInterview?: boolean;
+}>`
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   width: 100%;
+  margin-bottom: ${({ isOpen, $isAfterInterview }) => {
+    if (isOpen) return $isAfterInterview ? '40px' : '0px';
+    return $isAfterInterview ? '84px' : '44px';
+  }};
 `;
 
 export const MemoToggle = styled.div`
-  display: inline-flex;
+  display: flex;
+  width: 76px;
   justify-content: flex-end;
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  margin-bottom: 20px;
-
+  align-self: flex-end;
   .memo-text {
-    font-size: 14px;
+    color: ${({ theme }) => theme.colors.text500};
+    ${({ theme }) => theme.typography.caption1}
     transition: color 0.3s ease;
   }
 
@@ -233,6 +195,10 @@ export const MemoToggle = styled.div`
   .memo-toggle.open {
     transform: rotate(-180deg);
   }
+  img {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 export const MemoBox = styled.textarea`
@@ -241,23 +207,35 @@ export const MemoBox = styled.textarea`
   height: auto;
   padding: 15px 20px;
   border-radius: 12px;
-  border: 1px solid #e6efff;
+  border: 1px solid ${({ theme }) => theme.colors.blue1400};
   box-sizing: border-box;
   margin-top: 8px;
   margin-left: 41px;
-  font-size: 14px;
-  font-family: inherit;
-  line-height: 1.5;
   resize: none;
   overflow-y: hidden;
+  color: ${({ theme }) => theme.colors.text000};
+  ${({ theme }) => theme.typography.body3R}
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text800};
+  }
 `;
 
 export const Navigation = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  align-items: center;
   width: 100%;
   position: relative;
+  .question-index {
+    display: flex;
+    flex: 1;
+    text-align: center;
+    ${({ theme }) => theme.typography.body3R}
+    color: ${({ theme }) => theme.colors.text800};
+    .current {
+      color: ${({ theme }) => theme.colors.blue300};
+    }
+  }
 `;
 
 export const ButtonGroup = styled.div<{ position: 'left' | 'right' }>`
@@ -265,25 +243,7 @@ export const ButtonGroup = styled.div<{ position: 'left' | 'right' }>`
   ${({ position }) => (position === 'left' ? 'justify-content: flex-start;' : 'justify-content: flex-end;')}
   width: 100%;
 `;
-export const Button = styled.button`
-  padding: 6px 18px;
-  white-space: nowrap;
-  height: 36px;
-  border: none;
-  border-radius: 100px;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 600;
-  &.prev {
-    background: #c3daff;
-    color: #0050d8;
-  }
 
-  &.next {
-    background: #3277ed;
-    color: #ffffff;
-  }
-`;
 export const CloseButton = styled.div`
   position: absolute;
   top: 24px;

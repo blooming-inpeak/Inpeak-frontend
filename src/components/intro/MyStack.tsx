@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import api from '../../api/apiClient';
+import api from '../../api/index';
 
 export const MyStack = () => {
   const [myInterest, setMyInterest] = useState<string[]>([]);

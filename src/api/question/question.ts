@@ -1,5 +1,6 @@
 import axios from 'axios';
-import api from '../apiClient';
+import api from '../index';
+
 import { AnswerQuestionRequest } from '../types';
 
 export const PassQuestion = async (questionId: string, interviewId: string) => {
@@ -53,7 +54,7 @@ export const uploadVideoToS3 = async (file: Blob, presignedURL: string, type: st
 
 export const AnswerQuestion = async (Request: AnswerQuestionRequest) => {
   try {
-    const response = await api.post('/answer/create', Request);
+    const response = await api.post('/v2/answer/create', Request);
 
     return response.data;
   } catch (error) {
