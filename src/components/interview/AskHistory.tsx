@@ -47,8 +47,8 @@ export const AskHistory: React.FC = () => {
         status: (item.answerStatus === 'CORRECT'
           ? '정답-small'
           : item.answerStatus === 'INCORRECT'
-            ? '오답-small'
-            : '포기-small') as CaptionType,
+          ? '오답-small'
+          : '포기-small') as CaptionType,
         detailUrl: `history/detail/${item.answerId}`,
       }));
 
@@ -113,8 +113,8 @@ export const AskHistory: React.FC = () => {
 };
 
 export const AskHistoryWrapper = styled.div`
-  width: 549px;
-  height: 422px;
+  width: 649px;
+  height: 502px;
   padding: 40px 50px;
   border-radius: 24px;
   background-color: #ffffff;
