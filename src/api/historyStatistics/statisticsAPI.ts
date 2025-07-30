@@ -1,4 +1,4 @@
-import api from '../apiClient';
+import api from '../index';
 
 export interface HistoryStatisticsData {
   totalAnswerCount: number;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const WithdrawalModalWrapper = styled.div`
-  width: 402px;
-  height: 139px;
+  width: 450px;
+  height: 203px;
 
   padding: 24px 24px 40px 24px;
   gap: 4px;
@@ -65,8 +65,8 @@ export const WithdrawalButtons = styled.div`
 `;
 
 export const YesButton = styled.div`
-  width: 64px;
-  height: 24px;
+  width: 100px;
+  height: 36px;
   padding: 6px 18px;
 
   border-radius: 100px;
@@ -90,8 +90,8 @@ export const YesButton = styled.div`
 `;
 
 export const NoButton = styled.div`
-  width: 102px;
-  height: 24px;
+  width: 152px;
+  height: 36px;
 
   padding: 6px 18px;
   border-radius: 100px;

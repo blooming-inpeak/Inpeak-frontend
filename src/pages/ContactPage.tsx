@@ -1,44 +1,37 @@
 import styled from 'styled-components';
 import React from 'react';
 import Footer from '../components/common/Footer/Footer';
+import { CommonButton } from '../components/common/button/CommonButton';
 
 const Container = styled.div`
   width: 550px;
-  margin: 100px auto;
+  margin: 100px auto 184px;
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.head5}
   text-align: left;
 `;
 
 const QuestionSection = styled.div`
-  margin-bottom: 110px;
+  margin-bottom: 100px;
 `;
 
 const QuestionContainer = styled.div`
   width: 550px;
-  height: 119px;
+  height: 159px;
   padding: 40px 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 `;
 
 const Question = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.title2}
 `;
 
 const Answer = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 150%;
-  letter-spacing: -0.35px;
-
+  ${({ theme }) => theme.typography.body3R}
   margin: 0 0 0 18px;
 `;
 
@@ -49,33 +42,10 @@ const Divider = styled.div`
   margin: 0 auto;
 `;
 
-const EmailSection = styled.div`
-  margin-top: 10px;
+const ContactSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-`;
-
-const EmailAddress = styled.button`
-  all: unset;
-  cursor: pointer;
-  margin: 0;
-  display: flex;
-  padding: 6px 18px;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  border-radius: 100px;
-  background: var(--brand-main, #3277ed);
-  color: white;
-  width: 94px;
-  height: 24px;
-  color: var(--text-1700, #fff);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-  letter-spacing: -0.35px;
 `;
 
 export const ContactPage = () => {
@@ -87,7 +57,6 @@ export const ContactPage = () => {
 
   return (
     <>
-      {' '}
       <Container>
         <QuestionSection>
           <Title>자주 묻는 질문</Title>
@@ -103,11 +72,11 @@ export const ContactPage = () => {
           ))}
         </QuestionSection>
 
-        <EmailSection>
-          <EmailAddress as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
+        <ContactSection>
+          <CommonButton width={126} height={36} as="a" href="https://forms.gle/xKsTZSMDtCKw1AJY7">
             직접 문의하기
-          </EmailAddress>
-        </EmailSection>
+          </CommonButton>
+        </ContactSection>
       </Container>
       <Footer />
     </>

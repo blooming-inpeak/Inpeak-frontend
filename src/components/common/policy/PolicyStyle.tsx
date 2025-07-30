@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const PrivacyWrapper = styled.div`
-  width: 352px;
-  height: 415px;
+  width: 400px;
+  height: 463px;
   padding: 24px;
   background-color: #ffffff;
   display: flex;
@@ -36,7 +36,7 @@ export const Space = styled.div`
 `;
 
 export const PrivacyContent = styled.pre`
-  width: 320px;
+  width: 352px;
   height: 100%;
 
   display: flex;
@@ -82,8 +82,8 @@ export const PrivacyFooter = styled.div`
 `;
 
 export const PrivacytFooterButton = styled.div`
-  width: 37px;
-  height: 24px;
+  width: 57px;
+  height: 28px;
 
   padding: 2px 10px;
   border-radius: 100px;

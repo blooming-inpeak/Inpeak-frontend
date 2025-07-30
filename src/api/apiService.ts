@@ -1,9 +1,8 @@
-import api from './apiClient';
+import api from './index';
 import {
   GetAnsweredListParams,
   GetAnsweredListResponse,
   GetIncorrectAnswersParams,
-  GetAnswerDetailParams,
   GetAnswerDetailResponse,
 } from './types';
 
@@ -15,13 +14,20 @@ export const getIncorrectAnswers = (params: GetIncorrectAnswersParams) => {
 export const getAnsweredList = (params: GetAnsweredListParams) => {
   return api.get<GetAnsweredListResponse>('/answer/correct', { params });
 };
-export const getAnswerDetail = async (params: GetAnswerDetailParams): Promise<GetAnswerDetailResponse> => {
-  const res = await api.get<GetAnswerDetailResponse>('/answer', { params });
+
+export const getTaskStatus = async (
+  taskId: number,
+): Promise<{
+  taskId: number;
+  status: 'WAITING' | 'SUCCESS' | 'FAILED';
+  answerId: number | null;
+}> => {
+  const res = await api.get(`/v2/answer/tasks/${taskId}`);
   return res.data;
 };
 
 export const getAnswerDetailById = async (answerId: number): Promise<GetAnswerDetailResponse> => {
-  const res = await api.get<GetAnswerDetailResponse>(`/answer/${answerId}`);
+  const res = await api.get<GetAnswerDetailResponse>(`/v2/answer/${answerId}`);
   return res.data;
 };
 //메모 작성

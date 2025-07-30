@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ModalContainer,
   ModalHeader,
   FeedbackBox,
   MemoToggle,
   Navigation,
-  Button,
-  StatusBadge,
   MemoBox,
   MemoWrapper,
   ToggleContainer,
@@ -15,116 +13,260 @@ import {
   ButtonGroup,
 } from '../../components/InterviewResult/ModalStyle';
 import { ToggleSwitch } from '../common/ToggleSwitch';
-import {
-  getAnswerDetail,
-  getAnswerDetailById,
-  updateAnswerComment,
-  updateAnswerUnderstood,
-} from '../../api/apiService';
-import { GetAnswerDetailResponse, AnswerStatus } from '../../api/types';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { ResultState } from '../../store/result/ResultState';
-import { QuestionsState } from '../../store/question/Question';
-import { InterviewIdState } from '../../store/Interview/InterviewId';
+import { getAnswerDetailById, getTaskStatus, updateAnswerComment, updateAnswerUnderstood } from '../../api/apiService';
+import { AnswerStatus, GetAnswerDetailResponse } from '../../api/types';
+import { useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useOutsideClick } from '../../utils/useOutsideClick';
 import { UnderstoodState } from '../../store/Interview/UnderstoodState';
+import { formatSecondsToTime } from '../../utils/format';
+import { BlurBackground } from '../common/background/BlurBackground';
+import Loading from '../../pages/Loading';
+import { Fail } from '../../pages/Fail';
+import { useAnswerCache } from '../../hooks/interview/useAnswerCache';
+import { CommonButton } from '../common/button/CommonButton';
+import { StatusBadge } from '../historys/NoteListStyle';
 
-interface RawResultItem {
-  question: string;
-  questionId: number;
-  interviewId: string;
-  time: number;
-  isAnswer: boolean;
-  answerId: number;
-}
-interface InterviewResultProps {
-  // 히스토리 모달 전용
+type RawResultItem = {
   answerId?: number;
-  initialAnswerData?: GetAnswerDetailResponse;
-  // 면접 직후 전용
-  interviewId?: number | null;
-  questions?: { id: number }[];
-  showQuestionIndex?: boolean;
+  taskId?: number;
+  isAnswer?: boolean;
+  question?: string;
+  questionId?: number;
+  time?: number;
+};
+
+interface InterviewResultProps {
+  result?: RawResultItem[]; // 여러 질문용
+  answerId?: number; // 단일 질문용
   currentIndex?: number;
   onClose?: () => void;
-
-  isAfterInterview?: boolean; // 면접 직후 단일 조회 (index O, 이전/다음 버튼 O)
-  isCalendar?: boolean; // 히스토리 캘린더 모달 (index O, 이전/다음 버튼 X)
-  isList?: boolean; // 답변완료 / 오답노트 리스트 모달 (index X, 이전/다음 버튼 X)
+  showQuestionIndex?: boolean;
+  isAfterInterview?: boolean;
+  isCalendar?: boolean;
+  isList?: boolean;
 }
 
 export const InterviewResult = ({
+  result,
   answerId,
-  interviewId = 0,
-  questions = [],
   onClose,
   currentIndex = 0,
-
   isCalendar,
   isAfterInterview,
 }: InterviewResultProps) => {
-  const modalRef = useOutsideClick<HTMLDivElement>(() => {
-    onClose?.();
-  });
+  const modalRef = useOutsideClick<HTMLDivElement>(() => onClose?.());
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const [resultData, setResult] = useRecoilState(ResultState);
-  const [questionsState, setQuestions] = useRecoilState(QuestionsState);
-  const [interviewIdState, setInterviewId] = useRecoilState(InterviewIdState);
-
   const [answerData, setAnswerData] = useState<GetAnswerDetailResponse | null>(null);
-  const [currentIndexState, setCurrentIndexState] = useState(currentIndex || 0);
-  const answerIdForRequest = answerId ?? resultData?.[currentIndexState]?.answerId;
-  const interviewIdForRequest = interviewId ?? interviewIdState;
-  const questionsForRequest = questions.length > 0 ? questions : questionsState;
-
+  const [currentIndexState, setCurrentIndexState] = useState(currentIndex);
   const isShowQuestionIndex = isAfterInterview || isCalendar;
-
   const isShowNavigation = isAfterInterview;
-
-  const [memo, setMemo] = useState(''); // 메모 상태 추가
+  const [memo, setMemo] = useState('');
   const memoTimeoutRef = useRef<number | null>(null);
-
   const [memoOpenMap, setMemoOpenMap] = useState<Record<string, boolean>>({});
-  const memoKey = answerIdForRequest?.toString() ?? `idx-${currentIndexState}`;
-  const isMemoOpenForCurrent = memoOpenMap[memoKey] || false;
-
+  const storedResult = useRef<RawResultItem[]>([]);
   const setUnderstoodMap = useSetRecoilState(UnderstoodState);
+  const [taskStatusMap, setTaskStatusMap] = useState<Record<string, 'WAITING' | 'SUCCESS' | 'FAILED'>>({});
+  const [taskLoadingMap, setTaskLoadingMap] = useState<Record<string, boolean>>({});
 
-  const handleToggleMemo = () => {
-    if (!memoKey) return;
-    setMemoOpenMap(prev => ({
-      ...prev,
-      [memoKey]: !prev[memoKey],
-    }));
+  const isTaskFailed = taskStatusMap[currentIndexState] === 'FAILED';
+  const taskStatus = taskStatusMap[currentIndexState];
+
+  const [isUserToggled, setIsUserToggled] = useState(false);
+
+  const { get: getCachedAnswer, set: setCachedAnswer } = useAnswerCache();
+
+  useEffect(() => {
+    if (result && result.length > 0) {
+      storedResult.current = result;
+    } else if (answerId) {
+      storedResult.current = [
+        {
+          answerId,
+          isAnswer: true,
+        },
+      ];
+    } else {
+      storedResult.current = [];
+    }
+  }, [result, answerId]);
+
+  const answerIdForRequest = storedResult.current[currentIndexState]?.answerId ?? null;
+
+  const memoKey = answerIdForRequest?.toString() ?? `idx-${currentIndexState}`;
+  const isMemoOpenForCurrent = useMemo(() => {
+    return memoOpenMap[memoKey] || false;
+  }, [memoOpenMap, memoKey]);
+
+  const MAX_RETRY_COUNT = 13;
+  const fetchWithTaskId = async (taskId: number, index: number) => {
+    let isAborted = false;
+    setTaskLoadingMap(prev => {
+      if (prev[index]) {
+        isAborted = true;
+        return prev;
+      }
+      return { ...prev, [index]: true };
+    });
+
+    if (isAborted) return;
+
+    let success = false;
+    for (let i = 0; i < MAX_RETRY_COUNT; i++) {
+      const statusRes = await getTaskStatus(taskId);
+
+      if (i === 0 && statusRes.status === 'WAITING') {
+        setTaskStatusMap(prev => ({ ...prev, [index]: 'WAITING' }));
+        setAnswerData(null); // answerData 초기화해서 빈 화면 보이게
+      }
+
+      if (taskLoadingMap[index]) return;
+
+      if (statusRes.status === 'SUCCESS' && statusRes.answerId) {
+        storedResult.current[index].answerId = statusRes.answerId;
+        const detail = await getAnswerDetailById(statusRes.answerId);
+        setAnswerData(detail);
+        setCachedAnswer(statusRes.answerId, detail);
+        setTaskStatusMap(prev => ({ ...prev, [index]: 'SUCCESS' }));
+        success = true;
+        break;
+      } else if (statusRes.status === 'FAILED') {
+        setTaskStatusMap(prev => ({ ...prev, [index]: 'FAILED' }));
+        success = true;
+        break;
+      }
+
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
+    if (!success) {
+      setTaskStatusMap(prev => ({ ...prev, [index]: 'FAILED' }));
+    }
+
+    setTaskLoadingMap(prev => ({ ...prev, [index]: false }));
   };
 
   useEffect(() => {
-    if (currentIndex !== undefined) {
-      setCurrentIndexState(currentIndex);
+    if (typeof answerId === 'number' && !result) {
+      const cached = getCachedAnswer(answerId);
+      if (cached) {
+        setAnswerData(cached);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      getAnswerDetailById(answerId)
+        .then(detail => {
+          setAnswerData(detail);
+          setCachedAnswer(answerId, detail);
+        })
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
     }
-  }, [currentIndex]);
-  const formatRunningTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
+  }, [answerId, result, getCachedAnswer, setCachedAnswer]);
 
-    const hour = h > 0 ? `${h.toString().padStart(2, '0')}:` : '';
-    const minute = `${m.toString().padStart(2, '0')}:`;
-    const second = s.toString().padStart(2, '0');
-
-    return `${hour}${minute}${second}`;
+  const getCurrentAnswerId = () => {
+    return storedResult.current[currentIndexState]?.answerId;
   };
 
-  const formatKoreanDate = (dateStr?: string) => {
-    if (!dateStr) return '';
-    return dayjs(dateStr).format('YYYY년 MM월 DD일');
+  useEffect(() => {
+    if (!result) return;
+
+    const item = storedResult.current[currentIndexState];
+    if (!item) return;
+
+    const { answerId, taskId } = item;
+    const status = taskStatusMap[currentIndexState];
+
+    const loadAnswer = async () => {
+      const key = getCurrentAnswerId();
+      if (!answerId && taskId && (!status || status === 'WAITING')) {
+        setAnswerData(null);
+      }
+
+      setIsLoading(true);
+      try {
+        if (answerId) {
+          if (typeof key === 'number') {
+            const cached = getCachedAnswer(key);
+            if (cached) {
+              setAnswerData(cached);
+              return;
+            }
+
+            const detail = await getAnswerDetailById(key);
+            setAnswerData(detail);
+            setCachedAnswer(key, detail);
+          }
+        } else if (taskId) {
+          if (!status || status === 'WAITING') {
+            await fetchWithTaskId(taskId, currentIndexState);
+          } else if (status === 'SUCCESS') {
+            const id = storedResult.current[currentIndexState].answerId;
+            if (id) {
+              const detail = await getAnswerDetailById(id);
+              setAnswerData(detail);
+            }
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAnswer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result, currentIndexState]);
+
+  useEffect(() => {
+    if (answerData) setMemo(answerData.comment || '');
+  }, [answerData]);
+
+  const handleMemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const key = getCurrentAnswerId();
+    const value = e.target.value;
+    setMemo(value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+    if (memoTimeoutRef.current) clearTimeout(memoTimeoutRef.current);
+    memoTimeoutRef.current = window.setTimeout(() => {
+      if (answerIdForRequest && typeof key === 'number') {
+        updateAnswerComment(Number(answerIdForRequest), value);
+        const updated = {
+          ...getCachedAnswer(key),
+          comment: value,
+        };
+        setCachedAnswer(key, updated);
+      }
+    }, 1000);
   };
+
+  const handleToggle = () => {
+    const key = getCurrentAnswerId();
+    if (!isCorrect || !answerIdForRequest) return;
+    const nextChecked = !answerData.isUnderstood;
+    setIsUserToggled(true);
+    setAnswerData(prev => {
+      const updated = { ...prev!, isUnderstood: nextChecked };
+      if (typeof key === 'number') {
+        setCachedAnswer(key, updated);
+      }
+      return updated;
+    });
+    setUnderstoodMap(prev => ({ ...prev, [String(answerIdForRequest)]: nextChecked }));
+    updateAnswerUnderstood(Number(answerIdForRequest), nextChecked);
+  };
+  useEffect(() => {
+    setIsUserToggled(false);
+  }, [currentIndexState]);
 
   const isCorrect = answerData?.answerStatus === 'CORRECT';
   const getStatusLabel = (status: AnswerStatus): string => {
@@ -139,261 +281,117 @@ export const InterviewResult = ({
         return '';
     }
   };
-
-  const handleResizeHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto'; // 높이 초기화
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'; // 스크롤 높이만큼 설정
-    }
-  };
-  const handleMemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setMemo(value);
-    handleResizeHeight();
-
-    if (memoTimeoutRef.current) clearTimeout(memoTimeoutRef.current);
-
-    memoTimeoutRef.current = window.setTimeout(() => {
-      if (answerIdForRequest) {
-        updateAnswerComment(Number(answerIdForRequest), value)
-          .then(() => console.log('메모 저장 성공'))
-          .catch(err => console.error('메모 저장 실패', err));
-      }
-    }, 5000);
-  };
-
-  useEffect(() => {
-    const stored = localStorage.getItem('result');
-    if (!stored) return;
-
-    try {
-      const parsed: RawResultItem[] = JSON.parse(stored);
-      if (!Array.isArray(parsed) || parsed.length === 0) return;
-
-      if (resultData.length === 0) {
-        const resultList = parsed.map(({ question, time, isAnswer, answerId }) => ({
-          question,
-          time,
-          isAnswer,
-          answerId,
-        }));
-        setResult(resultList);
-      }
-
-      if (questionsState.length === 0) {
-        const questionMap = new Map<number, string>();
-        parsed.forEach(({ questionId, question }) => {
-          if (!questionMap.has(questionId)) questionMap.set(questionId, question);
-        });
-
-        const questionsList = Array.from(questionMap.entries()).map(([id, content]) => ({
-          id,
-          content,
-        }));
-        setQuestions(questionsList);
-      }
-
-      if (!interviewIdState && parsed[0]?.interviewId) {
-        setInterviewId(Number(parsed[0].interviewId));
-      }
-    } catch (err) {
-      console.error('❌ 로컬스토리지 result 파싱 실패', err);
-    }
-  }, [resultData.length, questionsState.length, setResult, setQuestions, setInterviewId, interviewIdState]);
-
-  useEffect(() => {
-    if (!answerIdForRequest) return;
-    const fetch = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getAnswerDetailById(answerIdForRequest);
-        setAnswerData(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetch();
-  }, [answerIdForRequest]);
-
-  useEffect(() => {
-    if (answerIdForRequest) return; // 우선순위 조절
-    if (!interviewIdForRequest || questionsForRequest.length === 0) return;
-
-    const fetch = async () => {
-      setIsLoading(true);
-      try {
-        const questionId = questionsForRequest[currentIndexState].id;
-        const data = await getAnswerDetail({ interviewId: interviewIdForRequest, questionId });
-        setAnswerData(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interviewIdForRequest, currentIndexState, questionsForRequest]);
-
-  const handleNext = () => {
-    if (currentIndexState < questions.length - 1) {
-      setCurrentIndexState(prev => prev + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentIndexState > 0) {
-      setCurrentIndexState(prev => prev - 1);
-    }
-  };
-
-  useEffect(() => {
-    if (isMemoOpenForCurrent && textareaRef.current) {
-      handleResizeHeight(); // 메모가 열릴 때 높이 조정
-    }
-  }, [isMemoOpenForCurrent]);
-  // 메모 초기값 세팅
-  useEffect(() => {
-    if (answerData) {
-      setMemo(answerData.comment || '');
-      // 메모 초기화
-    }
-  }, [answerData]);
-
-  const handleToggle = () => {
-    if (!isCorrect || !answerIdForRequest) return;
-
-    const nextChecked = !answerData.isUnderstood;
-
-    setAnswerData(prev => prev && { ...prev, isUnderstood: nextChecked });
-
-    setUnderstoodMap(prev => ({
-      ...prev,
-      [String(answerIdForRequest)]: nextChecked,
-    }));
-
-    updateAnswerUnderstood(Number(answerIdForRequest), nextChecked)
-      .then(() => console.log('이해완료 상태 업데이트 성공'))
-      .catch(err => console.error('이해완료 상태 업데이트 실패', err));
-  };
-
-  if (isLoading) {
-    return <div></div>; //로딩
+  if (typeof answerId === 'number' && !result && (isLoading || !answerData)) {
+    return null;
   }
-  if (!answerData) return null;
   return (
-    <>
-      {answerData && (
-        <ModalContainer ref={modalRef}>
-          <CloseButton
-            onClick={() => {
-              if (isAfterInterview) {
-                navigate('/history');
-              } else {
-                onClose?.();
-              }
-            }}
-          >
-            <img src="/images/Close.svg" alt="close" />
-          </CloseButton>
+    <BlurBackground>
+      <ModalContainer ref={modalRef}>
+        <CloseButton onClick={() => onClose?.()}>
+          <img src="/images/Close.svg" alt="close" />
+        </CloseButton>
+        {(() => {
+          if (taskStatus === 'WAITING') {
+            return <Loading />;
+          }
 
-          {/* 헤더: 날짜 및 이미지 */}
-          <ModalHeader>
-            <span className="date">{formatKoreanDate(answerData.dateTime)}</span>
-            {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
+          if (isTaskFailed) {
+            return <Fail index={currentIndexState} />;
+          }
 
-            <StatusBadge status={answerData.answerStatus}>{getStatusLabel(answerData.answerStatus)}</StatusBadge>
-          </ModalHeader>
-
-          {/* 질문,답변 영역 */}
-          <Wrapper>
-            <div className="question-content">
-              {isShowQuestionIndex ? (
-                <span className="question-mark">Q{currentIndexState + 1}</span>
-              ) : (
-                <span className="question-mark">Q</span>
-              )}
-              <p className="question">{answerData.questionContent}</p>
-            </div>
-            {answerData.answerStatus !== 'SKIPPED' && (
-              <div className="answer-content">
-                <span className="answer-mark">A</span>
-                <p className="answer">{answerData.userAnswer}</p>
-                {answerData.videoUrl && (
-                  <div className="video-container">
-                    <video width="168" height="95" controls>
-                      <source src={answerData.videoUrl} type="video/mp4" />
-                    </video>
-                    <span className="video-time">{formatRunningTime(answerData.runningTime)}</span>
+          if (isLoading || !answerData) {
+            return <div style={{ minHeight: '500px' }} />;
+          }
+          return (
+            <>
+              <ModalHeader>
+                <span className="date">{dayjs(answerData.dateTime).format('YYYY년 MM월 DD일')}</span>
+                {answerData.isUnderstood && <span className="understood-badge">이해 완료</span>}
+                <StatusBadge status={getStatusLabel(answerData.answerStatus)}>
+                  {getStatusLabel(answerData.answerStatus)}
+                </StatusBadge>
+              </ModalHeader>
+              <Wrapper>
+                <div className="question-content">
+                  <span className="question-mark">Q{isShowQuestionIndex ? currentIndexState + 1 : ''}</span>
+                  <p className="question">{answerData.questionContent}</p>
+                </div>
+                {answerData.answerStatus !== 'SKIPPED' && (
+                  <div className="answer-content">
+                    <span className="answer-mark">A</span>
+                    <p className="answer">{answerData.userAnswer}</p>
+                    {answerData.videoUrl && (
+                      <div className="video-container">
+                        <video width="168" height="95" controls>
+                          <source src={answerData.videoUrl} type="video/mp4" />
+                        </video>
+                        <span className="video-time">{formatSecondsToTime(answerData.runningTime)}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
-          </Wrapper>
-          <ToggleContainer>
-            <label className="toggle-label" style={{ color: isCorrect ? '#212121' : '#AFAFAF' }}>
-              이 질문은 완벽히 이해함
-            </label>
-            {answerData && (
-              <ToggleSwitch isChecked={answerData.isUnderstood} onClick={handleToggle} disabled={!isCorrect} />
-            )}
-          </ToggleContainer>
-
-          {/* 피드백 박스 */}
-          <FeedbackBox>
-            <span className="feedback-title">이렇게 말해보세요!</span>
-            <p className="feedback-content">{answerData.AIAnswer}</p>
-          </FeedbackBox>
-
-          {/* 메모 토글 */}
-          <MemoWrapper>
-            <MemoToggle onClick={handleToggleMemo}>
-              <span className="memo-text" style={{ color: isMemoOpenForCurrent ? '#212121' : '#747474' }}>
-                {isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}
-              </span>
-              <img
-                className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
-                src="/images/memo_toggle.svg"
-                alt="메모 토글"
-              />
-            </MemoToggle>
-          </MemoWrapper>
-
-          {isMemoOpenForCurrent && (
-            <MemoBox
-              ref={textareaRef}
-              placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
-              value={memo}
-              onChange={handleMemoChange}
-            />
-          )}
-          {isShowNavigation && (
-            <Navigation>
-              <ButtonGroup position="left">
-                {currentIndexState > 0 && (
-                  <Button className="prev" onClick={handlePrev}>
-                    이전으로
-                  </Button>
+              </Wrapper>
+              <ToggleContainer>
+                <label className="toggle-label">이 질문은 완벽히 이해함</label>
+                <ToggleSwitch
+                  isChecked={answerData.isUnderstood}
+                  onClick={handleToggle}
+                  disabled={!isCorrect}
+                  shouldAnimate={isUserToggled}
+                />
+              </ToggleContainer>
+              <FeedbackBox>
+                <span className="feedback-title">이렇게 말해보세요!</span>
+                <p className="feedback-content">{answerData.AIAnswer}</p>
+              </FeedbackBox>
+              <MemoWrapper isOpen={isMemoOpenForCurrent ?? false} $isAfterInterview={isAfterInterview}>
+                <MemoToggle onClick={() => setMemoOpenMap(prev => ({ ...prev, [memoKey]: !prev[memoKey] }))}>
+                  <span className="memo-text">{isMemoOpenForCurrent ? '메모 접기' : '메모 펼치기'}</span>
+                  <img
+                    className={`memo-toggle ${isMemoOpenForCurrent ? 'open' : ''}`}
+                    src="/images/memo_toggle.svg"
+                    alt="메모 토글"
+                  />
+                </MemoToggle>
+                {isMemoOpenForCurrent && (
+                  <MemoBox
+                    ref={textareaRef}
+                    placeholder="피드백을 후 드는 생각을 자유롭게 기록해보세요"
+                    value={memo}
+                    onChange={handleMemoChange}
+                  />
                 )}
-              </ButtonGroup>
+              </MemoWrapper>
+            </>
+          );
+        })()}
 
-              <ButtonGroup position="right">
-                {currentIndexState < questions.length - 1 ? (
-                  <Button className="next" onClick={handleNext}>
-                    다음으로
-                  </Button>
-                ) : (
-                  <Button className="next" onClick={() => navigate('/history')}>
-                    완료
-                  </Button>
-                )}
-              </ButtonGroup>
-            </Navigation>
-          )}
-        </ModalContainer>
-      )}
-    </>
+        {isShowNavigation && (
+          <Navigation>
+            <ButtonGroup position="left">
+              {currentIndexState > 0 && (
+                <CommonButton width={100} height={36} onClick={() => setCurrentIndexState(prev => prev - 1)}>
+                  이전으로
+                </CommonButton>
+              )}
+            </ButtonGroup>
+            <div className="question-index">
+              <div className="current">{currentIndexState + 1}</div>/{storedResult.current.length}
+            </div>
+            <ButtonGroup position="right">
+              {currentIndexState < storedResult.current.length - 1 ? (
+                <CommonButton width={100} height={36} onClick={() => setCurrentIndexState(prev => prev + 1)}>
+                  다음으로
+                </CommonButton>
+              ) : (
+                <CommonButton width={100} height={36} className="next" onClick={() => navigate('/history')}>
+                  완료
+                </CommonButton>
+              )}
+            </ButtonGroup>
+          </Navigation>
+        )}
+      </ModalContainer>
+    </BlurBackground>
   );
 };

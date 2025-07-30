@@ -1,5 +1,7 @@
 import axios from 'axios';
-import api from '../apiClient';
+import api from '../index';
+
+import { AnswerQuestionRequest } from '../types';
 
 export const PassQuestion = async (questionId: string, interviewId: string) => {
   try {
@@ -18,13 +20,17 @@ export const PassQuestion = async (questionId: string, interviewId: string) => {
   }
 };
 
-export const getVideoUrl = async (startDate: string) => {
+export const getVideoUrl = async (startDate: string, isVideo: boolean) => {
   try {
-    const response = await api.get('/answer/presigned-url', {
-      params: {
-        startDate,
+    const params = {
+      startDate,
+      includeVideo: isVideo,
+      ...(isVideo && {
         extension: 'webm',
-      },
+      }),
+    };
+    const response = await api.get('/answer/presigned-url', {
+      params,
     });
 
     return response.data;
@@ -33,11 +39,11 @@ export const getVideoUrl = async (startDate: string) => {
   }
 };
 
-export const uploadVideoToS3 = async (file: Blob, presignedURL: string) => {
+export const uploadVideoToS3 = async (file: Blob, presignedURL: string, type: string) => {
   try {
     await axios.put(presignedURL, file, {
       headers: {
-        'Content-Type': 'video/webm',
+        'Content-Type': type,
       },
     });
     console.log('S3에 영상 업로드 성공');
@@ -46,9 +52,9 @@ export const uploadVideoToS3 = async (file: Blob, presignedURL: string) => {
   }
 };
 
-export const AnswerQuestion = async (formData: FormData) => {
+export const AnswerQuestion = async (Request: AnswerQuestionRequest) => {
   try {
-    const response = await api.post('/answer/create', formData);
+    const response = await api.post('/v2/answer/create', Request);
 
     return response.data;
   } catch (error) {

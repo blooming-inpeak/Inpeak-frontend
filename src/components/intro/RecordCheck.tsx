@@ -10,7 +10,7 @@ export const RecordCheck = ({ Record, setIsRecord }: Props) => {
   return (
     <RecordCheckWrapper>
       <RecordCheckTitle>모의면접 영상 녹화</RecordCheckTitle>
-      <ToggleSwitch isChecked={Record} onClick={() => setIsRecord(!Record)} />
+      <ToggleSwitch isChecked={Record} onClick={() => setIsRecord(!Record)} shouldAnimate={true} />
     </RecordCheckWrapper>
   );
 };

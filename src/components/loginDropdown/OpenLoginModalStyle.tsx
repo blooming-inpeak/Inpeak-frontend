@@ -29,7 +29,7 @@ export const OpenLoginModalBottom = styled.div`
 
 export const OpenLoginModalMenu = styled.div`
   padding: 6px 20px;
-  width: 150px;
+  width: 162px;
   display: flex;
 
   color: #707991;
@@ -46,7 +46,7 @@ export const OpenLoginModalMenu = styled.div`
 `;
 
 export const Divide = styled.div`
-  width: 150px;
+  width: 162px;
   height: 1px;
   margin: 6px 20px;
 

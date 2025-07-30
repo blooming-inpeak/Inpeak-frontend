@@ -5,7 +5,6 @@ import { AskHistoryBox } from './AskHistoryBox';
 import { AskHistoryMore } from './AskHistoryMore';
 import { fetchRecentAnswers } from '../../api/interview/recentInterviewAPI';
 import { CaptionType } from '../common/caption/CaptionType';
-import { BlurBackground } from '../common/background/BlurBackground';
 import { InterviewResult } from '../InterviewResult/InterviewResult';
 
 interface HistoryItem {
@@ -69,9 +68,7 @@ export const AskHistory: React.FC = () => {
   return (
     <AskHistoryWrapper>
       {showModal && selectedAnswerId && (
-        <BlurBackground>
-          <InterviewResult answerId={selectedAnswerId} onClose={() => setShowModal(false)} isList />
-        </BlurBackground>
+        <InterviewResult answerId={selectedAnswerId} onClose={() => setShowModal(false)} isList />
       )}
       <AskHistoryTitle>최근 질문 히스토리</AskHistoryTitle>
       {loading ? (
@@ -116,8 +113,8 @@ export const AskHistory: React.FC = () => {
 };
 
 export const AskHistoryWrapper = styled.div`
-  width: 549px;
-  height: 422px;
+  width: 649px;
+  height: 502px;
   padding: 40px 50px;
   border-radius: 24px;
   background-color: #ffffff;

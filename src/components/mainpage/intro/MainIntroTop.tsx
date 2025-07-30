@@ -69,8 +69,8 @@ export const MainIntroTopContent = styled.div`
 `;
 
 export const MainIntroTopButton = styled.div`
-  width: 187px;
-  height: 24px;
+  width: 223px;
+  height: 36px;
   padding: 6px 18px;
 
   margin-top: 14px;

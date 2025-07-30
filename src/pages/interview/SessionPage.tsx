@@ -31,7 +31,6 @@ export const SessionPage = () => {
   const { id } = useParams();
   const lastQuestion = page === currentPage;
   const navigate = useNavigate();
-  console.log(interviewId);
 
   useEffect(() => {
     if (!interviewId) {
@@ -130,13 +129,21 @@ export const SessionPage = () => {
 
     if (id) {
       let presignedUrl;
+
+      const startDate = getFormattedDate();
+      // presigned URL 발급
       if (videoBlob && isRecording) {
-        const startDate = getFormattedDate();
-        // presigned URL 발급
-        presignedUrl = await getVideoUrl(startDate);
+        presignedUrl = await getVideoUrl(startDate, true);
         // S3로 영상 업로드
-        await uploadVideoToS3(videoBlob, presignedUrl.url);
+      } else {
+        presignedUrl = await getVideoUrl(startDate, false);
       }
+
+      console.log(presignedUrl);
+      if (videoBlob && isRecording) {
+        await uploadVideoToS3(videoBlob, presignedUrl.videoUrl, 'video/webm');
+      }
+      await uploadVideoToS3(audioBlob, presignedUrl.audioUrl, 'audio/wav');
 
       // multipart/form-data 구성 및 전송
       console.log(currentTime, Questions[currentPage - 1].id, parseInt(id), presignedUrl);
@@ -149,7 +156,13 @@ export const SessionPage = () => {
 
       console.log(formData);
 
-      const data = await AnswerQuestion(formData);
+      const data = await AnswerQuestion({
+        audioURL: presignedUrl.audioUrl,
+        time: currentTime,
+        questionId: Questions[currentPage - 1].id,
+        interviewId: Number(id),
+        videoURL: presignedUrl.videoUrl,
+      });
       console.log(data);
 
       const answerResult = {
@@ -158,7 +171,7 @@ export const SessionPage = () => {
         time: currentTime,
         interviewId: id,
         isAnswer: true,
-        answerId: data.answerId,
+        taskId: data,
       };
 
       setResult(prev => [...prev, answerResult]);
@@ -323,7 +336,9 @@ export const SessionBody = styled.div`
 
   display: flex;
   flex-direction: column;
-  box-shadow: 100px 100px 100px 0px rgba(0, 0, 0, 0.02), 2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
+  box-shadow:
+    100px 100px 100px 0px rgba(0, 0, 0, 0.02),
+    2px 4px 4px 0px rgba(255, 255, 255, 0.24) inset,
     0px 0px 100px 0px rgba(0, 80, 216, 0.08);
 `;
 

@@ -25,8 +25,8 @@ export const IntroDescription = () => {
 };
 
 export const IntroDescriptionWrapper = styled.div`
-  width: 202px;
-  height: 516px;
+  width: 250px;
+  height: 564px;
   padding: 24px;
 
   display: flex;

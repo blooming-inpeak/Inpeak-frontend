@@ -1,4 +1,4 @@
-import api from '../apiClient';
+import api from '../index';
 import { RecentAnswerItem } from './recentAnswerItem';
 
 export const fetchRecentAnswers = async (
