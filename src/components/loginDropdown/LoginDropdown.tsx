@@ -52,10 +52,9 @@ export const LoginDropdownWrapper = styled.div<{ $isOpen: boolean }>`
 `;
 
 export const LoginDropdownTop = styled.div`
-  width: 150px;
-  height: 30px;
+  width: 190px;
+  height: 50px;
   padding: 10px 20px;
-
   display: flex;
   justify-content: space-between;
 `;
