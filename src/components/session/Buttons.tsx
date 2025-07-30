@@ -98,8 +98,8 @@ export const Buttons = ({
 };
 
 export const StopButton = styled.div<{ disabled: boolean }>`
-  width: 380px;
-  height: 24px;
+  width: 432px;
+  height: 44px;
   padding: 10px 26px;
 
   display: flex;
@@ -134,7 +134,7 @@ export const ButtonsWrapper = styled.div`
 
 export const SkipButton = styled.div`
   width: 165px;
-  height: 42px;
+  height: 44px;
 
   display: flex;
   align-items: center;
@@ -156,7 +156,7 @@ export const SkipButton = styled.div`
 
 export const AnswerButton = styled.div`
   width: 267px;
-  height: 24px;
+  height: 44px;
   padding: 10px 26px;
 
   display: flex;
@@ -181,8 +181,8 @@ export const SkipButtonModal = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 133px;
-  height: 36px;
+  width: 173px;
+  height: 56px;
   padding: 10px 20px;
 
   border-radius: 12px;

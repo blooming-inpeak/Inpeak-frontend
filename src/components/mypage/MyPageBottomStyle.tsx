@@ -8,7 +8,7 @@ export const MyPageBottomWrapper = styled.div`
 
 export const MyPageInterest = styled.div`
   width: 100%;
-  height: 65px;
+  height: 105px;
 
   gap: 4px;
 
@@ -31,8 +31,8 @@ export const MyPageIntersetTitle = styled.div`
 `;
 
 export const MyPageInterestContent = styled.div`
-  width: 376px;
-  height: 21px;
+  width: 400px;
+  height: 37px;
 
   padding: 8px 12px;
 
@@ -79,7 +79,7 @@ export const FiledChangeIcon = styled.img`
 
 export const MyPageTerms = styled.div`
   width: 100%;
-  height: 46px;
+  height: 106px;
 
   padding: 20px 0 40px 0;
   display: flex;

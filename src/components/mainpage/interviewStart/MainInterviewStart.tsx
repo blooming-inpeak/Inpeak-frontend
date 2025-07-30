@@ -56,8 +56,8 @@ export const MainInterviewStartContent = styled.div`
 `;
 
 export const StartButton = styled.div`
-  width: 300px;
-  height: 24px;
+  width: 352px;
+  height: 44px;
   padding: 10px 26px;
 
   display: flex;

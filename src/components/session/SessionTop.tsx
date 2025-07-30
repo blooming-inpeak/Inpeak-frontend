@@ -77,8 +77,8 @@ export const SessionTop = ({ start, setStart, stopRecording, isSubmitting, setIs
 };
 
 export const SessionTopWrapper = styled.div`
-  width: 578px;
-  height: 24px;
+  width: 600px;
+  height: 48px;
   padding: 12px 10px 12px 12px;
 
   border-radius: 24px 24px 0 0;
