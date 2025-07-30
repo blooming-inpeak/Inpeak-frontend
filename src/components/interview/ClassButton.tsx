@@ -17,7 +17,7 @@ export const ClassButton: React.FC<Props> = ({ name, isSelect, setIsSelect }) =>
 
 export const ClassButtonWrapper = styled.div<{ isSelect: boolean }>`
   width: auto;
-  height: 18px;
+  height: 26px;
   padding: 4px 10px;
   cursor: pointer;
 
