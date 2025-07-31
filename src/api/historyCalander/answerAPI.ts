@@ -1,4 +1,5 @@
-import api from '../index';
+import api from '../api';
+
 export const fetchAnswerDataByDate = async (date: string) => {
   try {
     const response = await api.get('/answer/date', {
