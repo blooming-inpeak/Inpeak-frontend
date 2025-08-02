@@ -14,8 +14,8 @@ export const Login = () => {
 };
 
 export const LoginButton = styled.div`
-  width: 111px;
-  height: 24px;
+  width: 147px;
+  height: 36px;
 
   display: flex;
   align-items: center;
