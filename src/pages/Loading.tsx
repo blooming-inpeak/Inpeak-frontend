@@ -40,12 +40,9 @@ function Loading() {
 
   return (
     <Container>
-      <Lottie
-        animationData={loadingAnimationData}
-        loop={true}
-        autoplay={true}
-        style={{ width: '120px', height: '120px', paddingTop: '109px' }}
-      />
+      <LottieWrapper>
+        <Lottie animationData={loadingAnimationData} loop autoplay style={{ width: '100%', height: '100%' }} />
+      </LottieWrapper>
       <MainText>잠시만 기다려주세요</MainText>
       <SubText>인픽이가 열심히 답변을 분석하고 있어요</SubText>
     </Container>
@@ -56,6 +53,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+const LottieWrapper = styled.div`
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 109px;
 `;
 const MainText = styled.div`
   font-size: 20px;
