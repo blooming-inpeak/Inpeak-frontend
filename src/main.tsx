@@ -8,6 +8,9 @@ import './index.css';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme.ts';
 
+import { ToastContainer } from './components/error/ToastContainer.tsx';
+import { ToastProvider } from './components/error/ToastProvider.tsx';
+
 // if (import.meta.env.DEV) {
 //   const { worker } = await import('./mocks/browser');
 //   await worker.start();
@@ -25,9 +28,12 @@ createRoot(document.getElementById('root')!).render(
   <RecoilRoot>
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <StrictMode>
-          <App />
-        </StrictMode>
+        <ToastProvider>
+          <StrictMode>
+            <App />
+          </StrictMode>
+          <ToastContainer />
+        </ToastProvider>
       </ThemeProvider>
     </BrowserRouter>
   </RecoilRoot>,

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { showToast } from '../components/error/ToastManager';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 let accessToken = import.meta.env.VITE_ACCESS_TOKEN;
@@ -59,19 +60,39 @@ api.interceptors.response.use(
     // 공통 에러 핸들링
     switch (status) {
       case 400:
-        console.warn('⚠️ 잘못된 요청:', error.response.data?.message || 'Bad Request');
+        showToast(error.response.data?.message || '잘못된 요청입니다.');
         break;
       case 401:
-        alert('로그인이 필요합니다.');
+        showToast('로그인이 필요합니다.');
+        break;
+      case 403:
+        showToast('접근 권한이 없습니다.');
+        break;
+      case 404:
+        showToast('요청하신 정보를 찾을 수 없습니다.');
+        break;
+      case 409:
+        showToast(error.response.data?.message || '요청이 충돌되었습니다.');
+        break;
+      case 422:
+        showToast(error.response.data?.message || '요청을 처리할 수 없습니다.');
+        break;
+      case 429:
+        showToast('요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.');
         break;
       case 500:
-        alert('서버 오류가 발생했습니다.');
+        showToast('서버 오류가 발생했습니다.');
+        break;
+      case 503:
+        showToast('일시적으로 서비스가 불안정합니다.');
         break;
       case 488:
         if (!window.location.search.includes('status=NEED_MORE_INFO')) {
           window.location.href = '/?status=NEED_MORE_INFO';
         }
         break;
+      default:
+        showToast('네트워크 오류', '인터넷 연결을 확인해주세요.');
     }
 
     return Promise.reject(error);
