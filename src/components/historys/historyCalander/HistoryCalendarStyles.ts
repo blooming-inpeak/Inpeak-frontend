@@ -181,14 +181,14 @@ export const DaysRow = styled.div`
   box-sizing: border-box;
 `;
 
-export const Day = styled.div<{ isSunday?: boolean; isSaturday?: boolean }>`
+export const Day = styled.div<{ $isSunday?: boolean; $isSaturday?: boolean }>`
   width: 24px;
   height: 28px;
   font-size: 13px;
   font-weight: 600;
   line-height: 150%;
   letter-spacing: -0.325px;
-  color: ${({ isSaturday, isSunday }) => (isSaturday ? '#3277ED' : isSunday ? '#FF6B6B' : '#747474')};
+  color: ${({ $isSaturday, $isSunday }) => ($isSaturday ? '#3277ED' : $isSunday ? '#FF6B6B' : '#747474')};
 `;
 
 // [Calendar Body: Dates]
@@ -210,10 +210,10 @@ export const Row = styled.div`
 `;
 
 export const DateCell = styled.div<{
-  isToday?: boolean;
-  isSelected?: boolean;
-  isSameMonth?: boolean;
-  isSunday?: boolean;
+  $isToday?: boolean;
+  $isSelected?: boolean;
+  $isSameMonth?: boolean;
+  $isSunday?: boolean;
 }>`
   position: relative;
   width: 24px;
@@ -223,18 +223,18 @@ export const DateCell = styled.div<{
   justify-content: center;
   font-size: 12px;
   border-radius: 50%;
-  background: ${({ isToday, isSelected }) => (isToday ? '#3277ED' : isSelected ? '#C3DAFF' : 'none')};
-  color: ${({ isToday, isSelected, isSunday }) => {
-    if (isToday) return '#fff';
-    if (isSelected) return '#0050D8';
-    if (isSunday) return '#D60000'; // 일요일은 빨간색
-    return '#747474'; // 기본 회색
+  background: ${({ $isToday, $isSelected }) => ($isToday ? '#3277ED' : $isSelected ? '#C3DAFF' : 'none')};
+  color: ${({ $isToday, $isSelected, $isSunday }) => {
+    if ($isToday) return '#fff';
+    if ($isSelected) return '#0050D8';
+    if ($isSunday) return '#D60000';
+    return '#747474';
   }};
   font-weight: 400;
   cursor: pointer;
   &:hover {
-    background: ${({ isToday }) => (isToday ? '#3277ED' : '#e6efff')};
-    color: ${({ isToday, isSelected }) => (isToday ? '#fff' : isSelected ? '#fff' : '#0050d8')};
+    background: ${({ $isToday }) => ($isToday ? '#3277ED' : '#e6efff')};
+    color: ${({ $isToday, $isSelected }) => ($isToday ? '#fff' : $isSelected ? '#fff' : '#0050d8')};
   }
 `;
 

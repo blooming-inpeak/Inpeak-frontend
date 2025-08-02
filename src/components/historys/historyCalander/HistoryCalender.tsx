@@ -176,7 +176,7 @@ const HistoryCalendar = () => {
           {answerData && answerData.answers.length > 0 ? (
             <QuestionList>
               {answerData.answers.map((answer, index) => (
-                <QuestionItem key={index} onClick={() => handleQuestionClick(answer.answerId, index)}>
+                <QuestionItem key={answer.answerId} onClick={() => handleQuestionClick(answer.answerId, index)}>
                   <QuestionTitle>
                     <div>Q{index + 1}.</div>
                     <QuestionText>{answer.questionContent}</QuestionText>
@@ -228,7 +228,7 @@ const HistoryCalendar = () => {
           <CalendarStroke />
           <DaysRow>
             {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-              <Day key={index} isSunday={index === 0} isSaturday={index === 6}>
+              <Day key={index} $isSunday={index === 0} $isSaturday={index === 6}>
                 {day}
               </Day>
             ))}
@@ -246,6 +246,7 @@ const HistoryCalendar = () => {
               let day = startDate;
 
               while (day <= endDate) {
+                const weekStart = day;
                 for (let i = 0; i < 7; i++) {
                   const formattedDate = format(day, 'd');
                   const cloneDay = day;
@@ -253,11 +254,11 @@ const HistoryCalendar = () => {
 
                   days.push(
                     <DateCell
-                      key={day.toString()}
-                      isToday={isSameDay(day, new Date())}
-                      isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
-                      isSameMonth={isSameMonth(day, monthStart)}
-                      isSunday={getDay(cloneDay) === 0}
+                      key={format(day, 'yyyy-MM-dd')}
+                      $isToday={isSameDay(day, new Date())}
+                      $isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
+                      $isSameMonth={isSameMonth(day, monthStart)}
+                      $isSunday={getDay(cloneDay) === 0}
                       onClick={() => setSelectedDate(cloneDay)}
                     >
                       <DateContent>
@@ -268,7 +269,8 @@ const HistoryCalendar = () => {
                   );
                   day = addDays(day, 1);
                 }
-                rows.push(<Row key={day.toString()}>{days}</Row>);
+                const weekStartKey = format(weekStart, 'yyyy-MM-dd');
+                rows.push(<Row key={`week-${weekStartKey}`}>{days}</Row>);
                 days = [];
               }
               return rows;
