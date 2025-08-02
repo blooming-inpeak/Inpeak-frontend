@@ -3,6 +3,15 @@ import { http, HttpResponse } from 'msw';
 const retryCountMap: Record<string, number> = {};
 
 export const handlers = [
+  // 히스토리 오답노트 - 에러 응답
+  http.get('https://api.inpeak.kr/api/v2/answer/incorrect', () => {
+    return HttpResponse.json({ message: '오답노트 데이터를 불러오는 중 에러가 발생했습니다.' }, { status: 500 });
+  }),
+
+  // 히스토리 답변완료 - 에러 응답
+  http.get('https://api.inpeak.kr/api/v2/answer/correct', () => {
+    return HttpResponse.json({ message: '답변완료 데이터를 불러오는 중 에러가 발생했습니다.' }, { status: 400 });
+  }),
   // 🔹 /answer/tasks/:taskId → 상태 확인용
   http.get('https://api.inpeak.kr/api/v2/answer/tasks/:taskId', ({ params }) => {
     const { taskId } = params;

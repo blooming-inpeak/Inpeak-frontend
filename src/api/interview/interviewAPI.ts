@@ -1,4 +1,4 @@
-import api from '../index';
+import api from '../api';
 
 // 📘 응답 타입 정의
 export interface InterviewSummaryResponse {

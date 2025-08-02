@@ -24,6 +24,7 @@ const colors = {
     light400: '#FAFAFA',
     standard300: '#F5F9FF',
     standard400: '#FBFDFF',
+    dark200: '#323B54',
   },
   //Text Color
   text000: '#000000',

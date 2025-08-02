@@ -1,4 +1,5 @@
-import api from './index';
+import api from './api';
+
 import {
   GetAnsweredListParams,
   GetAnsweredListResponse,
