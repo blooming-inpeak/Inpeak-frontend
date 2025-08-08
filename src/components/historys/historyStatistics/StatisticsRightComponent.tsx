@@ -180,7 +180,9 @@ const QuestionValue = styled.h4`
   margin-left: auto;
 `;
 
-export const QuestionCircle = styled.div<QuestionCircleProps>`
+export const QuestionCircle = styled.div.withConfig({
+  shouldForwardProp: prop => !['isBlue', 'isPink', 'isGreen'].includes(prop),
+})<QuestionCircleProps>`
   width: 12px;
   height: 12px;
   border-radius: 50%;

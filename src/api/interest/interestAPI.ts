@@ -1,4 +1,4 @@
-import api from '../index';
+import api from '../api';
 
 export const registerInterest = async (interestTypes: string[]) => {
   try {

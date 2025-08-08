@@ -70,7 +70,7 @@ const HistoryStatisticsGraph: React.FC<HistoryStatisticsProps> = ({
       <SVGWrapper>
         <StyledSVG viewBox={`0 0 ${svgSize} ${svgSize}`}>
           <SvgDefs />
-          <BackgroundCircle cx={center} cy={center} r={radius} strokeWidth={strokeWidth} zero={isAllZero} />
+          <BackgroundCircle cx={center} cy={center} r={radius} strokeWidth={strokeWidth} $zero={isAllZero} />
           {isValidPercentage1 && (
             <Arc
               stroke={strokeColor1}
@@ -164,9 +164,10 @@ const SvgDefs = () => (
   </defs>
 );
 
-const BackgroundCircle = styled.circle<{ zero?: boolean }>`
-  fill: none;
-  stroke: ${({ zero }) => (zero ? '#F5F9FF' : '#F5F9FF')};
+const BackgroundCircle = styled.circle.attrs(() => ({
+  fill: 'none',
+}))<{ $zero?: boolean }>`
+  stroke: ${({ $zero }) => ($zero ? '#F5F9FF' : '#F5F9FF')};
 `;
 
 const Arc = styled.circle.attrs((props: Partial<ArcProps>) => ({
