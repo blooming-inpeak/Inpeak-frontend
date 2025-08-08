@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, JSX } from 'react';
 import {
   format,
   addMonths,
@@ -54,7 +54,7 @@ interface CalendarQuestion {
 }
 
 interface InterviewData {
-  date: string;
+  date: string; // yyyy-MM-dd
   interviewId: number;
   questions: CalendarQuestion[];
 }
@@ -75,6 +75,20 @@ interface AnswerResponse {
   status?: number;
 }
 
+const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
+
+const mergeUniqueByDate = (lists: InterviewData[][]): InterviewData[] => {
+  const map = new Map<string, InterviewData>();
+  for (const list of lists) for (const item of list) map.set(item.date, item);
+  return Array.from(map.values());
+};
+
+const toMMSS = (sec: number) => {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+};
+
 const HistoryCalendar = () => {
   const initialDate = new Date();
   const [currentDate, setCurrentDate] = useState(initialDate);
@@ -93,96 +107,91 @@ const HistoryCalendar = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const month = format(currentDate, 'M');
-      const year = format(currentDate, 'yyyy');
+    const load = async () => {
       try {
-        const data = await fetchInterviewCalendarData(month, year);
-        setInterviewData(data.calendarList);
-        setInterviewExists(data.exists !== false);
-      } catch (error) {
-        console.error('인터뷰 캘린더 데이터를 불러오는데 실패했습니다.', error);
+        const targets = [subMonths(currentDate, 1), currentDate, addMonths(currentDate, 1)];
+        const results = await Promise.all(
+          targets.map(d => fetchInterviewCalendarData(format(d, 'M'), format(d, 'yyyy'))),
+        );
+        const monthLists = results.map(r => r?.calendarList ?? []);
+        setInterviewData(mergeUniqueByDate(monthLists));
+        setInterviewExists(results.some(r => r && r.exists !== false && (r.calendarList?.length ?? 0) > 0));
+      } catch (e) {
+        console.error('인터뷰 캘린더 데이터를 불러오는데 실패했습니다.', e);
         setInterviewData([]);
         setInterviewExists(false);
       }
     };
-    fetchData();
+    load();
   }, [currentDate]);
 
   useEffect(() => {
-    const fetchAnswer = async () => {
-      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+    const load = async () => {
       try {
-        const data = await fetchAnswerDataByDate(formattedDate);
+        const data = await fetchAnswerDataByDate(format(selectedDate, 'yyyy-MM-dd'));
         setAnswerData(data);
-      } catch (error) {
-        console.error('답변 데이터를 불러오는데 실패했습니다.', error);
+      } catch (e) {
+        console.error('답변 데이터를 불러오는데 실패했습니다.', e);
         setAnswerData(null);
       }
     };
-    fetchAnswer();
+    load();
   }, [selectedDate]);
 
-  const getInterviewByDate = (date: Date) => {
-    const formatted = format(date, 'yyyy-MM-dd');
-    return interviewData.find(item => item.date === formatted) || null;
-  };
+  const interviewDateSet = useMemo(() => new Set(interviewData.map(d => d.date)), [interviewData]);
 
-  const getTotalTime = (answers: Answer[]) => {
-    const totalSeconds = answers.reduce((acc, a) => acc + a.runningTime, 0);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+  const hasInterviewOn = useCallback(
+    (date: Date) => interviewDateSet.has(format(date, 'yyyy-MM-dd')),
+    [interviewDateSet],
+  );
 
-  const formatRunningTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+  const totalTimeMMSS = useMemo(() => {
+    if (!answerData?.answers?.length) return null;
+    const total = answerData.answers.reduce((acc, a) => acc + a.runningTime, 0);
+    return toMMSS(total);
+  }, [answerData]);
 
-  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
-  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
-
-  const handleQuestionClick = (answerId: number, index: number) => {
+  const prevMonth = useCallback(() => setCurrentDate(d => subMonths(d, 1)), []);
+  const nextMonth = useCallback(() => setCurrentDate(d => addMonths(d, 1)), []);
+  const onQuestionClick = useCallback((answerId: number, index: number) => {
     setSelectedAnswerId(answerId);
     setClickedIndex(index);
     setIsModalOpen(true);
-  };
+  }, []);
 
   return (
     <>
       {isModalOpen && selectedAnswerId && (
         <InterviewResult
           answerId={selectedAnswerId}
-          showQuestionIndex={true}
+          showQuestionIndex
           currentIndex={clickedIndex}
           onClose={() => setIsModalOpen(false)}
           isCalendar
         />
       )}
+
       <Container>
         <LeftSection>
           <DateInfo>
             {interviewExists && answerData && (
               <>
                 <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
-                {answerData.answers.length > 0 && <TimeText>{getTotalTime(answerData.answers)}</TimeText>}
+                {totalTimeMMSS && <TimeText>{totalTimeMMSS}</TimeText>}
               </>
             )}
           </DateInfo>
 
-          {/* 답변이 있는 경우 */}
-          {answerData && answerData.answers.length > 0 ? (
+          {answerData?.answers?.length ? (
             <QuestionList>
               {answerData.answers.map((answer, index) => (
-                <QuestionItem key={index} onClick={() => handleQuestionClick(answer.answerId, index)}>
+                <QuestionItem key={answer.answerId} onClick={() => onQuestionClick(answer.answerId, index)}>
                   <QuestionTitle>
                     <div>Q{index + 1}.</div>
                     <QuestionText>{answer.questionContent}</QuestionText>
                   </QuestionTitle>
                   <QuestionFooter>
-                    <QuestionTime>{formatRunningTime(answer.runningTime)}</QuestionTime>
+                    <QuestionTime>{toMMSS(answer.runningTime)}</QuestionTime>
                     <CaptionBox>
                       {answer.isUnderstood && <MultiCaption type="이해완료-small" />}
                       <MultiCaption type={captionMapping[answer.answerStatus]} />
@@ -192,13 +201,12 @@ const HistoryCalendar = () => {
               ))}
             </QuestionList>
           ) : (
-            // 답변 없을 경우 메시지 분기
             <NoResultMessage>
               {!interviewExists ? (
                 <>
                   현재까지 진행된 <br /> 모의면접 결과가 없습니다
                 </>
-              ) : answerData?.status === 404 ? (
+              ) : answerData?.status === 204 ? (
                 <>
                   해당 날짜에 진행된 <br /> 모의면접 결과가 없습니다
                 </>
@@ -225,52 +233,54 @@ const HistoryCalendar = () => {
               </NavButton>
             </div>
           </CalendarHeader>
+
           <CalendarStroke />
+
           <DaysRow>
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-              <Day key={index} isSunday={index === 0} isSaturday={index === 6}>
-                {day}
+            {WEEKDAYS.map((d, i) => (
+              <Day key={d} $isSunday={i === 0} $isSaturday={i === 6}>
+                {d}
               </Day>
             ))}
           </DaysRow>
+
           <Body>
-            {/* 날짜 셀 렌더링 */}
             {(() => {
               const monthStart = startOfMonth(currentDate);
               const monthEnd = endOfMonth(monthStart);
               const startDate = startOfWeek(monthStart);
               const endDate = endOfWeek(monthEnd);
 
-              const rows = [];
-              let days = [];
+              const rows: JSX.Element[] = [];
               let day = startDate;
 
               while (day <= endDate) {
-                for (let i = 0; i < 7; i++) {
-                  const formattedDate = format(day, 'd');
-                  const cloneDay = day;
-                  const interviewForDate = getInterviewByDate(cloneDay);
+                const weekStart = day;
+                const cells: JSX.Element[] = [];
 
-                  days.push(
+                for (let i = 0; i < 7; i++) {
+                  const cloneDay = day;
+                  cells.push(
                     <DateCell
-                      key={day.toString()}
-                      isToday={isSameDay(day, new Date())}
-                      isSelected={!isSameDay(day, new Date()) && isSameDay(day, selectedDate)}
-                      isSameMonth={isSameMonth(day, monthStart)}
-                      isSunday={getDay(cloneDay) === 0}
+                      key={format(cloneDay, 'yyyy-MM-dd')}
+                      $isToday={isSameDay(cloneDay, new Date())}
+                      $isSelected={!isSameDay(cloneDay, new Date()) && isSameDay(cloneDay, selectedDate)}
+                      $isSameMonth={isSameMonth(cloneDay, monthStart)}
+                      $isSunday={getDay(cloneDay) === 0}
                       onClick={() => setSelectedDate(cloneDay)}
                     >
                       <DateContent>
-                        <span>{formattedDate}</span>
+                        <span>{format(cloneDay, 'd')}</span>
                       </DateContent>
-                      {interviewForDate && <InterviewDot />}
+                      {hasInterviewOn(cloneDay) && <InterviewDot />}
                     </DateCell>,
                   );
                   day = addDays(day, 1);
                 }
-                rows.push(<Row key={day.toString()}>{days}</Row>);
-                days = [];
+
+                rows.push(<Row key={`week-${format(weekStart, 'yyyy-MM-dd')}`}>{cells}</Row>);
               }
+
               return rows;
             })()}
           </Body>
