@@ -10,27 +10,49 @@ const AppInitializer = () => {
 
   useEffect(() => {
     const init = async () => {
+      // 1. 로컬 캐시 확인
       const cachedUser = localStorage.getItem('user');
       if (cachedUser) {
-        setUser(JSON.parse(cachedUser));
+        try {
+          setUser(JSON.parse(cachedUser));
+        } catch (e) {
+          console.warn('로컬에 저장된 사용자 정보 파싱 실패:', e);
+          clearUserData();
+        }
       }
 
+      // 2. 서버 검증
       try {
-        const user = await GetMyPage();
-        setUser(user);
-        localStorage.setItem('user', JSON.stringify(user));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        setUser(null);
-        localStorage.removeItem('user');
-        localStorage.removeItem('accessToken');
+        const res = await GetMyPage();
+
+        if (!res.ok || !res.data?.user) {
+          console.info('사용자 정보 없음 또는 세션 만료 상태');
+          clearUserData();
+        } else {
+          setUser(res.data.user);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('사용자 정보 조회 실패:', error.message);
+        } else {
+          console.error('알 수 없는 오류 발생:', error);
+        }
+        clearUserData();
       } finally {
-        setAuthInitialized(true); // 로그인 체크 완료
+        setAuthInitialized(true);
       }
     };
 
+    const clearUserData = () => {
+      setUser(null);
+      localStorage.removeItem('user');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    };
+
     init();
-  }, []);
+  }, [setUser, setAuthInitialized]);
 
   return null;
 };
