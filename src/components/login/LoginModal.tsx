@@ -1,4 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
+import { userState } from '../../store/auth/userState';
+import { redirectAfterLoginState } from '../../store/auth/redirectAfterLoginState';
 import {
   CloseButton,
   KaKaoTalkTitle,
@@ -18,10 +22,6 @@ import closeIcon from '../../assets/img/Close.svg';
 import logoImg from '../../assets/img/Logo.svg';
 import loginBanner from '../../assets/img/login/illustration_login.svg';
 import kakaoIcon from '../../assets/img/login/KakaoTalk.svg';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { userState } from '../../store/auth/userState';
-import { redirectAfterLoginState } from '../../store/auth/redirectAfterLoginState';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
@@ -36,21 +36,11 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const user = useRecoilValue(userState);
   const setRedirectAfterLogin = useSetRecoilState(redirectAfterLoginState);
 
-  const onClickClose = useCallback(() => {
-    setOpenLogin(false);
-
-    const from = history.state?.from;
-    if (from) {
-      history.replaceState({}, ''); // 상태 초기화
-      navigate(from, { replace: true });
-    }
-  }, [setOpenLogin, navigate]);
-
+  const onClickClose = useCallback(() => setOpenLogin(false), [setOpenLogin]);
   const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
   const onClickService = useCallback(() => setIsPolicy('service'), []);
 
   const handleKakaoLogin = useCallback(() => {
-    // 현재 경로를 저장해두고 로그인 후 이동
     localStorage.setItem('redirectAfterLogin', window.location.pathname);
     window.location.href = OAUTH_URL;
   }, []);
