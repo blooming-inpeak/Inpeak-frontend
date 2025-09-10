@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   CloseButton,
   KaKaoTalkTitle,
@@ -29,12 +28,10 @@ const OAUTH_URL = 'https://api.inpeak.kr/oauth2/authorization/kakao';
 export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const [isReady, setIsReady] = useState(false);
-  const navigate = useNavigate();
 
   const onClickClose = useCallback(() => {
     setOpenLogin(false);
-    navigate('/');
-  }, [setOpenLogin, navigate]);
+  }, [setOpenLogin]);
 
   const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
   const onClickService = useCallback(() => setIsPolicy('service'), []);
