@@ -4,8 +4,6 @@ export interface UserInfo {
   nickname: string;
   kakaoEmail: string;
   interests: string[];
-  accessToken?: string;
-  refreshToken?: string;
 }
 
 export const userState = atom<UserInfo | null>({

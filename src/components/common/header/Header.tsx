@@ -1,20 +1,18 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider, HeaderContainer, HeaderLeft, HeaderRight, Logo, MenuItem, MenuItems, NavBar } from './HeaderStyle';
 import { Login } from '../../login/LoginButton';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState } from '../../../store/auth/userState';
-import { authInitializedState } from '../../../store/auth/authInitializedState';
+import { loginModalState } from '../../../store/loginModal/loginModalState';
 import { LoginDropdown } from '../../loginDropdown/LoginDropdown';
+import { LoginModal } from '../../login/LoginModal';
 
 export const Header = ({ isState }: { isState: string }) => {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
-  const authInitialized = useRecoilValue(authInitializedState);
-
   const isLoggedIn = !!user?.nickname;
-
-  if (!authInitialized) return null;
+  const [isLoginModalOpen, setLoginModalOpen] = useRecoilState(loginModalState);
 
   return (
     <HeaderContainer $isState={isState}>
@@ -44,7 +42,10 @@ export const Header = ({ isState }: { isState: string }) => {
             <Divider />
           </MenuItems>
         </HeaderRight>
-        <HeaderLeft>{isLoggedIn ? <LoginDropdown /> : <Login />}</HeaderLeft>
+        <HeaderLeft>
+          {isLoggedIn ? <LoginDropdown /> : <Login />}
+          {isLoginModalOpen && <LoginModal setOpenLogin={setLoginModalOpen} />}
+        </HeaderLeft>
       </NavBar>
     </HeaderContainer>
   );
