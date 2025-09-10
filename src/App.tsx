@@ -38,70 +38,43 @@ function App() {
       <AppInitializer />
       <ScrollToTop />
       {isLoginModalOpen && !user && <LoginModal setOpenLogin={setLoginModalOpen} />}
-      {/* ✅ NEED_MORE_INFO 상태일 때만 자동 렌더링 */}
       {location.search.includes('status=NEED_MORE_INFO') && <SelectStack autoVisible method="post" />}
       <Routes>
         <Route element={<Layout />}>
+          {/* 비로그인 접근 가능 페이지 */}
           <Route path="/" element={<MainPage />} />
-          <Route
-            path="/interview"
-            element={
-              <PrivateRoute>
-                <InterviewPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/history"
-            element={
-              <PrivateRoute>
-                <HistoryPage />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/interview" element={<InterviewPage />} />
+          <Route path="/history" element={<HistoryPage />} />
           <Route path="/history/detail/:answerId" element={<HistoryDetailPage />} />
 
+          {/* 로그인시 접근 가능 페이지 */}
           <Route
-            path="/mypage"
+            path="/interview/intro"
             element={
               <PrivateRoute>
-                <MyPage />
+                <IntroPage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/contact"
+            path="/interview/session/:id"
             element={
               <PrivateRoute>
-                <ContactPage />
+                <SessionPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/interview/progressresult"
+            element={
+              <PrivateRoute>
+                <ProgessResultPage />
               </PrivateRoute>
             }
           />
         </Route>
-        <Route
-          path="/interview/intro"
-          element={
-            <PrivateRoute>
-              <IntroPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/interview/session/:id"
-          element={
-            <PrivateRoute>
-              <SessionPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/interview/progressresult"
-          element={
-            <PrivateRoute>
-              <ProgessResultPage />
-            </PrivateRoute>
-          }
-        />
       </Routes>
     </>
   );

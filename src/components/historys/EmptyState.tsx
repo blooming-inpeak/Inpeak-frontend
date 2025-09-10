@@ -1,14 +1,31 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState } from '../../store/auth/userState';
+import { loginModalState } from '../../store/loginModal/loginModalState';
+import { authInitializedState } from '../../store/auth/authInitializedState';
+
 interface EmptyStateProps {
   type: 'wrong' | 'answered';
 }
 
 export const EmptyState = ({ type }: EmptyStateProps) => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
+  const user = useRecoilValue(userState);
+  const isAuthInitialized = useRecoilValue(authInitializedState);
+  const openLoginModal = useSetRecoilState(loginModalState);
+
   const onClickInterview = () => {
-    naviagte('/interview/intro');
+    if (!isAuthInitialized) return;
+
+    if (!user) {
+      openLoginModal(true);
+      return;
+    }
+
+    navigate('/interview/intro');
   };
+
   return (
     <Container $type={type}>
       <EmptyImage src="/images/empty.svg" alt="빈 리스트" />
