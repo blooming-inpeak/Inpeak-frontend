@@ -10,25 +10,18 @@ const AppInitializer = () => {
 
   useEffect(() => {
     const init = async () => {
-      // 1. 로컬 캐시 확인
-      const cachedUser = localStorage.getItem('user');
-      if (cachedUser) {
-        try {
-          setUser(JSON.parse(cachedUser));
-        } catch (e) {
-          console.warn('로컬에 저장된 사용자 정보 파싱 실패:', e);
-          clearUserData();
-        }
-      }
+      // 서버 검증 전에는 userState를 초기화
+      setUser(null);
 
-      // 2. 서버 검증
       try {
         const res = await GetMyPage();
 
         if (!res.ok || !res.data?.user) {
-          console.info('사용자 정보 없음 또는 세션 만료 상태');
+          // 로그인 안 됐거나 세션 만료
+          console.info('사용자 정보 없음 또는 세션 만료 상태, 로컬 캐시 초기화');
           clearUserData();
         } else {
+          // 정상 로그인
           setUser(res.data.user);
           localStorage.setItem('user', JSON.stringify(res.data.user));
         }
