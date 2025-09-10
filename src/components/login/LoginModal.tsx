@@ -1,4 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
+import { userState } from '../../store/auth/userState';
+import { redirectAfterLoginState } from '../../store/auth/redirectAfterLoginState';
 import {
   CloseButton,
   KaKaoTalkTitle,
@@ -18,7 +22,6 @@ import closeIcon from '../../assets/img/Close.svg';
 import logoImg from '../../assets/img/Logo.svg';
 import loginBanner from '../../assets/img/login/illustration_login.svg';
 import kakaoIcon from '../../assets/img/login/KakaoTalk.svg';
-import { useNavigate } from 'react-router-dom';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
@@ -30,25 +33,31 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
+  const setRedirectAfterLogin = useSetRecoilState(redirectAfterLoginState);
 
-  const onClickClose = useCallback(() => {
-    setOpenLogin(false);
-
-    const from = history.state?.from;
-    if (from) {
-      // 로그인 필요 페이지에서만 이전 페이지로 이동
-      history.replaceState({}, ''); // 상태 초기화
-      navigate(from, { replace: true });
-    }
-  }, [setOpenLogin, navigate]);
-
+  const onClickClose = useCallback(() => setOpenLogin(false), [setOpenLogin]);
   const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
   const onClickService = useCallback(() => setIsPolicy('service'), []);
+
   const handleKakaoLogin = useCallback(() => {
+    localStorage.setItem('redirectAfterLogin', window.location.pathname);
     window.location.href = OAUTH_URL;
   }, []);
 
-  // 이미지 로딩 체크 후 렌더링
+  // 로그인 완료 후 리다이렉트 처리
+  useEffect(() => {
+    if (user) {
+      const redirect = localStorage.getItem('redirectAfterLogin') || '/';
+      navigate(redirect, { replace: true });
+
+      // 초기화
+      localStorage.removeItem('redirectAfterLogin');
+      setRedirectAfterLogin(null);
+      setOpenLogin(false);
+    }
+  }, [user, navigate, setRedirectAfterLogin, setOpenLogin]);
+
   useEffect(() => {
     const preloadImage = (src: string) =>
       new Promise<void>((resolve, reject) => {
