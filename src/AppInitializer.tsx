@@ -10,27 +10,23 @@ const AppInitializer = () => {
 
   useEffect(() => {
     const init = async () => {
-      // 서버 검증 전에는 userState를 초기화
-      setUser(null);
-
       try {
+        // 1. 로컬스토리지에 유저 정보가 있으면 먼저 세팅
+        const localUser = localStorage.getItem('user');
+        if (localUser) setUser(JSON.parse(localUser));
+
+        // 2. 서버에서 최신 유저 정보 받아오기
         const res = await GetMyPage();
 
-        if (!res.ok || !res.data?.user) {
-          // 로그인 안 됐거나 세션 만료
-          console.info('사용자 정보 없음 또는 세션 만료 상태, 로컬 캐시 초기화');
-          clearUserData();
-        } else {
-          // 정상 로그인
+        if (res.ok && res.data?.user) {
           setUser(res.data.user);
           localStorage.setItem('user', JSON.stringify(res.data.user));
+        } else {
+          console.info('사용자 정보 없음 또는 세션 만료 상태, 로컬 캐시 초기화');
+          clearUserData();
         }
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('사용자 정보 조회 실패:', error.message);
-        } else {
-          console.error('알 수 없는 오류 발생:', error);
-        }
+        console.error('사용자 정보 조회 실패:', error);
         clearUserData();
       } finally {
         setAuthInitialized(true);
