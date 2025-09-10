@@ -1,7 +1,6 @@
 import { useSetRecoilState } from 'recoil';
 import { loginModalState } from '../../store/loginModal/loginModalState';
 import styled from 'styled-components';
-import { LoginModal } from './LoginModal';
 
 export const Login = () => {
   const setLoginOpen = useSetRecoilState(loginModalState);
