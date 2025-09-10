@@ -36,7 +36,6 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const user = useRecoilValue(userState);
   const setRedirectAfterLogin = useSetRecoilState(redirectAfterLoginState);
 
-  // 모달 닫기 버튼
   const onClickClose = useCallback(() => {
     setOpenLogin(false);
 
@@ -50,7 +49,6 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
   const onClickService = useCallback(() => setIsPolicy('service'), []);
 
-  // 카카오 로그인 버튼 클릭
   const handleKakaoLogin = useCallback(() => {
     // 현재 경로를 저장해두고 로그인 후 이동
     localStorage.setItem('redirectAfterLogin', window.location.pathname);
@@ -70,7 +68,6 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
     }
   }, [user, navigate, setRedirectAfterLogin, setOpenLogin]);
 
-  // 이미지 preload 후 렌더링
   useEffect(() => {
     const preloadImage = (src: string) =>
       new Promise<void>((resolve, reject) => {
