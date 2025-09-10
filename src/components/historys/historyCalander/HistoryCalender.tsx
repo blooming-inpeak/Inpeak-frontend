@@ -174,12 +174,8 @@ const HistoryCalendar = () => {
       <Container>
         <LeftSection>
           <DateInfo>
-            {interviewExists && answerData && (
-              <>
-                <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
-                {totalTimeMMSS && <TimeText>{totalTimeMMSS}</TimeText>}
-              </>
-            )}
+            <DateText>{format(selectedDate, 'yyyy / MM / dd')}</DateText>
+            {interviewExists && answerData && totalTimeMMSS && <TimeText>{totalTimeMMSS}</TimeText>}
           </DateInfo>
 
           {answerData?.answers?.length ? (
