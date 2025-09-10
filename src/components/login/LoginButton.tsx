@@ -1,16 +1,12 @@
-import { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { loginModalState } from '../../store/loginModal/loginModalState';
 import styled from 'styled-components';
 import { LoginModal } from './LoginModal';
 
 export const Login = () => {
-  const [openLogin, setOpenLogin] = useState(false);
+  const setLoginOpen = useSetRecoilState(loginModalState);
 
-  return (
-    <>
-      <LoginButton onClick={() => setOpenLogin(true)}>3초만에 시작하기</LoginButton>
-      {openLogin && <LoginModal setOpenLogin={setOpenLogin} />}
-    </>
-  );
+  return <LoginButton onClick={() => setLoginOpen(true)}>3초만에 시작하기</LoginButton>;
 };
 
 export const LoginButton = styled.div`

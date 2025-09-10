@@ -19,6 +19,9 @@ import logoImg from '../../assets/img/Logo.svg';
 import loginBanner from '../../assets/img/login/illustration_login.svg';
 import kakaoIcon from '../../assets/img/login/KakaoTalk.svg';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState } from '../../store/auth/userState';
+import { redirectAfterLoginState } from '../../store/auth/redirectAfterLoginState';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
@@ -30,13 +33,15 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
+  const setRedirectAfterLogin = useSetRecoilState(redirectAfterLoginState);
 
+  // 모달 닫기 버튼
   const onClickClose = useCallback(() => {
     setOpenLogin(false);
 
     const from = history.state?.from;
     if (from) {
-      // 로그인 필요 페이지에서만 이전 페이지로 이동
       history.replaceState({}, ''); // 상태 초기화
       navigate(from, { replace: true });
     }
@@ -44,11 +49,28 @@ export const LoginModal = ({ setOpenLogin }: Props) => {
 
   const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
   const onClickService = useCallback(() => setIsPolicy('service'), []);
+
+  // 카카오 로그인 버튼 클릭
   const handleKakaoLogin = useCallback(() => {
+    // 현재 경로를 저장해두고 로그인 후 이동
+    localStorage.setItem('redirectAfterLogin', window.location.pathname);
     window.location.href = OAUTH_URL;
   }, []);
 
-  // 이미지 로딩 체크 후 렌더링
+  // 로그인 완료 후 리다이렉트 처리
+  useEffect(() => {
+    if (user) {
+      const redirect = localStorage.getItem('redirectAfterLogin') || '/';
+      navigate(redirect, { replace: true });
+
+      // 초기화
+      localStorage.removeItem('redirectAfterLogin');
+      setRedirectAfterLogin(null);
+      setOpenLogin(false);
+    }
+  }, [user, navigate, setRedirectAfterLogin, setOpenLogin]);
+
+  // 이미지 preload 후 렌더링
   useEffect(() => {
     const preloadImage = (src: string) =>
       new Promise<void>((resolve, reject) => {
