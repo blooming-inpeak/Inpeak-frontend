@@ -18,6 +18,7 @@ import closeIcon from '../../assets/img/Close.svg';
 import logoImg from '../../assets/img/Logo.svg';
 import loginBanner from '../../assets/img/login/illustration_login.svg';
 import kakaoIcon from '../../assets/img/login/KakaoTalk.svg';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   setOpenLogin: (value: boolean) => void;
@@ -28,10 +29,18 @@ const OAUTH_URL = 'https://api.inpeak.kr/oauth2/authorization/kakao';
 export const LoginModal = ({ setOpenLogin }: Props) => {
   const [isPolicy, setIsPolicy] = useState('');
   const [isReady, setIsReady] = useState(false);
+  const navigate = useNavigate();
 
   const onClickClose = useCallback(() => {
     setOpenLogin(false);
-  }, [setOpenLogin]);
+
+    const from = history.state?.from;
+    if (from) {
+      // 로그인 필요 페이지에서만 이전 페이지로 이동
+      history.replaceState({}, ''); // 상태 초기화
+      navigate(from, { replace: true });
+    }
+  }, [setOpenLogin, navigate]);
 
   const onClickPrivacy = useCallback(() => setIsPolicy('privacy'), []);
   const onClickService = useCallback(() => setIsPolicy('service'), []);
