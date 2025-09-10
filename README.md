@@ -1,50 +1,88 @@
-# React + TypeScript + Vite
+# Inpeak (인픽)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+💡 **AI 기반 개발자 기술면접 준비 서비스**  
+실제 면접처럼 말하기 연습을 하고, AI 피드백을 통해 개선점을 확인할 수 있는 모의면접 플랫폼입니다.
 
-Currently, two official plugins are available:
+👉 [서비스 바로가기](https://inpeak.kr)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🙇‍♂️ 서비스 탄생 배경
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+개발자 취업을 준비하며, **기술은 준비했지만 말로 잘 풀지 못하는 문제**를 자주 경험했습니다.  
+이 과정에서 “나만 이런 게 아닐 텐데?”라는 생각이 들었고, 같은 고민을 가진 많은 사람들이 있다는 걸 알게 되었습니다.
 
-- Configure the top-level `parserOptions` property like this:
+그래서 저희 팀은 **실제처럼 말하기를 연습할 수 있는 플랫폼**을 만들었습니다.  
+여러분의 경험과 피드백이 인픽을 더 나은 서비스로 성장시킵니다.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## 🎤 왜 인픽인가요?
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+> “어렵게 얻은 면접 기회, 아쉽게 놓치고 싶지 않았습니다.”
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+취업 준비 과정에서 많은 사람들이 비슷한 경험을 합니다.  
+서류를 통과하고 어렵게 면접 기회를 얻었지만,  
+알고 있는 내용을 말로 풀지 못해 아쉽게 떨어진 적 있지 않으셨나요?
+
+**인픽(Inpeak)** 은 이런 문제에서 출발했습니다.  
+**In(terview) + (S)peak → Inpeak**  
+실제로 말해보고, AI의 피드백을 받으며, **말하기 실력과 자신감**을 키울 수 있습니다.
+
+---
+
+## 🧠 서비스 소개
+
+- 사용자가 **분야와 난이도**를 선택하면, 그에 맞는 면접 질문 제공
+- 마이크를 켜고 답변하면, **AI가 답변을 텍스트로 변환 후 분석**
+- AI는 **모범 답안**과 함께 **개선할 점**을 구체적으로 피드백
+- **영상 녹화**는 선택 가능 (카메라 없이 음성만도 가능)
+- 모든 기록은 **히스토리**에 저장되어 복습 가능
+
+---
+
+## 🔑 주요 기능
+
+- **면접 영상 녹화 (선택 가능)**
+- **AI 기반 답변 피드백** (발화 내용 분석 + 모범 답안 제공)
+- **맞춤형 질문 제공** (분야/난이도 설정)
+- **연습 기록 관리** (히스토리에서 질문·답변·피드백 복습)
+
+---
+
+## 🖥 예상 페이지 구성
+
+- **메인 페이지**
+  - 서비스 소개, 모의면접 예시
+  - 내비게이션 바 (모의면접, 히스토리, 로그인/회원가입)
+  - 하단 바 (문의하기)
+- **모의면접 페이지**
+  - 연습 시작 버튼, 면접 진행, 타이머
+- **히스토리 페이지**
+  - 지난 면접 결과와 피드백 확인
+- **마이페이지**
+  - 계정 관리 및 개인 통계
+
+---
+
+## 🎯 이런 분들께 추천드려요
+
+- 어렵게 얻은 면접 기회를 **말실수로 놓치고 싶지 않은 분**
+- 혼잣말 수준의 연습 말고, **실제 면접 같은 훈련**이 필요한 분
+- **내 말하기 습관**을 점검하고 싶은 분 (녹화된 답변 재확인 가능)
+
+---
+
+## 📌 현재 오픈 베타 진행 중입니다(2025.09.11 기준)
+
+- **999번의 모의면접**이 제공됩니다.
+- 한 번의 모의면접은 **3개의 기술 질문**으로 구성됩니다.
+- 베타 기간 종료 후 정식 출시 시, **데이터가 초기화될 수 있습니다.**
+
+---
+
+## 💪 인픽이 응원합니다
+
+실제로 말해보고, 고쳐보고,  
+후회 없이 면접 결과를 기다릴 수 있도록,  
+**인픽(Inpeak)이 여러분의 연습을 함께합니다.** 🎤
